@@ -73,8 +73,9 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 
-" vim spector
-Plug 'puremourning/vimspector'
+" vim spector => nvim-dap
+Plug 'mfussenegger/nvim-dap'
+Plug 'mfussenegger/nvim-dap-python'
 
 call plug#end()
 filetype plugin indent on
@@ -120,9 +121,7 @@ lua <<EOF
   local on_attach = function(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
     -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
     local bufopts = { noremap=true, silent=true, buffer=bufnr }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
@@ -154,7 +153,7 @@ lua <<EOF
     mapping = cmp.mapping.preset.insert({
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-space>'] = cmp.mapping.complete(),
+      ['<C-Tab>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     }),
@@ -209,6 +208,43 @@ lua <<EOF
   for idx, language in ipairs(languages) do 
     require('lspconfig')[language].setup { on_attach = on_attach, capabilities = capabilities }
   end
+
+  -- nvim-dap
+  local dap = require('dap')
+  -- adapter
+  dap.adapters.node2 = {
+    type = 'executable',
+    command = 'node',
+    args = {os.getenv('HOME') .. '/dev/microsoft/vscode-node-debug2/out/src/nodeDebug.js'},
+  }
+  -- config
+  dap.configurations.javascript = {
+    {
+      name = 'Launch',
+      type = 'node2',
+      request = 'launch',
+      program = '${file}',
+      cwd = vim.fn.getcwd(),
+      sourceMaps = true,
+      protocol = 'inspector',
+      console = 'integratedTerminal',
+    },
+    {
+      -- For this to work you need to make sure the node process is started with the `--inspect` flag.
+      name = 'Attach to process',
+      type = 'node2',
+      request = 'attach',
+      processId = require'dap.utils'.pick_process,
+    },
+  }
+
+  local pythonPath = '/usr/local/bin/python3' 
+  local cwd = vim.fn.getcwd()
+  if vim.fn.executable(cwd .. '/usr/local/Caskroom/miniforge/base/bin/python3.9') == 1 then
+    pythonPath = cwd .. '/usr/local/Caskroom/miniforge/base/bin/python3.9'
+  end
+
+  require('dap-python').setup(pythonPath)
 EOF
 
 set nocompatible
@@ -313,53 +349,6 @@ let g:minimap_git_colors =  1
 let g:ackhighlight = 1
 let g:ack_autoclose = 1
 
-" vimspector
-let g:vimspector_enable_mappings = 'HUMAN'
-let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-node-debug2', 'vscode-java-debug' ]
-let g:vimspector_configurations = {
-  \"Python: Launch": {
-    \"adapter": "debugpy",
-    \"filetypes": [ "python" ],
-    \"configuration": {
-      \"name": "Python", 
-      \"type": "python",
-      \"request": "launch",
-      \"python": "/usr/local/bin/python3",
-      \"stopOnEntry": v:true,
-      \"console": "externalTerminal",
-      \"debugOptions": [],
-      \"program": "${file}",
-      \"cwd": "${workspaceRoot}"
-    \}
-  \},
-  \"Node: Launch": {
-    \"adapter": "vscode-node",
-    \"filetypes": [ "javascript", "typescript" ],
-    \"configuration": {
-      \"name": "Node",
-      \"request": "launch",
-      \"protocol": "auto",
-      \"stopOnEntry": v:true,
-      \"console": "integratedTerminal",
-      \"program": "${file}",
-      \"cwd": "${workspaceRoot}"
-    \}
-  \},
-  \"Java: Launch": {
-    \"adapter": "vscode-java",
-    \"filetypes": [ "java" ],
-    \"configuration": {
-      \"request": "attach",
-      \"hostName": "${host}",
-      \"port": "${port}",
-      \"sourcePaths": [
-        \"${workspaceRoot}/src/main/java",
-        \"${workspaceRoot}/src/test/java"
-      \]
-    \}
-  \}
-\}
-
 let mapleader = ","
 
 if has("syntax")
@@ -372,9 +361,6 @@ nnoremap <Leader>fp :Ack --py
 
 " tagbar
 nnoremap <Leader>t :TagbarToggle<CR>
-
-" git blame
-nnoremap <Leader>b :BlamerToggle<CR>
 
 " minimap
 nnoremap <Leader>m :MinimapToggle<CR>
@@ -392,24 +378,33 @@ nnoremap <Leader>grh :G reset HEAD<CR>
 nnoremap <Leader>grs :G restore
 nnoremap <Leader>gst :G status<CR>
 
+" git blame
+nnoremap <Leader>bt :BlamerToggle<CR>
+
 nnoremap <C-l> :NvimTreeToggle<CR>
 nnoremap <C-r> :NvimTreeRefresh<CR>
 nnoremap <C-f> :NvimTreeFindFile<CR>
 
-nnoremap Ω :bprev<CR>
-nnoremap ≈ :bnext<CR>
-nnoremap ç :bdelete<CR>
-nnoremap ˙ :sb<CR>
-nnoremap √ :vs<CR>
-nnoremap ˜ :tabnew<CR>
-nnoremap ∂ :tabclose<CR>
-nnoremap å :tabprev<CR>
-nnoremap ß :tabnext<CR>
-nnoremap ¢ :bufdo bd<CR>
+nnoremap <Leader>bp :bprev<CR>
+nnoremap <Leader>bn :bnext<CR>
+nnoremap <Leader>bdd :bdelete<CR>
+nnoremap <Leader>bh :sb<CR>
+nnoremap <Leader>bv :vs<CR>
+nnoremap <Leader>tn :tabnew<CR>
+nnoremap <Leader>td :tabclose<CR>
+nnoremap <Leader>tp :tabprev<CR>
+nnoremap <Leader>tn :tabnext<CR>
+nnoremap <Leader>bda :bufdo bd<CR>
 
 nnoremap <C-p> :Files<CR>
 
-" for normal mode - the word under the cursor
-nnoremap <Leader>di <Plug>VimspectorBalloonEval
-" for visual mode, the visually selected text
-xnoremap <Leader>di <Plug>VimspectorBalloonEval
+" nvim-dap
+nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
+nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
+nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
+nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
+nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> <Leader>B <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nnoremap <silent> <Leader>lp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
+nnoremap <silent> <Leader>dr <Cmd>lua require'dap'.repl.open()<CR>
+nnoremap <silent> <Leader>dl <Cmd>lua require'dap'.run_last()<CR>
