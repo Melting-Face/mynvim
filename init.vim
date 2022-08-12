@@ -76,6 +76,9 @@ Plug 'hrsh7th/nvim-cmp'
 " vim spector => nvim-dap
 Plug 'mfussenegger/nvim-dap'
 Plug 'mfussenegger/nvim-dap-python'
+Plug 'jbyuki/one-small-step-for-vimkind'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
 
 call plug#end()
 filetype plugin indent on
@@ -203,6 +206,9 @@ lua <<EOF
     'yamlls',
     'jsonls',
     'jdtls',
+    'vimls',
+    'sqlls',
+    'sumneko_lua',
   }
 
   for idx, language in ipairs(languages) do 
@@ -211,12 +217,16 @@ lua <<EOF
 
   -- nvim-dap
   local dap = require('dap')
+  local dapui = require("dapui")
+  require("nvim-dap-virtual-text").setup()
+  dapui.setup()
+
   -- adapter
   dap.adapters.node2 = {
     type = 'executable',
     command = 'node',
     args = {os.getenv('HOME') .. '/dev/microsoft/vscode-node-debug2/out/src/nodeDebug.js'},
-  }
+  } 
   -- config
   dap.configurations.javascript = {
     {
@@ -236,14 +246,51 @@ lua <<EOF
       request = 'attach',
       processId = require'dap.utils'.pick_process,
     },
+  } 
+  dap.configurations.lua = { 
+    { 
+      type = 'nlua', 
+      request = 'attach',
+      name = "Attach to running Neovim instance",
+      host = function()
+        local value = vim.fn.input('Host [127.0.0.1]: ')
+        if value ~= "" then
+          return value
+        end
+        return '127.0.0.1'
+      end,
+      port = function()
+        local val = tonumber(vim.fn.input('Port: '))
+        assert(val, "Please provide a port number")
+        return val
+      end,
+    }
   }
-
-  local pythonPath = '/usr/local/bin/python3' 
-  local cwd = vim.fn.getcwd()
-  if vim.fn.executable(cwd .. '/usr/local/Caskroom/miniforge/base/bin/python3.9') == 1 then
-    pythonPath = cwd .. '/usr/local/Caskroom/miniforge/base/bin/python3.9'
+  dap.adapters.nlua = function(callback, config)
+    callback({ type = 'server', host = config.host, port = config.port })
   end
 
+  dap.listeners.after.event_initialized["dapui_config"] = function()
+    dapui.open()
+  end
+  dap.listeners.before.event_terminated["dapui_config"] = function()
+    dapui.close()
+  end
+  dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+  end
+
+  local pythonBinPath = '/bin/python3'
+  if vim.fn.executable('/usr/local/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
+    pythonPath = '/usr/local/Caskroom/miniforge/base' .. pythonBinPath
+  elseif vim.fn.executable('/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
+    pythonPath = '/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath
+  elseif vim.fn.executable('/opt/homebrew' .. pythonBinPath) == 1 then
+    pythonPath = '/opt/homebrew' .. pythonBinPath
+  else
+    pythonPath = '/usr/local' .. pythonBinPath
+  end 
+  
   require('dap-python').setup(pythonPath)
 EOF
 
@@ -408,3 +455,7 @@ nnoremap <silent> <Leader>B <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('B
 nnoremap <silent> <Leader>lp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
 nnoremap <silent> <Leader>dr <Cmd>lua require'dap'.repl.open()<CR>
 nnoremap <silent> <Leader>dl <Cmd>lua require'dap'.run_last()<CR>
+
+" nvim-dap-ui
+vnoremap <Leader>ev <Cmd>lua require("dapui").eval()<CR>
+nnoremap <Leader>dt <Cmd>lua require("dapui").toggle()<CR>
