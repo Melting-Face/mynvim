@@ -1,5 +1,4 @@
 call plug#begin('~/.vim')
-
 " airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -23,7 +22,7 @@ Plug 'tpope/vim-pathogen'
 Plug 'vim-syntastic/syntastic'
 
 " surround
-Plug 'tpope/vim-surround'
+Plug 'kylechui/nvim-surround'
 " repeat
 Plug 'tpope/vim-repeat'
 
@@ -79,7 +78,6 @@ Plug 'mfussenegger/nvim-dap-python'
 Plug 'jbyuki/one-small-step-for-vimkind'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
-
 call plug#end()
 filetype plugin indent on
 
@@ -87,17 +85,41 @@ execute pathogen#infect()
 
 lua <<EOF
   vim.cmd[[colorscheme tokyonight]]
-	require('nvim-lsp-installer').setup {}
-	require'nvim-tree'.setup {}
+  local pythonBinPath = '/bin/python3'
+  if vim.fn.executable('/usr/local/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
+    pythonPath = '/usr/local/Caskroom/miniforge/base' .. pythonBinPath
+  elseif vim.fn.executable('/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
+    pythonPath = '/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath
+  elseif vim.fn.executable('/opt/homebrew' .. pythonBinPath) == 1 then
+    pythonPath = '/opt/homebrew' .. pythonBinPath
+  else
+    pythonPath = '/usr/local' .. pythonBinPath
+  end 
+
+  require'dap-python'.setup(pythonPath) 
+  require'nvim-surround'.setup()
+  require'nvim-lsp-installer'.setup ()
+	require'nvim-tree'.setup ()
+  -- nvim-cmp.
+  local cmp = require'cmp'
+  -- lspconfig
+  local lspconfig = require'lspconfig'
+  -- nvim-dap
+  local dap = require'dap'
+  local dapui = require'dapui'
+  local dapvirtualtext = require'nvim-dap-virtual-text'
+  
+  dapui.setup()
+  dapvirtualtext.setup()
+
 	require'nvim-treesitter.configs'.setup { 
     ensure_installed = { 
+      'bash',
       'css',
       'graphql',
       'html',
-      'java',
       'javascript',
       'json',
-      'kotlin',
       'lua',
       'python',
       'vim',
@@ -115,7 +137,10 @@ lua <<EOF
   }
 
   -- setup nvim-lspconfig
-  local opts = { noremap=true, silent=true }
+  local opts = {
+    noremap=true,
+    silent=true,
+  }
   vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
   vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -125,7 +150,11 @@ lua <<EOF
     -- Enable completion triggered by <c-x><c-o>
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     -- Mappings.
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    local bufopts = { 
+      noremap=true,
+      silent=true,
+      buffer=bufnr
+    }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
@@ -142,10 +171,7 @@ lua <<EOF
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
   end
-
-  -- Setup nvim-cmp.
-  local cmp = require'cmp'
-
+ 
   cmp.setup({
     snippet = {
       -- REQUIRED - you must specify a snippet engine
@@ -153,12 +179,16 @@ lua <<EOF
         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users. 
       end,
     }, 
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
     mapping = cmp.mapping.preset.insert({
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-Tab>'] = cmp.mapping.complete(),
+      ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
@@ -199,28 +229,21 @@ lua <<EOF
   local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
   local languages = {
+    'bashls',
     'tsserver',
-    'kotlin_language_server',
     'dockerls',
     'jedi_language_server',
     'yamlls',
     'jsonls',
-    'jdtls',
     'vimls',
     'sqlls',
     'sumneko_lua',
   }
 
   for idx, language in ipairs(languages) do 
-    require('lspconfig')[language].setup { on_attach = on_attach, capabilities = capabilities }
+    lspconfig[language].setup { on_attach = on_attach, capabilities = capabilities }
   end
-
-  -- nvim-dap
-  local dap = require('dap')
-  local dapui = require("dapui")
-  require("nvim-dap-virtual-text").setup()
-  dapui.setup()
-
+ 
   -- adapter
   dap.adapters.node2 = {
     type = 'executable',
@@ -247,7 +270,7 @@ lua <<EOF
       processId = require'dap.utils'.pick_process,
     },
   } 
-  dap.configurations.lua = { 
+  dap.configurations.lua = {
     { 
       type = 'nlua', 
       request = 'attach',
@@ -267,7 +290,11 @@ lua <<EOF
     }
   }
   dap.adapters.nlua = function(callback, config)
-    callback({ type = 'server', host = config.host, port = config.port })
+    callback({
+      type = 'server',
+      host = config.host,
+      port = config.port
+    })
   end
 
   dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -279,19 +306,6 @@ lua <<EOF
   dap.listeners.before.event_exited["dapui_config"] = function()
     dapui.close()
   end
-
-  local pythonBinPath = '/bin/python3'
-  if vim.fn.executable('/usr/local/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
-    pythonPath = '/usr/local/Caskroom/miniforge/base' .. pythonBinPath
-  elseif vim.fn.executable('/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
-    pythonPath = '/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath
-  elseif vim.fn.executable('/opt/homebrew' .. pythonBinPath) == 1 then
-    pythonPath = '/opt/homebrew' .. pythonBinPath
-  else
-    pythonPath = '/usr/local' .. pythonBinPath
-  end 
-  
-  require('dap-python').setup(pythonPath)
 EOF
 
 set nocompatible
@@ -302,8 +316,7 @@ set autoread
 " highlight search
 set hlsearch
 " when you search keyword, ignore case
-" set ignorecase
-
+set ignorecase
 " column Line
 set colorcolumn=89
 
@@ -405,12 +418,22 @@ endif
 " Ack
 nnoremap <Leader>fj :Ack --js
 nnoremap <Leader>fp :Ack --py
+nnoremap <Leader>fs :Ack --shell
 
+" ========= toggle =========
 " tagbar
-nnoremap <Leader>t :TagbarToggle<CR>
-
+nnoremap <Leader>tt :TagbarToggle<CR>
 " minimap
-nnoremap <Leader>m :MinimapToggle<CR>
+nnoremap <Leader>mt :MinimapToggle<CR>
+" dap
+nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+" dap ui
+nnoremap <Leader>dt <Cmd>lua require("dapui").toggle()<CR>
+" git blame
+nnoremap <Leader>bt :BlamerToggle<CR>
+" nvim-tree
+nnoremap <Leader>nt :NvimTreeToggle<CR>
+" ==========================
 
 " Fugtive
 nnoremap <Leader>ga :G add
@@ -424,38 +447,35 @@ nnoremap <Leader>gp :G push<CR>
 nnoremap <Leader>grh :G reset HEAD<CR>
 nnoremap <Leader>grs :G restore
 nnoremap <Leader>gst :G status<CR>
-
-" git blame
-nnoremap <Leader>bt :BlamerToggle<CR>
-
-nnoremap <C-l> :NvimTreeToggle<CR>
-nnoremap <C-r> :NvimTreeRefresh<CR>
-nnoremap <C-f> :NvimTreeFindFile<CR>
-
+" nvim-tree
+nnoremap <Leader>nr :NvimTreeRefresh<CR>
+nnoremap <Leader>nf :NvimTreeFindFile<CR>
+" buf
 nnoremap <Leader>bp :bprev<CR>
 nnoremap <Leader>bn :bnext<CR>
 nnoremap <Leader>bdd :bdelete<CR>
 nnoremap <Leader>bh :sb<CR>
 nnoremap <Leader>bv :vs<CR>
+nnoremap <Leader>bda :bufdo bd<CR>
+" tab
 nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>td :tabclose<CR>
 nnoremap <Leader>tp :tabprev<CR>
 nnoremap <Leader>tn :tabnext<CR>
-nnoremap <Leader>bda :bufdo bd<CR>
-
+" ctrlp
 nnoremap <C-p> :Files<CR>
-
 " nvim-dap
 nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
 nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
 nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
 nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
-nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
 nnoremap <silent> <Leader>B <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
 nnoremap <silent> <Leader>lp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
 nnoremap <silent> <Leader>dr <Cmd>lua require'dap'.repl.open()<CR>
 nnoremap <silent> <Leader>dl <Cmd>lua require'dap'.run_last()<CR>
-
+" nvim-dap-python
+nnoremap <silent> <leader>dn :lua require('dap-python').test_method()<CR>
+nnoremap <silent> <leader>df :lua require('dap-python').test_class()<CR>
+vnoremap <silent> <leader>ds <ESC> :lua require('dap-python').debug_selection()<CR>
 " nvim-dap-ui
 vnoremap <Leader>ev <Cmd>lua require("dapui").eval()<CR>
-nnoremap <Leader>dt <Cmd>lua require("dapui").toggle()<CR>
