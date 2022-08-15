@@ -28,7 +28,7 @@ function install_package() {
   `$PREFIX install neovim`
   `$PREFIX install tmux`
   `$PREFIX install universal-ctags`
-  `$PREFIX install ack`
+  `$PREFIX install ripgrep`
   `$PREFIX install lua`
   `$PREFIX install n`
   `$PREFIX install code-minimap`

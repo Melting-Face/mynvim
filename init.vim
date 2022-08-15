@@ -14,8 +14,10 @@ Plug 'kyazdani42/nvim-tree.lua'
 " Nerdcommenter
 Plug 'preservim/nerdcommenter'
 
-" ctrlp
-Plug 'kien/ctrlp.vim'
+" telescope
+Plug 'nvim-lua/plenary.nvim'
+Plug 'BurntSushi/ripgrep'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
 " syntastic
 Plug 'tpope/vim-pathogen'
@@ -465,8 +467,11 @@ nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>td :tabclose<CR>
 nnoremap <Leader>tp :tabprev<CR>
 nnoremap <Leader>tn :tabnext<CR>
-" ctrlp
-nnoremap <C-p> :Files<CR>
+" telescope
+nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 " nvim-dap
 nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
 nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
