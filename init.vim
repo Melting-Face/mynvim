@@ -270,7 +270,7 @@ lua <<EOF
       processId = require'dap.utils'.pick_process,
     },
   } 
-  dap.configurations.lua = {
+  dap.configurations.lua = { 
     { 
       type = 'nlua', 
       request = 'attach',
@@ -284,17 +284,20 @@ lua <<EOF
       end,
       port = function()
         local val = tonumber(vim.fn.input('Port: '))
-        assert(val, "Please provide a port number")
         return val
       end,
     }
   }
   dap.adapters.nlua = function(callback, config)
-    callback({
-      type = 'server',
-      host = config.host,
-      port = config.port
-    })
+    if config.port ~= nil then
+      callback({
+        type = 'server',
+        host = config.host,
+        port = config.port
+      })
+    else
+      require'osv'.run_this()
+    end
   end
 
   dap.listeners.after.event_initialized["dapui_config"] = function()
