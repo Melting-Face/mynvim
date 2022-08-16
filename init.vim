@@ -412,15 +412,15 @@ endif
 
 " ========= toggle =========
 " tagbar
-nnoremap <Leader>tt :TagbarToggle<CR>
+nnoremap <Leader>t :TagbarToggle<CR>
 " minimap
-nnoremap <Leader>mt :MinimapToggle<CR>
+nnoremap <Leader>m :MinimapToggle<CR>
 " dap
 nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
 " dap ui
 nnoremap <Leader>dt <Cmd>lua require("dapui").toggle()<CR>
 " nvim-tree
-nnoremap <Leader>nt :NvimTreeToggle<CR>
+nnoremap <Leader>n :NvimTreeToggle<CR>
 " ==========================
 "
 " nvim-tree
@@ -458,3 +458,15 @@ nnoremap <silent> <leader>df :lua require('dap-python').test_class()<CR>
 vnoremap <silent> <leader>ds <ESC> :lua require('dap-python').debug_selection()<CR>
 " nvim-dap-ui
 vnoremap <Leader>ev <Cmd>lua require("dapui").eval()<CR>
+" Fugtive
+nnoremap <Leader>ga :G add
+nnoremap <Leader>gaa :G add .<CR>
+nnoremap <Leader>gb :G branch<CR>
+nnoremap <Leader>gbd :G branch -d
+nnoremap <Leader>gcm :G commit -m
+nnoremap <Leader>gco :G checkout
+nnoremap <Leader>gl :G pull
+nnoremap <Leader>gp :G push<CR>
+nnoremap <Leader>grh :G reset HEAD<CR>
+nnoremap <Leader>grs :G restore
+nnoremap <Leader>gst :G status<CR>
