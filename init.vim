@@ -395,28 +395,14 @@ set termguicolors " this variable must be enabled for colors to be applied prope
 
 set background=dark
 
-let g:airline_theme = 'onedark'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
-
-" Nerdcommenter
-let g:NERDSpaceDelims = 1
-let g:NERDCompactSexyComs = 1
-let g:NERDDefaultAlign = 'left'
-let g:NERDAltDelims_java = 1
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
-let g:NERDCommentEmptyLines = 1
-let g:NERDTrimTrailingWhitespace = 1
-let g:NERDToggleCheckAllLines = 1
-
 let g:indent_guides_auto_colors = 1
 let g:indent_guides_enable_on_vim_startup = 1
 
 " minimap
 let g:minimap_width = 10
 let g:minimap_auto_start_win_enter = 1
-let g:minimap_block_filetypes = ['fugitive', 'nvim-tree', 'tagbar', 'ctrlp' ]
-let g:minimap_close_filetypes = ['startify', 'vim-plug']
+let g:minimap_block_filetypes = ['gitsigns', 'nvim-tree', 'tagbar', 'fzf' ]
+let g:minimap_close_filetypes = ['alpha', 'vim-plug']
 let g:minimap_git_colors =  1
 
 let mapleader = ","
@@ -434,24 +420,10 @@ nnoremap <Leader>mt :MinimapToggle<CR>
 nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
 " dap ui
 nnoremap <Leader>dt <Cmd>lua require("dapui").toggle()<CR>
-" git blame
-nnoremap <Leader>bt :BlamerToggle<CR>
 " nvim-tree
 nnoremap <Leader>nt :NvimTreeToggle<CR>
 " ==========================
-
-" Fugtive
-nnoremap <Leader>ga :G add
-nnoremap <Leader>gaa :G add .<CR>
-nnoremap <Leader>gb :G branch<CR>
-nnoremap <Leader>gbd :G branch -d
-nnoremap <Leader>gcm :G commit -m
-nnoremap <Leader>gco :G checkout
-nnoremap <Leader>gl :G pull
-nnoremap <Leader>gp :G push<CR>
-nnoremap <Leader>grh :G reset HEAD<CR>
-nnoremap <Leader>grs :G restore
-nnoremap <Leader>gst :G status<CR>
+"
 " nvim-tree
 nnoremap <Leader>nr :NvimTreeRefresh<CR>
 nnoremap <Leader>nf :NvimTreeFindFile<CR>
