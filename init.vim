@@ -18,6 +18,7 @@ Plug 'kylechui/nvim-surround'
 " repeat
 Plug 'tpope/vim-repeat'
 " git
+Plug 'tpope/vim-fugitive'
 Plug 'lewis6991/gitsigns.nvim'
 " multi cursor
 Plug 'mg979/vim-visual-multi'
@@ -27,10 +28,8 @@ Plug 'folke/tokyonight.nvim'
 Plug 'goolord/alpha-nvim'
 " minimap
 Plug 'wfxr/minimap.vim'
-" ack
+" comment
 Plug 'numToStr/Comment.nvim'
-" eslint
-Plug 'eslint/eslint'
 " tagbar
 Plug 'preservim/tagbar'
 " indent
@@ -53,6 +52,8 @@ Plug 'mfussenegger/nvim-dap-python'
 Plug 'jbyuki/one-small-step-for-vimkind'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
+" notify
+Plug 'rcarriga/nvim-notify'
 
 call plug#end()
 filetype plugin indent on
@@ -61,7 +62,7 @@ execute pathogen#infect()
 
 lua <<EOF
   vim.cmd[[colorscheme tokyonight]]
-
+  vim.notify = require'notify'  
   -- python path for dap-python
   local pythonBinPath = '/bin/python3'
   if vim.fn.executable('/usr/local/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
@@ -92,11 +93,9 @@ lua <<EOF
   require'dap-python'.setup(pythonPath) 
 
   dapui.setup()
-  dapvirtualtext.setup()
+  dapvirtualtext.setup() 
   
-  require("bufferline").setup{}
-
-  require'lualine'.setup{
+  require'lualine'.setup {
     options = { theme = 'palenight' }
   }
 
