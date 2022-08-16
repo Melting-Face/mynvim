@@ -1,70 +1,44 @@
 call plug#begin('~/.vim')
-" airline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'ryanoasis/vim-devicons'
-
+" status/tab line
+Plug 'romgrk/barbar.nvim'
+Plug 'nvim-lualine/lualine.nvim'
 " nvim-treesitter
 Plug 'nvim-treesitter/nvim-treesitter'
-
 " NvimTree
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
-
-" Nerdcommenter
-Plug 'preservim/nerdcommenter'
-
 " telescope
 Plug 'nvim-lua/plenary.nvim'
 Plug 'BurntSushi/ripgrep'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
-" syntastic
 Plug 'tpope/vim-pathogen'
-Plug 'vim-syntastic/syntastic'
-
 " surround
 Plug 'kylechui/nvim-surround'
 " repeat
 Plug 'tpope/vim-repeat'
-
 " git
-Plug 'tpope/vim-fugitive'
-Plug 'mhinz/vim-signify'
-Plug 'APZelos/blamer.nvim'
-
+Plug 'lewis6991/gitsigns.nvim'
 " multi cursor
 Plug 'mg979/vim-visual-multi'
-
 " tokyonight theme
 Plug 'folke/tokyonight.nvim'
-
-" startify
-Plug 'mhinz/vim-startify'
-
+" alpha-nvim
+Plug 'goolord/alpha-nvim'
 " minimap
 Plug 'wfxr/minimap.vim'
-
 " ack
-Plug 'mileszs/ack.vim'
-
+Plug 'numToStr/Comment.nvim'
 " eslint
 Plug 'eslint/eslint'
-
 " tagbar
 Plug 'preservim/tagbar'
-
-" csv
-Plug 'chrisbra/csv.vim'
-
 " indent
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'nathanaelkane/vim-indent-guides'
-
 " lsp
 Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
-
 " nvim-cmp
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
@@ -73,13 +47,13 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
-
 " vim spector => nvim-dap
 Plug 'mfussenegger/nvim-dap'
 Plug 'mfussenegger/nvim-dap-python'
 Plug 'jbyuki/one-small-step-for-vimkind'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'theHamsta/nvim-dap-virtual-text'
+
 call plug#end()
 filetype plugin indent on
 
@@ -87,6 +61,8 @@ execute pathogen#infect()
 
 lua <<EOF
   vim.cmd[[colorscheme tokyonight]]
+
+  -- python path for dap-python
   local pythonBinPath = '/bin/python3'
   if vim.fn.executable('/usr/local/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
     pythonPath = '/usr/local/Caskroom/miniforge/base' .. pythonBinPath
@@ -97,9 +73,10 @@ lua <<EOF
   else
     pythonPath = '/usr/local' .. pythonBinPath
   end 
-
-  require'dap-python'.setup(pythonPath) 
-  require'nvim-surround'.setup()
+ 
+  require'alpha'.setup(require'alpha.themes.dashboard'.config)
+  require'Comment'.setup ()
+  require'nvim-surround'.setup ()
   require'nvim-lsp-installer'.setup ()
 	require'nvim-tree'.setup ()
   -- nvim-cmp.
@@ -110,9 +87,18 @@ lua <<EOF
   local dap = require'dap'
   local dapui = require'dapui'
   local dapvirtualtext = require'nvim-dap-virtual-text'
+  local gitsigns = require'gitsigns'
   
+  require'dap-python'.setup(pythonPath) 
+
   dapui.setup()
   dapvirtualtext.setup()
+  
+  require("bufferline").setup{}
+
+  require'lualine'.setup{
+    options = { theme = 'palenight' }
+  }
 
 	require'nvim-treesitter.configs'.setup { 
     ensure_installed = { 
@@ -232,14 +218,15 @@ lua <<EOF
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
   local languages = {
     'bashls',
-    'tsserver',
     'dockerls',
+    'eslint',
     'jedi_language_server',
     'yamlls',
     'jsonls',
     'vimls',
     'sqlls',
     'sumneko_lua',
+    'tsserver',
   }
 
   for idx, language in ipairs(languages) do 
@@ -311,6 +298,50 @@ lua <<EOF
   dap.listeners.before.event_exited["dapui_config"] = function()
     dapui.close()
   end
+
+  gitsigns.setup{
+    current_line_blame_opts = {
+      virt_text = true,
+      virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+      delay = 500,
+      ignore_whitespace = false,
+    },
+    on_attach = function(bufnr)
+      local gs = package.loaded.gitsigns
+
+      local function map(mode, l, r, opts)
+        opts = opts or {}
+        opts.buffer = bufnr
+        vim.keymap.set(mode, l, r, opts)
+      end
+
+      -- Navigation
+      map('n', ']c', function()
+        if vim.wo.diff then return ']c' end
+        vim.schedule(function() gs.next_hunk() end)
+        return '<Ignore>'
+      end, {expr=true})
+
+      map('n', '[c', function()
+        if vim.wo.diff then return '[c' end
+        vim.schedule(function() gs.prev_hunk() end)
+        return '<Ignore>'
+      end, {expr=true})
+
+      -- Actions
+      map({'n', 'v'}, '<leader>hs', gs.stage_buffer)
+      map({'n', 'v'}, '<leader>hu', gs.undo_stage_hunk)
+      map({'n', 'v'}, '<leader>hr', gs.reset_buffer)
+      map('n', '<leader>hp', gs.preview_hunk)
+      map('n', '<leader>hb', function() gs.blame_line{full=true} end)
+      map('n', '<leader>tb', gs.toggle_current_line_blame)
+      map('n', '<leader>hd', gs.diffthis)
+      map('n', '<leader>td', gs.toggle_deleted)
+
+      -- Text object
+      map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    end
+  }
 EOF
 
 set nocompatible
@@ -364,31 +395,9 @@ set termguicolors " this variable must be enabled for colors to be applied prope
 
 set background=dark
 
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_typescript_checkers = ['eslint']
-let g:syntastic_python_checkers = ['flake8']
-
-function! SyntasticCheckHook(errors)
-  if !empty(a:errors)
-    let g:syntastic_loc_list_height = min([len(a:errors), 1])
-  endif
-endfunction
-
-" ctrlp ignored git node_modules DS_Store
-let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|__pycache__'  
 let g:airline_theme = 'onedark'
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#syntastic#enabled = 1
-let g:airline#extensions#ctrlp#enabled = 1
-let g:airline#extensions#csv#enabled = 1
 let g:airline_powerline_fonts = 1
-
-" git blame
-let g:blamer_date_format = '%y/%m/%d %H:%M'
-let g:blamer_delay = 250
 
 " Nerdcommenter
 let g:NERDSpaceDelims = 1
@@ -410,20 +419,11 @@ let g:minimap_block_filetypes = ['fugitive', 'nvim-tree', 'tagbar', 'ctrlp' ]
 let g:minimap_close_filetypes = ['startify', 'vim-plug']
 let g:minimap_git_colors =  1
 
-" Ack
-let g:ackhighlight = 1
-let g:ack_autoclose = 1
-
 let mapleader = ","
 
 if has("syntax")
   syntax on
 endif
-
-" Ack
-nnoremap <Leader>fj :Ack --js
-nnoremap <Leader>fp :Ack --py
-nnoremap <Leader>fs :Ack --shell
 
 " ========= toggle =========
 " tagbar
@@ -456,8 +456,8 @@ nnoremap <Leader>gst :G status<CR>
 nnoremap <Leader>nr :NvimTreeRefresh<CR>
 nnoremap <Leader>nf :NvimTreeFindFile<CR>
 " buf
-nnoremap <Leader>bp :bprev<CR>
-nnoremap <Leader>bn :bnext<CR>
+nnoremap <silent>b] :bn<CR>
+nnoremap <silent>b[ :bp<CR>
 nnoremap <Leader>bdd :bdelete<CR>
 nnoremap <Leader>bh :sb<CR>
 nnoremap <Leader>bv :vs<CR>
@@ -465,8 +465,8 @@ nnoremap <Leader>bda :bufdo bd<CR>
 " tab
 nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>td :tabclose<CR>
-nnoremap <Leader>tp :tabprev<CR>
-nnoremap <Leader>tn :tabnext<CR>
+nnoremap <silent>t[ :tabprev<CR>
+nnoremap <silent>t] :tabnext<CR>
 " telescope
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
