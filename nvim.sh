@@ -3,9 +3,9 @@ STARTPATH="$(pwd)"
 
 function install_manager() {
   echo "check vim manager ..."
-  if [ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim" ]; then 
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  if [ ! -f "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then 
+    git clone --depth 1 "https://github.com/wbthomason/packer.nvim" \
+    "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
   fi
 
   echo "check tpm manager ..."
@@ -61,9 +61,14 @@ function create_symlink() {
     tmux source-file "$HOME/.tmux.conf"
   fi
 
-  if [ ! -f "$HOME/.config/nvim/init.vim" ]; then
-    mkdir -p "$HOME/.config/nvim" 
-    ln -s "$WORKDIR/init.vim" "$HOME/.config/nvim/init.vim"
+  if [ ! -f "$HOME/.config/nvim/init.lua" ]; then
+    mkdir -p "$HOME/.config/nvim"
+    ln -s "$WORKDIR/init.vim" "$HOME/.config/nvim/init.lua"
+  fi
+
+  if [ ! -d "$HOME/.config/nvim/lua" ]; then
+    mkdir -p "$HOME/.config/nvim"
+    ln -s "$WORKDIR/lua" "$HOME/.config/nvim/lua"
   fi
 }
 
