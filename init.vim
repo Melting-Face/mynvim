@@ -561,11 +561,10 @@ nnoremap <Leader>n :NvimTreeToggle<CR>
 " ==========================
 "
 " nvim-tree
-nnoremap <Leader>nr :NvimTreeRefresh<CR>
-nnoremap <Leader>nf :NvimTreeFindFile<CR>
+nnoremap <Leader>rn :NvimTreeRefresh<CR>
 " buf
-nnoremap <silent>b] :bn<CR>
-nnoremap <silent>b[ :bp<CR>
+nnoremap <silent>b[ :bn<CR>
+nnoremap <silent>b] :bp<CR>
 nnoremap <Leader>bdd :bdelete<CR>
 nnoremap <Leader>bh :sb<CR>
 nnoremap <Leader>bv :vs<CR>
@@ -573,13 +572,14 @@ nnoremap <Leader>bda :bufdo bd<CR>
 " tab
 nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>td :tabclose<CR>
-nnoremap <silent>t[ :tabprev<CR>
-nnoremap <silent>t] :tabnext<CR>
+nnoremap <silent>t[ :tabnext<CR>
+nnoremap <silent>t] :tabprev<CR>
 " telescope
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+nnoremap <Leader>fn :NvimTreeFindFile<CR>
 " nvim-dap
 nnoremap <silent> <F5> <Cmd>lua require'dap'.continue()<CR>
 nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
