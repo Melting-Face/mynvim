@@ -63,7 +63,7 @@ function create_symlink() {
 
   if [ ! -f "$HOME/.config/nvim/init.lua" ]; then
     mkdir -p "$HOME/.config/nvim"
-    ln -s "$WORKDIR/init.vim" "$HOME/.config/nvim/init.lua"
+    ln -s "$WORKDIR/init.lua" "$HOME/.config/nvim/init.lua"
   fi
 
   if [ ! -d "$HOME/.config/nvim/lua" ]; then

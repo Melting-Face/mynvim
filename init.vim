@@ -1,13 +1,11 @@
-lua require('plugins')
-lua require('nvimTreeSitter')
-lua require('nvimGitSigns')
-lua require('nvimCmp')
-lua require('nvimDap')
-lua require('nvimNotify')
+require('plugins')
+require('nvimTreeSitter')
+require('nvimGitSigns')
+require('nvimCmp')
+require('nvimDap')
+require('nvimNotify')
 
-lua <<EOF
   vim.cmd[[colorscheme tokyonight]]
-EOF
 
 set nocompatible
 " zsh
