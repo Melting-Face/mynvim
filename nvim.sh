@@ -3,7 +3,7 @@ STARTPATH="$(pwd)"
 
 function install_manager() {
   echo "check vim manager ..."
-  if [ ! -f "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then 
+  if [ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then 
     git clone --depth 1 "https://github.com/wbthomason/packer.nvim" \
     "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
   fi
@@ -72,11 +72,16 @@ function create_symlink() {
   fi
 }
 
+function install_plugins() {
+  vim +PackerSync +qall
+} 
+
 echo "install manager [1]"
 echo "install package [2]"
 echo "set nvim-dap-node [3]" 
 echo "set nvim-dap-python [4]"
 echo "create symlink [5]"
+echo "install plugins [6]"
 
 read -p "select option :" OPT
 
@@ -86,4 +91,5 @@ case $OPT in
   3) dap_node;;
   4) dap_python;;
   5) create_symlink;;
+  6) install_plugins;;
 esac

@@ -1,11 +1,484 @@
-require('plugins')
-require('nvimTreeSitter')
-require('nvimGitSigns')
-require('nvimCmp')
-require('nvimDap')
-require('nvimNotify')
+call plug#begin('~/.vim')
+" status/tab line
+Plug 'romgrk/barbar.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+" nvim-treesitter
+Plug 'nvim-treesitter/nvim-treesitter'
+" NvimTree
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
+" telescope
+Plug 'nvim-lua/plenary.nvim'
+Plug 'BurntSushi/ripgrep'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
+Plug 'tpope/vim-pathogen'
+" surround
+Plug 'kylechui/nvim-surround'
+" repeat
+Plug 'tpope/vim-repeat'
+" git
+Plug 'tpope/vim-fugitive'
+Plug 'lewis6991/gitsigns.nvim'
+" multi cursor
+Plug 'mg979/vim-visual-multi'
+" tokyonight theme
+Plug 'folke/tokyonight.nvim'
+" alpha-nvim
+Plug 'goolord/alpha-nvim'
+" minimap
+Plug 'wfxr/minimap.vim'
+" comment
+Plug 'numToStr/Comment.nvim'
+" tagbar
+Plug 'preservim/tagbar'
+" indent
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'nathanaelkane/vim-indent-guides'
+" lsp
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'neovim/nvim-lspconfig'
+" nvim-cmp
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+" vim spector => nvim-dap
+Plug 'mfussenegger/nvim-dap'
+Plug 'mfussenegger/nvim-dap-python'
+Plug 'jbyuki/one-small-step-for-vimkind'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
+" notify
+Plug 'rcarriga/nvim-notify'
+
+call plug#end()
+filetype plugin indent on
+
+execute pathogen#infect()
+
+lua <<EOF
   vim.cmd[[colorscheme tokyonight]]
+  vim.notify = require'notify'  
+  -- python path for dap-python
+  local pythonBinPath = '/bin/python3'
+  if vim.fn.executable('/usr/local/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
+    pythonPath = '/usr/local/Caskroom/miniforge/base' .. pythonBinPath
+  elseif vim.fn.executable('/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath) == 1 then
+    pythonPath = '/opt/homebrew/Caskroom/miniforge/base' .. pythonBinPath
+  elseif vim.fn.executable('/opt/homebrew' .. pythonBinPath) == 1 then
+    pythonPath = '/opt/homebrew' .. pythonBinPath
+  else
+    pythonPath = '/usr/local' .. pythonBinPath
+  end 
+ 
+  require'alpha'.setup(require'alpha.themes.dashboard'.config)
+  require'Comment'.setup ()
+  require'nvim-surround'.setup ()
+  require'nvim-lsp-installer'.setup ()
+  require'nvim-tree'.setup ()
+  -- nvim-cmp.
+  local cmp = require'cmp'
+  -- lspconfig
+  local lspconfig = require'lspconfig'
+  -- nvim-dap
+  local dap = require'dap'
+  local dapui = require'dapui'
+  local dapvirtualtext = require'nvim-dap-virtual-text'
+  local gitsigns = require'gitsigns'
+  
+  require'dap-python'.setup(pythonPath) 
+
+  dapui.setup()
+  dapvirtualtext.setup() 
+  
+  require'lualine'.setup {
+    options = { theme = 'palenight' }
+  }
+
+	require'nvim-treesitter.configs'.setup { 
+    ensure_installed = { 
+      'bash',
+      'css',
+      'graphql',
+      'html',
+      'javascript',
+      'json',
+      'lua',
+      'python',
+      'vim',
+      'sql',
+      'tsx',
+      'typescript',
+      'yaml',
+    },
+    sync_install = true,
+    auto_install = true,
+    highlight = {
+      enable = true,
+      additional_vim_regex_highlighting = false,
+    },
+  }
+
+  -- setup nvim-lspconfig
+  local opts = {
+    noremap=true,
+    silent=true,
+  }
+  vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+  vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+  local on_attach = function(client, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    -- Mappings.
+    local bufopts = { 
+      noremap=true,
+      silent=true,
+      buffer=bufnr
+    }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, bufopts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+    vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
+  end
+ 
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users. 
+      end,
+    }, 
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' },
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  local languages = {
+    'bashls',
+    'dockerls',
+    'eslint',
+    'jedi_language_server',
+    'yamlls',
+    'jsonls',
+    'vimls',
+    'sqlls',
+    'sumneko_lua',
+    'pyright',
+    'tsserver',
+  }
+
+  for idx, language in ipairs(languages) do 
+    lspconfig[language].setup { on_attach = on_attach, capabilities = capabilities }
+  end
+ 
+  -- adapter
+  dap.adapters.node2 = {
+    type = 'executable',
+    command = 'node',
+    args = {os.getenv('HOME') .. '/dev/microsoft/vscode-node-debug2/out/src/nodeDebug.js'},
+  } 
+  -- config
+  dap.configurations.javascript = {
+    {
+      name = 'Launch',
+      type = 'node2',
+      request = 'launch',
+      program = '${file}',
+      cwd = vim.fn.getcwd(),
+      sourceMaps = true,
+      protocol = 'inspector',
+      console = 'integratedTerminal',
+    },
+    {
+      -- For this to work you need to make sure the node process is started with the `--inspect` flag.
+      name = 'Attach to process',
+      type = 'node2',
+      request = 'attach',
+      processId = require'dap.utils'.pick_process,
+    },
+  } 
+  dap.configurations.lua = { 
+    { 
+      type = 'nlua', 
+      request = 'attach',
+      name = "Attach to running Neovim instance",
+      host = function()
+        local value = vim.fn.input('Host [127.0.0.1]: ')
+        if value ~= "" then
+          return value
+        end
+        return '127.0.0.1'
+      end,
+      port = function()
+        local val = tonumber(vim.fn.input('Port: '))
+        return val
+      end,
+    }
+  }
+  dap.adapters.nlua = function(callback, config)
+    if config.port ~= nil then
+      callback({
+        type = 'server',
+        host = config.host,
+        port = config.port
+      })
+    else
+      require'osv'.run_this()
+    end
+  end
+
+  dap.listeners.after.event_initialized["dapui_config"] = function()
+    dapui.open()
+  end
+  dap.listeners.before.event_terminated["dapui_config"] = function()
+    dapui.close()
+  end
+  dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+  end
+
+  gitsigns.setup{
+    current_line_blame_opts = {
+      virt_text = true,
+      virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+      delay = 500,
+      ignore_whitespace = false,
+    },
+    on_attach = function(bufnr)
+      local gs = package.loaded.gitsigns
+
+      local function map(mode, l, r, opts)
+        opts = opts or {}
+        opts.buffer = bufnr
+        vim.keymap.set(mode, l, r, opts)
+      end
+
+      -- Navigation
+      map('n', ']c', function()
+        if vim.wo.diff then return ']c' end
+        vim.schedule(function() gs.next_hunk() end)
+        return '<Ignore>'
+      end, {expr=true})
+
+      map('n', '[c', function()
+        if vim.wo.diff then return '[c' end
+        vim.schedule(function() gs.prev_hunk() end)
+        return '<Ignore>'
+      end, {expr=true})
+
+      -- Actions
+      map({'n', 'v'}, '<leader>hs', gs.stage_buffer)
+      map({'n', 'v'}, '<leader>hu', gs.undo_stage_hunk)
+      map({'n', 'v'}, '<leader>hr', gs.reset_buffer)
+      map('n', '<leader>hp', gs.preview_hunk)
+      map('n', '<leader>hb', function() gs.blame_line{full=true} end)
+      map('n', '<leader>tb', gs.toggle_current_line_blame)
+      map('n', '<leader>hd', gs.diffthis)
+      map('n', '<leader>td', gs.toggle_deleted)
+
+      -- Text object
+      map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    end
+  }
+
+  -- Utility functions shared between progress reports for LSP and DAP
+
+  local client_notifs = {}
+
+  local function get_notif_data(client_id, token)
+    if not client_notifs[client_id] then
+      client_notifs[client_id] = {}
+    end
+
+    if not client_notifs[client_id][token] then
+      client_notifs[client_id][token] = {}
+    end
+
+    return client_notifs[client_id][token]
+  end
+
+
+  local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+
+  local function update_spinner(client_id, token)
+    local notif_data = get_notif_data(client_id, token)
+
+    if notif_data.spinner then
+      local new_spinner = (notif_data.spinner + 1) % #spinner_frames
+      notif_data.spinner = new_spinner
+
+      notif_data.notification = vim.notify(nil, nil, {
+        hide_from_history = true,
+        icon = spinner_frames[new_spinner],
+        replace = notif_data.notification,
+      })
+
+      vim.defer_fn(function()
+        update_spinner(client_id, token)
+      end, 100)
+    end
+  end
+
+  local function format_title(title, client_name)
+    return client_name .. (#title > 0 and ": " .. title or "")
+  end
+
+  local function format_message(message, percentage)
+    return (percentage and percentage .. "%\t" or "") .. (message or "")
+  end
+
+  -- LSP integration
+  -- Make sure to also have the snippet with the common helper functions in your config!
+
+  vim.lsp.handlers["$/progress"] = function(_, result, ctx)
+    local client_id = ctx.client_id
+
+    local val = result.value
+
+    if not val.kind then
+      return
+    end
+
+    local notif_data = get_notif_data(client_id, result.token)
+
+    if val.kind == "begin" then
+      local message = format_message(val.message, val.percentage)
+
+      notif_data.notification = vim.notify(message, "info", {
+        title = format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
+        icon = spinner_frames[1],
+        timeout = false,
+        hide_from_history = false,
+      })
+
+      notif_data.spinner = 1
+      update_spinner(client_id, result.token)
+    elseif val.kind == "report" and notif_data then
+      notif_data.notification = vim.notify(format_message(val.message, val.percentage), "info", {
+        replace = notif_data.notification,
+        hide_from_history = false,
+      })
+    elseif val.kind == "end" and notif_data then
+      notif_data.notification =
+        vim.notify(val.message and format_message(val.message) or "Complete", "info", {
+          icon = "",
+          replace = notif_data.notification,
+          timeout = 3000,
+        })
+
+      notif_data.spinner = nil
+    end
+  end
+
+  -- table from lsp severity to vim severity.
+  local severity = {
+    "error",
+    "warn",
+    "info",
+    "info", -- map both hint and info to info?
+  }
+  vim.lsp.handlers["window/showMessage"] = function(err, method, params, client_id)
+              vim.notify(method.message, severity[params.type])
+  end
+
+  -- DAP integration
+  -- Make sure to also have the snippet with the common helper functions in your config!
+
+  dap.listeners.before['event_progressStart']['progress-notifications'] = function(session, body)
+    local notif_data = get_notif_data("dap", body.progressId)
+
+    local message = format_message(body.message, body.percentage)
+    notif_data.notification = vim.notify(message, "info", {
+      title = format_title(body.title, session.config.type),
+      icon = spinner_frames[1],
+      timeout = false,
+      hide_from_history = false,
+    })
+
+    notif_data.notification.spinner = 1,
+    update_spinner("dap", body.progressId)
+  end
+
+  dap.listeners.before['event_progressUpdate']['progress-notifications'] = function(session, body)
+    local notif_data = get_notif_data("dap", body.progressId)
+    notif_data.notification = vim.notify(format_message(body.message, body.percentage), "info", {
+      replace = notif_data.notification,
+      hide_from_history = false,
+    })
+  end
+
+  dap.listeners.before['event_progressEnd']['progress-notifications'] = function(session, body)
+    local notif_data = client_notifs["dap"][body.progressId]
+    notif_data.notification = vim.notify(body.message and format_message(body.message) or "Complete", "info", {
+      icon = "",
+      replace = notif_data.notification,
+      timeout = 3000
+    })
+    notif_data.spinner = nil
+  end
+EOF
 
 set nocompatible
 " zsh
