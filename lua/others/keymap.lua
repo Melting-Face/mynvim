@@ -12,18 +12,18 @@ vim.keymap.set('n', '<Leader>rn', '<cmd>NvimTreeRefresh<CR>')
 vim.keymap.set('n', '<Leader>fn', '<cmd>NvimTreeFindFile<CR>')
 
 -- for buffer
-vim.keymap.set('n', 'b[', '<cmd>bn<CR>', { silent = true })
-vim.keymap.set('n', 'b]', '<cmd>bp<CR>', { silent = true })
+vim.keymap.set('n', 'b]', '<cmd>bn<cr>', { silent = true })
+vim.keymap.set('n', 'b[', '<cmd>bp<cr>', { silent = true })
 vim.keymap.set('n', '<Leader>bdd', '<cmd>bdelete<CR>')
-vim.keymap.set('n', '<Leader>bh', '<cmd>sb<CR>')
-vim.keymap.set('n', '<Leader>bv', '<cmd>vs<CR>')
+vim.keymap.set('n', '<Leader>bh', '<cmd>bh<CR>')
+vim.keymap.set('n', '<Leader>bv', '<cmd>bv<CR>')
 vim.keymap.set('n', '<Leader>bda', '<cmd>bufdo bd<CR>')
 
 -- for tab
 vim.keymap.set('n', '<Leader>tn', '<cmd>tabnew<CR>')
 vim.keymap.set('n', '<Leader>td', '<cmd>tabclose<CR>')
-vim.keymap.set('n', '<silent>t[', '<cmd>tabnext<CR>')
-vim.keymap.set('n', '<silent>t]', '<cmd>tabprev<CR>')
+vim.keymap.set('n', 't[', '<cmd>tabnext<CR>', { silent = true })
+vim.keymap.set('n', 't]', '<cmd>tabprev<CR>', { silent = true })
 
 --for telescope
 vim.keymap.set('n', '<leader>ff', function () require('telescope.builtin').find_files() end)
