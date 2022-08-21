@@ -37,25 +37,6 @@ function install_package() {
   `pip3 install neovim`
 }
 
-# node
-function dap_node() {
-  echo "check to nvim_damp node ..."
-  if [ ! -d "$HOME/dev/microsoft/vscode-node-debug2" ]; then
-    mkdir -p "$HOME/dev/microsoft" &&
-    git clone "https://github.com/microsoft/vscode-node-debug2.git" "$HOME/dev/microsoft/vscode-node-debug2" &&
-    cd "$HOME/dev/microsoft/vscode-node-debug2" &&
-    npm i &&
-    NODE_OPTIONS=--no-experimental-fetch npm run build
-  fi
-  cd $STARTPATH
-}
-
-# python
-function dap_python() {
-  which pip3 && pip3 install debugpy
-  which pip && pip install debugpy
-}
-
 function create_symlink() {
   WORKDIR=$(pwd)
   if [ ! -f "$HOME/.tmux.conf" ]; then
@@ -75,23 +56,26 @@ function create_symlink() {
 }
 
 function install_plugins() {
-  nvim +PackerSync && +qall
+  nvim +PackerSync 
 } 
 
-echo "install manager [1]"
-echo "install package [2]"
-echo "set nvim-dap-node [3]" 
-echo "set nvim-dap-python [4]"
-echo "create symlink [5]"
-echo "install plugins [6]"
+if [ $1 == 'all' ]; then
+  install_package;
+  install_manager;
+  create_symlink;
+  install_plugins;
+else
+  echo "install manager [1]"
+  echo "install package [2]"
+  echo "create symlink [3]"
+  echo "install plugins [4]"
 
-read -p "select option :" OPT
+  read -p "select option :" OPT
 
-case $OPT in
-  1) install_manager;;
-  2) install_package;;
-  3) dap_node;;
-  4) dap_python;;
-  5) create_symlink;;
-  6) install_plugins;;
-esac
+  case $OPT in
+    1) install_manager;;
+    2) install_package;;
+    3) create_symlink;;
+    4) install_plugins;;
+  esac
+fi

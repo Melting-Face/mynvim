@@ -97,9 +97,11 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protoco
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 local languages = {
   'eslint',
+  'pyright',
   'vimls',
   'sumneko_lua',
   'tsserver',
+  'jedi_language_server',
 }
 
 for idx, language in ipairs(languages) do
