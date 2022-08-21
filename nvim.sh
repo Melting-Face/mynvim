@@ -2,14 +2,16 @@ UNAME="$(uname -s)"
 STARTPATH="$(pwd)"
 
 function install_manager() {
-  echo "check vim manager ..."
+  echo "check packer ..."
   if [ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then 
+    echo "git clone packer ..."
     git clone --depth 1 "https://github.com/wbthomason/packer.nvim" \
     "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
   fi
 
-  echo "check tpm manager ..."
+  echo "check tpm ..."
   if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "git clone tpm ..."
     git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
   fi
 }
@@ -73,7 +75,7 @@ function create_symlink() {
 }
 
 function install_plugins() {
-  vim +PackerSync +qall
+  nvim +PackerSync && +qall
 } 
 
 echo "install manager [1]"

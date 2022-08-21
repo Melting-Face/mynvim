@@ -1,4 +1,5 @@
 -- default shell: zsh
+vim.g.mapleader = ','
 vim.o.shell = 'zsh'
 vim.o.autoread = true
 vim.o.hlsearch = true

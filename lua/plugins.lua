@@ -51,7 +51,7 @@ return require('packer').startup(function(use)
       'mfussenegger/nvim-dap'
     },
     config = function ()
-      require('dapui').setup ()
+      require'dapui'.setup ()
     end
   }
   use {
