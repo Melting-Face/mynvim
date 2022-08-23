@@ -102,6 +102,8 @@ local languages = {
   'sumneko_lua',
   'tsserver',
   'jedi_language_server',
+  'vimls',
+  'yamlls',
 }
 
 for idx, language in ipairs(languages) do

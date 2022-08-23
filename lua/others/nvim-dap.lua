@@ -9,8 +9,8 @@ local python_venv = '/packages/debugpy/venv/bin/activate'
 local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
 
 if io.open(HOME .. mason_root_dir .. python_venv) ~= nil then
-  local command = 'source ' .. mason_root_dir .. python_venv
-  local python_path = io.popen(command .. ' && which python3'):read('l')
+  local command = 'source ' .. HOME .. mason_root_dir .. python_venv
+  local python_path = io.popen(command .. ' && ' .. 'which python3'):read('l')
   dappython.setup(python_path)
 end
 
