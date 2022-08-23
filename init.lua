@@ -1,4 +1,5 @@
 require('plugins')
+
 require('others.options')
 require('others.nvim-treesitter')
 require('others.gitsigns')

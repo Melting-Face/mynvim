@@ -17,17 +17,37 @@ return require('packer').startup(function(use)
   use 'wfxr/minimap.vim'
   -- tagbar
   use 'preservim/tagbar'
-  -- indent object
-  use 'michaeljsmith/vim-indent-object'
-  -- indent guide
-  use 'nathanaelkane/vim-indent-guides'
+  -- async
+  use 'nvim-lua/plenary.nvim'
+  -- indent-blankline
+  use {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function ()
+      require('indent_blankline').setup {
+        show_current_context = true,
+        show_current_context_start = true,
+        show_end_of_line = true,
+      }
+    end
+  }
   -- bufferline
   use {
     'akinsho/bufferline.nvim',
     tag = "v2.*",
     requires = 'kyazdani42/nvim-web-devicons',
     config = function ()
-      require("bufferline").setup ()
+      require("bufferline").setup {
+        options = {
+          separator_style = 'padded_slant',
+        }
+      }
+    end
+  }
+  -- scope.nvim for tab
+  use {
+    'tiagovla/scope.nvim',
+    config = function ()
+      require("scope").setup ()
     end
   }
   -- nvim-dap-python

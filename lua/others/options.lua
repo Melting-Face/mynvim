@@ -21,11 +21,14 @@ vim.o.cursorline = true
 vim.o.showmatch = true
 vim.o.ruler = true
 vim.o.clipboard = 'unnamed'
-vim.opt.fileencodings = 'utf8'
-vim.opt.encoding = 'UTF-8'
+vim.o.fileencodings = 'utf8'
+vim.o.encoding = 'UTF-8'
 -- mouse option is 'all'
 vim.o.mouse = 'a'
 -- termguicolor option is true
 vim.o.termguicolors = true
 -- background is dark
 vim.o.background = 'dark'
+
+vim.opt.list = true
+vim.opt.listchars:append "eol:↴"
