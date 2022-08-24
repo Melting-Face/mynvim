@@ -32,6 +32,7 @@ function install_package() {
   `$PREFIX install universal-ctags`
   `$PREFIX install ripgrep`
   `$PREFIX install lua`
+  `$PREFIX install luarocks`
   `$PREFIX install n`
   `$PREFIX install code-minimap`
   `pip3 install neovim`
