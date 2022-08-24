@@ -1,25 +1,30 @@
 -- nvim-dap
-local dap = require'dap'
 local dapui = require'dapui'
 local dappython = require'dap-python'
 
 local HOME = io.popen('echo $HOME'):read('l')
 local mason_root_dir = "/.local/share/nvim/mason"
-local python_venv = '/packages/debugpy/venv/bin/activate'
+-- debugpy
+local debugpy_venv = '/packages/debugpy/venv/bin/activate'
+local debugpy_path = HOME .. mason_root_dir .. debugpy_venv
+-- node-debug
 local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
+local node_debug_path = HOME .. mason_root_dir .. node_debug
 
-if io.open(HOME .. mason_root_dir .. python_venv) ~= nil then
-  local command = 'source ' .. HOME .. mason_root_dir .. python_venv
-  local python_path = io.popen(command .. ' && ' .. 'which python3'):read('l')
-  dappython.setup(python_path)
+local python_path = io.popen('which python3'):read('l')
+if io.open(debugpy_path) ~= nil then
+  local command = 'source ' .. debugpy_path 
+  python_path = io.popen(command .. ' && ' .. 'which python3'):read('l')
 end
 
-if io.open(HOME .. mason_root_dir .. node_debug) ~= nil then
+dappython.setup(python_path)
+
+if io.open(node_debug_path) ~= nil then
   dap.adapters.node2 = {
     type = 'executable',
     command = 'node',
     args = {
-      HOME .. mason_root_dir .. node_debug,
+      node_debug_path,
     },
   }
   -- config
