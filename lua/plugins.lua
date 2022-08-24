@@ -19,13 +19,6 @@ return require('packer').startup(function(use)
   use 'preservim/tagbar'
   -- async
   use 'nvim-lua/plenary.nvim'
-  -- nvim-lint
-  use {
-    'mfussenegger/nvim-lint',
-    config = function ()
-      require'lint'.setup ()
-    end
-  }
   -- indent-blankline
   use {
     'lukas-reineke/indent-blankline.nvim',

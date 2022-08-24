@@ -10,7 +10,6 @@ require('others.gitsigns')
 require('others.nvim-dap')
 require('others.nvim-cmp')
 require('others.nvim-notify')
-require('others.nvim-lints')
 require('others.minimap')
 require('others.keymap')
 
