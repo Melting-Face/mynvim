@@ -1,7 +1,6 @@
 require('plugins')
 
 vim.notify = require'notify'
-vim.cmd[[colorscheme tokyonight]]
 async = require'plenary.async'
 dap = require'dap'
 
@@ -11,5 +10,8 @@ require('others.gitsigns')
 require('others.nvim-dap')
 require('others.nvim-cmp')
 require('others.nvim-notify')
+require('others.nvim-lints')
 require('others.minimap')
 require('others.keymap')
+
+vim.cmd[[colorscheme tokyonight]]
