@@ -9,8 +9,11 @@ local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
 local node_path = HOME .. mason_root_dir .. node_debug
 
 local python_path = io.popen('which python3'):read('l')
+local debugpy_exist = io.popen('pip list | grep -n "debugpy"'):read('l')
 
-dappython.setup(python_path)
+if python_path ~= nil and debugpy_exist ~= nil then
+  dappython.setup(python_path)
+end
 
 if io.open(node_path) ~= nil then
   dap.adapters.node2 = {
