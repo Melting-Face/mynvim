@@ -1,18 +1,17 @@
 -- nvim-dap
 local dapui = require'dapui'
-local dappython = require'dap-python'
+local dap_python = require'dap-python'
 
 local HOME = io.popen('echo $HOME'):read('l')
 local mason_root_dir = "/.local/share/nvim/mason"
 -- node-debug
 local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
 local node_path = HOME .. mason_root_dir .. node_debug
-
+-- dap-python
 local python_path = io.popen('which python3'):read('l')
-local debugpy_exist = io.popen('pip list | grep -n "debugpy"'):read('l')
 
-if python_path ~= nil and debugpy_exist ~= nil then
-  dappython.setup(python_path)
+if python_path ~= nil then
+  dap_python.setup(python_path)
 end
 
 if io.open(node_path) ~= nil then
