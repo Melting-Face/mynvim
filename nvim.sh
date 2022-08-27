@@ -33,6 +33,7 @@ function install_package() {
   `$PREFIX install ripgrep`
   `$PREFIX install lua`
   `$PREFIX install node`
+  `$PREFIX install python`
   `$PREFIX install code-minimap`
   `pip3 install neovim`
 }

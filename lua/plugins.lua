@@ -39,7 +39,11 @@ return require('packer').startup(function(use)
       require("bufferline").setup {
         options = {
           separator_style = 'padded_slant',
-        }
+          numbers = function(opts)
+            return string.format('%s·%s', opts.raise(opts.id), opts.lower(opts.ordinal))
+          end,
+          diagnostics = "nvim_lsp",
+        },
       }
     end
   }
@@ -51,12 +55,14 @@ return require('packer').startup(function(use)
     end
   }
   -- nvim-dap-python
-  use {
-    'mfussenegger/nvim-dap-python',
-    requires = {
-      'mfussenegger/nvim-dap'
-    },
-  }
+  if io.popen(' pip list | grep -n debugdpy'):read('l') ~= nil then
+    use {
+      'mfussenegger/nvim-dap-python',
+      requires = {
+        'mfussenegger/nvim-dap'
+      },
+    }
+  end 
   -- nvim-dap-lua
   use {
     'jbyuki/one-small-step-for-vimkind',
