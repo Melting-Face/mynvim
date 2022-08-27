@@ -4,9 +4,7 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
   -- devicons
-  use 'kyazdani42/nvim-web-devicons'
-  -- notify
-  use 'rcarriga/nvim-notify'
+  use 'kyazdani42/nvim-web-devicons' 
   -- git
   use 'tpope/vim-fugitive'
   -- multi cursor
@@ -19,6 +17,8 @@ return require('packer').startup(function(use)
   use 'preservim/tagbar'
   -- async
   use 'nvim-lua/plenary.nvim'
+  -- notify
+  use 'rcarriga/nvim-notify'
   -- indent-blankline
   use {
     'lukas-reineke/indent-blankline.nvim',

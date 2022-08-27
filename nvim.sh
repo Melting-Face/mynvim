@@ -27,15 +27,15 @@ function install_package() {
     exit 9
   fi
 
-  `$PREFIX install neovim`
-  `$PREFIX install tmux`
-  `$PREFIX install universal-ctags`
-  `$PREFIX install ripgrep`
-  `$PREFIX install lua`
-  `$PREFIX install node`
-  `$PREFIX install python`
-  `$PREFIX install code-minimap`
-  `pip3 install neovim`
+  $PREFIX install neovim
+  $PREFIX install tmux
+  $PREFIX install universal-ctags
+  $PREFIX install ripgrep
+  $PREFIX install lua
+  $PREFIX install node
+  $PREFIX install python
+  $PREFIX install code-minimap
+  pip3 install neovim
 }
 
 function create_symlink() {
