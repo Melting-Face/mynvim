@@ -61,6 +61,20 @@ sh nvim.sh
 
 - [nvim dap python](https://github.com/mfussenegger/nvim-dap-python)
 
+### tmux
+
+- [tpm](https://github.com/tmux-plugins/tpm)
+
+- [sensible](https://github.com/tmux-plugins/tmux-sensible)
+
+- [one dark](https://github.com/odedlaz/tmux-onedark-theme)
+
+- [cpu](https://github.com/tmux-plugins/tmux-cpu)
+
+- [battery](https://github.com/tmux-plugins/tmux-battery)
+
+- [prefix highlight](https://github.com/tmux-plugins/tmux-prefix-highlight)
+
 ## Attempt to install
 
 ### install kotlin debug
