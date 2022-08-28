@@ -55,7 +55,7 @@ return require('packer').startup(function(use)
     end
   }
   -- nvim-dap-python
-if io.popen(' pip list | grep -n debugdpy'):read('l') ~= nil then
+  if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
     use {
       'mfussenegger/nvim-dap-python',
       requires = {

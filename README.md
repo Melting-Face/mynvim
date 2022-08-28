@@ -15,6 +15,8 @@ sh nvim.sh
 
 - [web devicons](https://github.com/kyazdani42/nvim-web-devicons)
 
+- [alpha](https://github.com/goolord/alpha-nvim)
+
 - [fugitive](https://github.com/tpope/vim-fugitive)
 
 - [gitsigns](https://github.com/lewis6991/gitsigns.nvim)
@@ -61,6 +63,8 @@ sh nvim.sh
 
 - [nvim dap python](https://github.com/mfussenegger/nvim-dap-python)
 
+- [nvim dap lua](https://github.com/jbyuki/one-small-step-for-vimkind)
+
 ### tmux
 
 - [tpm](https://github.com/tmux-plugins/tpm)
@@ -88,3 +92,14 @@ sdk install kotlin
 ```
 
 ### install java debug
+```shell
+#vscode-java-test
+git clone https://github.com/microsoft/vscode-java-test $HOME/vscode-java-test
+./mvnw clean install
+
+#java-debug
+git clone https://github.com/microsoft/java-debug $HOME/java-debug
+cd $HOME/vscode-java-test
+npm i
+npm run build-plugin
+```
