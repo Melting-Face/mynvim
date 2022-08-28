@@ -99,7 +99,7 @@ end
 
 -- DAP integration
 -- Make sure to also have the snippet with the common helper functions in your config!
-dap.listeners.before['event_progressStart']['progress-notifications'] = function(session, body)
+DAP.listeners.before['event_progressStart']['progress-notifications'] = function(session, body)
   local notif_data = get_notif_data("dap", body.progressId)
 
   local message = format_message(body.message, body.percentage)
@@ -114,7 +114,7 @@ dap.listeners.before['event_progressStart']['progress-notifications'] = function
   update_spinner("dap", body.progressId)
 end
 
-dap.listeners.before['event_progressUpdate']['progress-notifications'] = function(session, body)
+DAP.listeners.before['event_progressUpdate']['progress-notifications'] = function(session, body)
   local notif_data = get_notif_data("dap", body.progressId)
   notif_data.notification = vim.notify(format_message(body.message, body.percentage), "info", {
     replace = notif_data.notification,
@@ -122,7 +122,7 @@ dap.listeners.before['event_progressUpdate']['progress-notifications'] = functio
   })
 end
 
-dap.listeners.before['event_progressEnd']['progress-notifications'] = function(session, body)
+DAP.listeners.before['event_progressEnd']['progress-notifications'] = function(session, body)
   local notif_data = client_notifs["dap"][body.progressId]
   notif_data.notification = vim.notify(body.message and format_message(body.message) or "Complete", "info", {
     icon = "",

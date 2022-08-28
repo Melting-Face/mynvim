@@ -4,7 +4,7 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
   -- devicons
-  use 'kyazdani42/nvim-web-devicons' 
+  use 'kyazdani42/nvim-web-devicons'
   -- git
   use 'tpope/vim-fugitive'
   -- multi cursor
@@ -55,7 +55,7 @@ return require('packer').startup(function(use)
     end
   }
   -- nvim-dap-python
-  if io.popen(' pip list | grep -n debugdpy'):read('l') ~= nil then
+if io.popen(' pip list | grep -n debugdpy'):read('l') ~= nil then
     use {
       'mfussenegger/nvim-dap-python',
       requires = {

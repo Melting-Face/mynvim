@@ -11,7 +11,7 @@ if has_dap_python == true then
 end
 
 if io.open(node_path) ~= nil then
-  dap.adapters.node2 = {
+  DAP.adapters.node2 = {
     type = 'executable',
     command = 'node',
     args = {
@@ -19,7 +19,7 @@ if io.open(node_path) ~= nil then
     },
   }
   -- config
-  dap.configurations.javascript = {
+  DAP.configurations.javascript = {
     {
       name = 'Launch',
       type = 'node2',
@@ -40,7 +40,7 @@ if io.open(node_path) ~= nil then
   }
 end
 
-dap.configurations.lua = {
+DAP.configurations.lua = {
   {
     type = 'nlua',
     request = 'attach',
@@ -59,7 +59,7 @@ dap.configurations.lua = {
   }
 }
 
-dap.adapters.nlua = function(callback, config)
+DAP.adapters.nlua = function(callback, config)
   if config.port ~= nil then
     callback({
       type = 'server',
@@ -71,12 +71,12 @@ dap.adapters.nlua = function(callback, config)
   end
 end
 
-dap.listeners.after.event_initialized["dapui_config"] = function()
+DAP.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open()
 end
-dap.listeners.before.event_terminated["dapui_config"] = function()
+DAP.listeners.before.event_terminated["dapui_config"] = function()
   dapui.close()
 end
-dap.listeners.before.event_exited["dapui_config"] = function()
+DAP.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
