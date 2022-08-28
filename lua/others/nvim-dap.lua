@@ -4,10 +4,10 @@ local dapui = require'dapui'
 local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
 local node_path = MASON .. node_debug
 -- dap-python
-local has_dap_python = pcall(require, 'dap-python')
+local has_dap_python, dap_python = pcall(require, 'dap-python')
 if has_dap_python == true then
   local python_path = io.popen('which python3'):read('l')
-  require'dap-python'.setup(python_path)
+  dap_python.setup(python_path)
 end
 
 if io.open(node_path) ~= nil then
