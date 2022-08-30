@@ -15,8 +15,8 @@ vim.keymap.set('n', '<Leader>fn', '<cmd>NvimTreeFindFile<CR>')
 vim.keymap.set('n', 'b]', '<cmd>bn<cr>', { silent = true })
 vim.keymap.set('n', 'b[', '<cmd>bp<cr>', { silent = true })
 vim.keymap.set('n', '<Leader>bdd', '<cmd>bdelete<CR>')
-vim.keymap.set('n', '<Leader>bh', '<cmd>bh<CR>')
-vim.keymap.set('n', '<Leader>bv', '<cmd>bv<CR>')
+vim.keymap.set('n', '<Leader>bh', '<cmd>sb<CR>')
+vim.keymap.set('n', '<Leader>bv', '<cmd>vs<CR>')
 vim.keymap.set('n', '<Leader>bda', '<cmd>bufdo bd<CR>')
 
 -- for tab
@@ -30,6 +30,9 @@ vim.keymap.set('n', '<leader>ff', function () require('telescope.builtin').find_
 vim.keymap.set('n', '<leader>fg', function () require('telescope.builtin').live_grep() end)
 vim.keymap.set('n', '<leader>fb', function () require('telescope.builtin').buffers() end)
 vim.keymap.set('n', '<leader>fh', function () require('telescope.builtin').help_tags() end)
+vim.keymap.set('n', '<leader>fk', function () require('telescope.builtin').keymaps() end)
+vim.keymap.set('n', '<leader>fc', function () require('telescope.builtin').git_bcommits() end)
+vim.keymap.set('n', '<leader>ft', function () require('telescope.builtin').git_commits() end)
 
 -- for nvim-dap
 vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = true })
