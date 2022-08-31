@@ -19,6 +19,8 @@ return require('packer').startup(function(use)
   use 'nvim-lua/plenary.nvim'
   -- notify
   use 'rcarriga/nvim-notify'
+  -- rainbow csv
+  use 'mechatroner/rainbow_csv'
   -- indent-blankline
   use {
     'lukas-reineke/indent-blankline.nvim',
