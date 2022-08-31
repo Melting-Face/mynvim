@@ -77,3 +77,6 @@ vim.keymap.set('n', '<leader>6', function () require("bufferline").go_to_buffer(
 vim.keymap.set('n', '<leader>7', function () require("bufferline").go_to_buffer(7, true) end, { silent = true })
 vim.keymap.set('n', '<leader>8', function () require("bufferline").go_to_buffer(8, true) end, { silent = true })
 vim.keymap.set('n', '<leader>9', function () require("bufferline").go_to_buffer(9, true) end, { silent = true }) 
+
+vim.keymap.set('n', 'j', 'v:count ? "j" : "gj"', { expr = true })
+vim.keymap.set('n', 'k', 'v:count ? "k" : "gk"', { expr = true })

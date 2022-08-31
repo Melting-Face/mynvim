@@ -29,6 +29,10 @@ vim.o.mouse = 'a'
 vim.o.termguicolors = true
 -- background is dark
 vim.o.background = 'dark'
+vim.o.textwidth=0
+vim.o.wrapmargin=0
+vim.o.wrap = true
+vim.o.linebreak = true
 
 vim.opt.list = true
 vim.opt.listchars:append "eol:↴"
