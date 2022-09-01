@@ -178,4 +178,12 @@ return require('packer').startup(function(use)
       'hrsh7th/cmp-cmdline',
     }
   }
+  -- toggleterm
+  use {
+    "akinsho/toggleterm.nvim",
+    tag = 'v2.*',
+    config = function()
+      require("toggleterm").setup ()
+    end
+  }
 end)
