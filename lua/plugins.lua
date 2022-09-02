@@ -5,8 +5,6 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   -- devicons
   use 'kyazdani42/nvim-web-devicons'
-  -- git
-  use 'tpope/vim-fugitive'
   -- multi cursor
   use 'mg979/vim-visual-multi'
   -- theme tokyonight

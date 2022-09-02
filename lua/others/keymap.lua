@@ -45,18 +45,6 @@ vim.keymap.set('v', '<leader>ds <ESC>', function () require('dap-python').debug_
 -- for nvim-dap-ui
 vim.keymap.set('n', '<Leader>dt',function () require("dapui").toggle() end)
 vim.keymap.set('v', '<Leader>ev', function () require("dapui").eval() end)
--- for fugitive(git)
-vim.keymap.set('n', '<Leader>ga', ':G add')
-vim.keymap.set('n', '<Leader>gaa', '<cmd>G add .<cr>')
-vim.keymap.set('n', '<Leader>gb', '<cmd>G branch<CR>')
-vim.keymap.set('n', '<Leader>gbd', ':G branch -d')
-vim.keymap.set('n', '<Leader>gcm', ':G commit -m ')
-vim.keymap.set('n', '<Leader>gco', ':G checkout')
-vim.keymap.set('n', '<Leader>gl', '<cmd>G pull')
-vim.keymap.set('n', '<Leader>gp', '<cmd>G push<CR>')
-vim.keymap.set('n', '<Leader>grh', '<cmd>G reset HEAD<CR>')
-vim.keymap.set('n', '<Leader>grs', ':G restore')
-vim.keymap.set('n', '<Leader>gst', '<cmd>G status<CR>')
 -- for bufferline
 vim.keymap.set('n', '<leader>1', function () require("bufferline").go_to_buffer(1, true) end, { silent = true })
 vim.keymap.set('n', '<leader>2', function () require("bufferline").go_to_buffer(2, true) end, { silent = true })
