@@ -43,9 +43,9 @@ cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      require('luasnip').lsp_expand(args.body) 
+      require('luasnip').lsp_expand(args.body)
     end,
-  }, 
+  },
   window = {
     completion = cmp.config.window.bordered(),
     documentation = cmp.config.window.bordered(),
@@ -97,6 +97,7 @@ local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 local languages = {
   'eslint',
+  'golangci_lint_ls',
   'jedi_language_server',
   'pyright',
   'vimls',

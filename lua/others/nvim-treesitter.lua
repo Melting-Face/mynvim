@@ -1,7 +1,7 @@
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {
     'bash',
-    'graphql',
+    'go',
     'javascript',
     'json',
     'lua',
