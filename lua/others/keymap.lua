@@ -45,9 +45,7 @@ vim.keymap.set('v', '<leader>ds <ESC>', function () require('dap-python').debug_
 -- for nvim-dap-ui
 vim.keymap.set('n', '<Leader>dt',function () require("dapui").toggle() end)
 vim.keymap.set('v', '<Leader>ev', function () require("dapui").eval() end)
--- for nvim-dap-go
-vim.keymap.set('n', '<leader>dg', function () require('dap-go').debug_test() end)
--- for bufferline
+-- for bufferlie
 vim.keymap.set('n', '<leader>1', function () require("bufferline").go_to_buffer(1, true) end, { silent = true })
 vim.keymap.set('n', '<leader>2', function () require("bufferline").go_to_buffer(2, true) end, { silent = true })
 vim.keymap.set('n', '<leader>3', function () require("bufferline").go_to_buffer(3, true) end, { silent = true })

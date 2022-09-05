@@ -54,13 +54,6 @@ return require('packer').startup(function(use)
       require("scope").setup ()
     end
   }
-  -- nvim-dap-go
-  use {
-    'leoluz/nvim-dap-go',
-    config = function ()
-      require('dap-go').setup ()
-    end
-  }
   -- nvim-dap-python
   if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
     use {
