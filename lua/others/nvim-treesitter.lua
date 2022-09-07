@@ -12,10 +12,6 @@ ASYNC.run(function ()
       'typescript',
       'yaml',
     },
-    highlight = {
-      enable = true,
-      additional_vim_regex_highlighting = false,
-    },
   }
 end)
 

@@ -17,5 +17,15 @@ local lazydocker = Terminal:new({
   hidden = true,
 })
 
+local lazynpm = Terminal:new({
+  cmd = "lazynpm",
+  direction = 'float',
+  float_opts = {
+    border = 'single',
+  },
+  hidden = true,
+})
+
 vim.keymap.set('n', '<leader>lg', function () lazygit:toggle() end)
 vim.keymap.set('n', '<leader>ld', function () lazydocker:toggle() end)
+vim.keymap.set('n', '<leader>ln', function () lazynpm:toggle() end)

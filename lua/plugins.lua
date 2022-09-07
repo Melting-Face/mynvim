@@ -62,7 +62,7 @@ return require('packer').startup(function(use)
         'mfussenegger/nvim-dap'
       },
     }
-  end 
+  end
   -- nvim-dap-lua
   use {
     'jbyuki/one-small-step-for-vimkind',

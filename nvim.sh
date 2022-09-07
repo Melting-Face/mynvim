@@ -37,6 +37,7 @@ function install_package() {
   $PREFIX install code-minimap
   $PREFIX install lazygit
   $PREFIX install lazydocker
+  $PREFIX install jesseduffield/lazynpm/lazynpm
   pip3 install neovim
 }
 
