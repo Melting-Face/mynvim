@@ -97,9 +97,7 @@ local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 local languages = {
   'eslint',
-  'golangci_lint_ls',
   'jedi_language_server',
-  'pyright',
   'vimls',
   'sumneko_lua',
   'tsserver',
@@ -108,5 +106,8 @@ local languages = {
 }
 
 for idx, language in ipairs(languages) do
-  lspconfig[language].setup { on_attach = on_attach, capabilities = capabilities }
+  lspconfig[language].setup { 
+    on_attach = on_attach,
+    capabilities = capabilities
+  }
 end
