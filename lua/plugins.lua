@@ -94,7 +94,22 @@ return require('packer').startup(function(use)
     "williamboman/mason-lspconfig.nvim",
     requires = { 'neovim/nvim-lspconfig' },
     config = function()
-      require("mason-lspconfig").setup()
+      require("mason-lspconfig").setup({
+        'bashls',
+        'clangd',
+        'cmake',
+        'dockerls',
+        'eslint',
+        'golangci_lint_ls',
+        'jedi_language_server',
+        'jsonls',
+        'kotlin_language_server',
+        'sumneko_lua',
+        'sqlls',
+        'tsserver',
+        'vimls',
+        'yamlls',
+      })
     end
   }
   use {

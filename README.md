@@ -91,15 +91,6 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install kotlin
 ```
 
-### install java debug
-```shell
-#vscode-java-test
-git clone https://github.com/microsoft/vscode-java-test $HOME/vscode-java-test
-./mvnw clean install
+### install go debug
 
-#java-debug
-git clone https://github.com/microsoft/java-debug $HOME/java-debug
-cd $HOME/vscode-java-test
-npm i
-npm run build-plugin
-```
+### install c++ debug

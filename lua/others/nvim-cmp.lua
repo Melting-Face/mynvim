@@ -96,10 +96,17 @@ cmp.setup.cmdline(':', {
 local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 local languages = {
+  'bashls',
+  'clangd',
+  'cmake',
+  'dockerls',
   'eslint',
+  'golangci_lint_ls',
   'jedi_language_server',
-  'vimls',
+  'jsonls',
+  'kotlin_language_server',
   'sumneko_lua',
+  'sqlls',
   'tsserver',
   'vimls',
   'yamlls',

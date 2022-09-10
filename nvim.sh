@@ -39,6 +39,8 @@ function install_package() {
   $PREFIX install lazydocker
   $PREFIX install jesseduffield/lazynpm/lazynpm
   pip3 install neovim
+  pip3 install debugpy
+  pip3 install flake8
 }
 
 function create_symlink() {
