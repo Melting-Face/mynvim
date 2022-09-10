@@ -102,6 +102,7 @@ local languages = {
   'dockerls',
   'eslint',
   'golangci_lint_ls',
+  'gopls',
   'jedi_language_server',
   'jsonls',
   'kotlin_language_server',
@@ -113,7 +114,7 @@ local languages = {
 }
 
 for idx, language in ipairs(languages) do
-  lspconfig[language].setup { 
+  lspconfig[language].setup {
     on_attach = on_attach,
     capabilities = capabilities
   }

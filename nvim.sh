@@ -38,6 +38,7 @@ function install_package() {
   $PREFIX install lazygit
   $PREFIX install lazydocker
   $PREFIX install jesseduffield/lazynpm/lazynpm
+  $PREFIX install delve
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8

@@ -42,6 +42,8 @@ vim.keymap.set('n', '<Leader>dl', function () require'dap'.run_last() end, { sil
 vim.keymap.set('n', '<leader>dn', function () require('dap-python').test_method() end, { silent = true })
 vim.keymap.set('n', '<leader>df', function () require('dap-python').test_class() end, { silent = true })
 vim.keymap.set('v', '<leader>ds <ESC>', function () require('dap-python').debug_selection() end, { silent = true })
+-- for nvim-dap-go
+vim.keymap.set('n', '<leader>dg', function () require('dap-go').debug_test() end, { silent = true })
 -- for nvim-dap-ui
 vim.keymap.set('n', '<Leader>dt',function () require("dapui").toggle() end)
 vim.keymap.set('v', '<Leader>ev', function () require("dapui").eval() end)

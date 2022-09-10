@@ -54,6 +54,19 @@ return require('packer').startup(function(use)
       require("scope").setup ()
     end
   }
+  -- nvim-dap-go
+  if io.popen('which dlv'):read('l') ~= nil then
+    use {
+      'leoluz/nvim-dap-go',
+      requires = {
+        'mfussenegger/nvim-dap'
+      },
+      config = function ()
+        require('dap-go').setup ()
+      end,
+    }
+  end
+
   -- nvim-dap-python
   if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
     use {
@@ -102,6 +115,7 @@ return require('packer').startup(function(use)
           'dockerls',
           'eslint',
           'golangci_lint_ls',
+          'gopls',
           'jedi_language_server',
           'jsonls',
           'kotlin_language_server',
