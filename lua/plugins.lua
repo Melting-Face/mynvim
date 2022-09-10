@@ -95,20 +95,23 @@ return require('packer').startup(function(use)
     requires = { 'neovim/nvim-lspconfig' },
     config = function()
       require("mason-lspconfig").setup({
-        'bashls',
-        'clangd',
-        'cmake',
-        'dockerls',
-        'eslint',
-        'golangci_lint_ls',
-        'jedi_language_server',
-        'jsonls',
-        'kotlin_language_server',
-        'sumneko_lua',
-        'sqlls',
-        'tsserver',
-        'vimls',
-        'yamlls',
+        ensure_installed = {
+          'bashls',
+          'clangd',
+          'cmake',
+          'dockerls',
+          'eslint',
+          'golangci_lint_ls',
+          'jedi_language_server',
+          'jsonls',
+          'kotlin_language_server',
+          'sumneko_lua',
+          'sqlls',
+          'tsserver',
+          'vimls',
+          'yamlls',
+        },
+        automatic_installation = true,
       })
     end
   }
