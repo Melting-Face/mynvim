@@ -3,7 +3,6 @@ local dapui = require'dapui'
 -- node-debug
 local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
 local node_path = MASON .. node_debug
-local kotlin_path = HOME .. "/kotlin-debug-adapter/adapter/build/install/adapter/bin/kotlin-debug-adapter"
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 if has_dap_python == true then
@@ -41,18 +40,17 @@ if io.open(node_path) ~= nil then
   }
 end
 
-DAP.configurations.kotlin = {
-  {
-    type = "kotlin",
-    name = "launch - kotlin",
-    request = "launch",
-    projectRoot = vim.fn.getcwd() .. "/app",
-    mainClass = function()
-      -- return vim.fn.input("Path to main class > ", "myapp.sample.app.AppKt", "file")
-      return vim.fn.input("Path to main class > ", "", "file")
-    end,
-  },
-}
+DAP.adapters.nlua = function(callback, config)
+  if config.port ~= nil then
+    callback({
+      type = 'server',
+      host = config.host,
+      port = config.port
+    })
+  else
+    require'osv'.run_this()
+  end
+end
 
 DAP.configurations.lua = {
   {
@@ -72,24 +70,6 @@ DAP.configurations.lua = {
     end,
   }
 }
-
-DAP.adapters.kotlin = {
-  type = "executable",
-  command = kotlin_path,
-  args = { "--interpreter=vscode" },
-}
-
-DAP.adapters.nlua = function(callback, config)
-  if config.port ~= nil then
-    callback({
-      type = 'server',
-      host = config.host,
-      port = config.port
-    })
-  else
-    require'osv'.run_this()
-  end
-end
 
 DAP.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open()
