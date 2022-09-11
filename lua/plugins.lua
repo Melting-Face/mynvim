@@ -19,6 +19,13 @@ return require('packer').startup(function(use)
   use 'rcarriga/nvim-notify'
   -- rainbow csv
   use 'mechatroner/rainbow_csv'
+  -- whici keys
+  use {
+    'folke/which-key.nvim',
+    config = function()
+      require("which-key").setup ()
+    end
+  }
   -- indent-blankline
   use {
     'lukas-reineke/indent-blankline.nvim',
