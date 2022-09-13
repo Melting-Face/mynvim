@@ -8,7 +8,6 @@ ASYNC.run(function ()
       'go',
       'javascript',
       'json',
-      'kotlin',
       'lua',
       'make',
       'markdown',

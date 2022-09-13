@@ -4,6 +4,7 @@ local wk = require('which-key')
 
 wk.register({
   b = {
+    name = 'buffer & breakpoint',
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
     b = { function () require("dap").toggle_breakpoint() end, 'breakpoint' },
     d = { '<cmd>bdelete<CR>', 'buffer delete' },
@@ -11,6 +12,7 @@ wk.register({
     v = { '<cmd>vs<CR>', 'spit vertical' },
   },
   d = {
+    name = 'debug adapter protocol',
     f = { function () require('dap-python').test_class() end, 'test class(python)' },
     g = { function () require('dap-go').debug_test() end, 'test debug(go)' },
     l = { function () require'dap'.run_last() end, 'last run' },
@@ -30,6 +32,7 @@ wk.register({
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
   },
   t = {
+    name = 'tab & toggle',
     d = { '<cmd>tabclose<CR>', 'tab close' },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
