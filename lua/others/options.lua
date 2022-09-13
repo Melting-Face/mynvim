@@ -29,7 +29,6 @@ vim.o.mouse = 'a'
 vim.o.termguicolors = true
 -- background is dark
 vim.o.background = 'dark'
-vim.o.comments = 'f://'
 vim.opt.textwidth=0
 vim.opt.wrapmargin=0
 vim.opt.wrap = true
