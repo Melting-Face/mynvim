@@ -1,5 +1,5 @@
 local Terminal  = require('toggleterm.terminal').Terminal
-local lazygit = Terminal:new({
+LazyGit = Terminal:new({
   cmd = "lazygit",
   direction = 'float',
   float_opts = {
@@ -8,7 +8,7 @@ local lazygit = Terminal:new({
   hidden = true,
 })
 
-local lazydocker = Terminal:new({
+LazyDocker = Terminal:new({
   cmd = "lazydocker",
   direction = 'float',
   float_opts = {
@@ -17,7 +17,7 @@ local lazydocker = Terminal:new({
   hidden = true,
 })
 
-local lazynpm = Terminal:new({
+LazyNpm = Terminal:new({
   cmd = "lazynpm",
   direction = 'float',
   float_opts = {
@@ -25,7 +25,3 @@ local lazynpm = Terminal:new({
   },
   hidden = true,
 })
-
-vim.keymap.set('n', '<leader>lg', function () lazygit:toggle() end)
-vim.keymap.set('n', '<leader>ld', function () lazydocker:toggle() end)
-vim.keymap.set('n', '<leader>ln', function () lazynpm:toggle() end)

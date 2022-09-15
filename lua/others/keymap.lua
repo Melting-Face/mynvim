@@ -12,7 +12,7 @@ wk.register({
     v = { '<cmd>vs<CR>', 'spit vertical' },
   },
   d = {
-    name = 'debug adapter protocol',
+    name = 'debug',
     f = { function () require('dap-python').test_class() end, 'test class(python)' },
     g = { function () require('dap-go').debug_test() end, 'test debug(go)' },
     l = { function () require'dap'.run_last() end, 'last run' },
@@ -21,7 +21,7 @@ wk.register({
     t = { function () require("dapui").toggle() end, 'open dap-ui' },
   },
   f = {
-    name = 'file',
+    name = 'find',
     b = { function () require('telescope.builtin').buffers() end, 'find buffers' },
     c = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
     f = { function () require('telescope.builtin').find_files() end, 'find files(telescope)' },
@@ -31,6 +31,13 @@ wk.register({
     n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
   },
+  l = {
+    name = 'lazy',
+    d = { function () LazyDocker:toggle() end, 'lazy docker' },
+    g = { function () LazyGit:toggle() end, 'lazy git' },
+    n = { function () LazyNpm:toggle() end, 'lazy npm' },
+  },
+  n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
   t = {
     name = 'tab & toggle',
     d = { '<cmd>tabclose<CR>', 'tab close' },
@@ -41,14 +48,25 @@ wk.register({
 }, {
   prefix = '<leader>'
 })
+
+wk.register({
+  b = { '<cmd>bp<cr>', 'buffer previous' },
+  d = { vim.diagnostic.goto_prev, 'diagnostic previous' },
+  t = { '<cmd>tabprev<CR>', 'tab previous' },
+}, {
+  prefix = '['
+})
+
+wk.register({
+  b = { '<cmd>bn<cr>', 'buffer next' },
+  d = { vim.diagnostic.goto_next, 'diagnostic next' },
+  t = { '<cmd>tabnext<CR>', 'tab next' },
+}, {
+  prefix = ']'
+})
+
 -- for nvim-tree
-vim.keymap.set('n', '<Leader>n', '<cmd>NvimTreeToggle<CR>')
 vim.keymap.set('n', '<Leader>rn', '<cmd>NvimTreeRefresh<CR>')
--- for buffer
-vim.keymap.set('n', 'b]', '<cmd>bn<cr>', { silent = true })
-vim.keymap.set('n', 'b[', '<cmd>bp<cr>', { silent = true })
-vim.keymap.set('n', 't[', '<cmd>tabnext<CR>', { silent = true })
-vim.keymap.set('n', 't]', '<cmd>tabprev<CR>', { silent = true })
 -- for nvim-dap
 vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = true })
 vim.keymap.set('n', '<F10>', function () require'dap'.step_over() end, { silent = true })

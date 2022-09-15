@@ -125,6 +125,7 @@ return require('packer').startup(function(use)
           'gopls',
           'jedi_language_server',
           'jsonls',
+          'pyright',
           'sumneko_lua',
           'sqlls',
           'tsserver',
