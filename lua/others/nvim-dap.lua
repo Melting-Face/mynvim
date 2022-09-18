@@ -1,10 +1,11 @@
 -- nvim-dap
 local dapui = require'dapui'
 -- node-debug
-local node_debug = '/packages/node-debug2-adapter/out/src/nodeDebug.js'
+local node_debug = '/node-debug2-adapter/out/src/nodeDebug.js'
 local node_path = MASON .. node_debug
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
+
 if has_dap_python == true then
   local python_path = io.popen('which python3'):read('l')
   dap_python.setup(python_path)

@@ -12,6 +12,7 @@ ASYNC.run(function ()
       'make',
       'markdown',
       'python',
+      'regex',
       'sql',
       'tsx',
       'typescript',
