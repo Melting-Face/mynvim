@@ -18,7 +18,7 @@ return require('packer').startup(function(use)
   -- notify
   use 'rcarriga/nvim-notify'
   -- rainbow csv
-  use 'mechatroner/rainbow_csv'
+  use 'mechatroner/rainbow_csv' 
   -- whici keys
   use {
     'folke/which-key.nvim',
@@ -125,7 +125,6 @@ return require('packer').startup(function(use)
           'gopls',
           'jedi_language_server',
           'jsonls',
-          'pyright',
           'sumneko_lua',
           'sqlls',
           'tsserver',
@@ -141,6 +140,18 @@ return require('packer').startup(function(use)
     requires = { 'williamboman/mason-lspconfig.nvim' },
     config = function()
       require("mason").setup()
+    end
+  }
+  -- nvim-lint
+  use {
+    'mfussenegger/nvim-lint',
+    config = function ()
+      require('lint').linters_by_ft = {
+        javascript = { 'eslint' },
+        markdown = {'vale' },
+        python = { 'flake8' },
+        typescript = { 'eslint' },
+      }
     end
   }
   -- alpha

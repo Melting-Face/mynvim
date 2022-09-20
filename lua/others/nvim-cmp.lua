@@ -101,7 +101,6 @@ local languages = {
   'gopls',
   'jedi_language_server',
   'jsonls',
-  'pyright',
   'sumneko_lua',
   'sqlls',
   'tsserver',
