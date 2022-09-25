@@ -1,8 +1,9 @@
 -- nvim-dap
 local dapui = require'dapui'
--- node-debug
-local node_debug = '/node-debug2-adapter/out/src/nodeDebug.js'
-local node_path = MASON .. node_debug
+-- node-path
+local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
+-- codelldb-path
+local code_path = MASON .. '/codelldb/extension/adapter/codelldb'
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
@@ -11,35 +12,13 @@ if has_dap_python == true then
   dap_python.setup(python_path)
 end
 
-if io.open(node_path) ~= nil then
-  DAP.adapters.node2 = {
-    type = 'executable',
-    command = 'node',
-    args = {
-      node_path,
-    },
-  }
-  -- config
-  DAP.configurations.javascript = {
-    {
-      name = 'Launch',
-      type = 'node2',
-      request = 'launch',
-      program = '${file}',
-      cwd = vim.fn.getcwd(),
-      sourceMaps = true,
-      protocol = 'inspector',
-      console = 'integratedTerminal',
-    },
-    {
-      -- For this to work you need to make sure the node process is started with the `--inspect` flag.
-      name = 'Attach to process',
-      type = 'node2',
-      request = 'attach',
-      processId = require'dap.utils'.pick_process,
-    },
-  }
-end
+DAP.adapters.node2 = {
+  type = 'executable',
+  command = 'node',
+  args = {
+    node_path,
+  },
+}
 
 DAP.adapters.nlua = function(callback, config)
   if config.port ~= nil then
@@ -52,6 +31,47 @@ DAP.adapters.nlua = function(callback, config)
     require'osv'.run_this()
   end
 end
+
+DAP.adapters.codelldb = {
+  type = 'server',
+  port = "${port}",
+  executable = {
+    command = code_path,
+    args = {"--port", "${port}"},
+  }
+}
+
+-- config
+DAP.configurations.javascript = {
+  {
+    name = 'Launch',
+    type = 'node2',
+    request = 'launch',
+    program = '${file}',
+    cwd = '${workspaceFolder}',
+    sourceMaps = true,
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+  },
+  {
+    -- For this to work you need to make sure the node process is started with the `--inspect` flag.
+    name = 'Attach to process',
+    type = 'node2',
+    request = 'attach',
+    processId = require'dap.utils'.pick_process,
+  },
+}
+
+DAP.configurations.cpp = {
+  {
+    name = "Launch",
+    type = "codelldb",
+    request = "launch",
+    program = '${file}',
+    cwd = '${workspaceFolder}',
+    stopOnEntry = true,
+  },
+}
 
 DAP.configurations.lua = {
   {
