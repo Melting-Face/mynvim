@@ -6,17 +6,31 @@ wk.register({
   b = {
     name = 'buffer & breakpoint',
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
-    b = { function () require("dap").toggle_breakpoint() end, 'breakpoint' },
+    b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
     d = { '<cmd>bdelete<CR>', 'buffer delete' },
     h = { '<cmd>sb<CR>', 'split horizontal' },
     v = { '<cmd>vs<CR>', 'spit vertical' },
   },
   d = {
     name = 'debug',
-    f = { function () require('dap-python').test_class() end, 'test class(python)' },
-    g = { function () require('dap-go').debug_test() end, 'test debug(go)' },
+    f = {
+      function ()
+        if vim.bo.filetype == 'python' then
+          require'dap-python'.test_class()
+        end
+      end,
+      'test class(python/java)'
+    },
+    g = { function () require'dap-go'.debug_test() end, 'test debug(go)' },
     l = { function () require'dap'.run_last() end, 'last run' },
-    n = { function () require('dap-python').test_method() end, 'test method(python)' },
+    n = {
+      function ()
+        if vim.bo.filetype == 'python' then
+          require'dap-python'.test_method()
+        end
+      end,
+      'test method(python)'
+    },
     r = { function () require'dap'.repl.open() end, 'open repl' },
     t = { function () require("dapui").toggle() end, 'open dap-ui' },
   },
