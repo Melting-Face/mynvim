@@ -6,7 +6,7 @@ return require('packer').startup(function(use)
   -- devicons
   use 'kyazdani42/nvim-web-devicons'
   -- multi cursor
-  use 'mg979/vim-visual-multi'
+  use 'terryma/vim-multiple-cursors'
   -- theme tokyonight
   use 'folke/tokyonight.nvim'
   -- minimap
