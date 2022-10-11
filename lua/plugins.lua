@@ -18,7 +18,11 @@ return require('packer').startup(function(use)
   -- notify
   use 'rcarriga/nvim-notify'
   -- rainbow csv
-  use 'mechatroner/rainbow_csv' 
+  use 'mechatroner/rainbow_csv'
+  -- csv.vim
+  use 'chrisbra/csv.vim'
+  -- vim-fugitive
+  use 'tpope/vim-fugitive'
   -- whici keys
   use {
     'folke/which-key.nvim',
