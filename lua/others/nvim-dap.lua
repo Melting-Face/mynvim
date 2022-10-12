@@ -33,6 +33,15 @@ if HAS_DAP == true then
     end
   end
 
+  DAP.adapters.codelldb = {
+    type = 'server',
+    port = "${port}",
+    executable = {
+      command = code_path,
+      args = {"--port", "${port}"},
+    }
+  }
+
   -- config
   DAP.configurations.javascript = {
     {
@@ -72,6 +81,19 @@ if HAS_DAP == true then
       end,
     }
   }
+
+  DAP.configurations.cpp = {
+    {
+      name = "Launch file",
+      type = "codelldb",
+      request = "launch",
+      program = '${file}',
+      cwd = '${workspaceFolder}',
+      stopOnEntry = true,
+    },
+  }
+  DAP.configurations.c = DAP.configurations.cpp
+  DAP.configurations.rust = DAP.configurations.cpp
 
   DAP.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
