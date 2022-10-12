@@ -3,7 +3,7 @@ local dapui = require'dapui'
 -- node-path
 local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
 -- codelldb-path
-local code_path = HOME .. '/codelldb/extension/adapter/codelldb'
+local lldb_path = '/opt/homebrew/opt/llvm/bin/lldb-vscode'
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
@@ -33,13 +33,10 @@ if HAS_DAP == true then
     end
   end
 
-  DAP.adapters.codelldb = {
-    type = 'server',
-    port = "${port}",
-    executable = {
-      command = code_path,
-      args = {"--port", "${port}"},
-    }
+  DAP.adapters.lldb = {
+    type = 'executable',
+    command = lldb_path, -- adjust as needed, must be absolute path
+    name = 'lldb'
   }
 
   -- config
@@ -84,12 +81,13 @@ if HAS_DAP == true then
 
   DAP.configurations.cpp = {
     {
-      name = "Launch file",
-      type = "codelldb",
-      request = "launch",
+      name = 'Launch',
+      type = 'lldb',
+      request = 'launch',
       program = '${file}',
       cwd = '${workspaceFolder}',
-      stopOnEntry = true,
+      stopOnEntry = false,
+      args = {},
     },
   }
   DAP.configurations.c = DAP.configurations.cpp
