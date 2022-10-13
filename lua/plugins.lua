@@ -65,6 +65,8 @@ return require('packer').startup(function(use)
       require("scope").setup ()
     end
   }
+  -- nvim-jdtls
+  use 'mfussenegger/nvim-jdtls'
   -- nvim-dap-go
   if io.popen('which dlv'):read('l') ~= nil then
     use {
