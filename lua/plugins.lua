@@ -66,7 +66,10 @@ return require('packer').startup(function(use)
     end
   }
   -- nvim-jdtls
-  use 'mfussenegger/nvim-jdtls'
+  use {
+    'mfussenegger/nvim-jdtls',
+    ft = { 'java' }
+  }
   -- nvim-dap-go
   if io.popen('which dlv'):read('l') ~= nil then
     use {

@@ -95,3 +95,7 @@ git clone https://github.com/fwcd/kotlin-debug-adapter
 ```
 
 ### install c++ debug
+```shell
+# llvm
+brew install llvm
+```
