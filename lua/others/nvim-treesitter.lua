@@ -6,6 +6,7 @@ ASYNC.run(function ()
       'c',
       'dockerfile',
       'go',
+      'java',
       'javascript',
       'json',
       'lua',

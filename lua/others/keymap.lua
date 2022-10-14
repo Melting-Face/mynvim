@@ -17,6 +17,8 @@ wk.register({
       function ()
         if vim.bo.filetype == 'python' then
           require'dap-python'.test_class()
+        elseif vim.bo.filetype == 'java' then
+          require'jdtls'.test_class()
         end
       end,
       'test class(python/java)'
@@ -27,6 +29,8 @@ wk.register({
       function ()
         if vim.bo.filetype == 'python' then
           require'dap-python'.test_method()
+        elseif vim.bo.filetype == 'java' then
+          require'jdtls'.test_nearest_method()
         end
       end,
       'test method(python)'

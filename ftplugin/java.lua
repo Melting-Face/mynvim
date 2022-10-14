@@ -5,6 +5,12 @@ local project_path = workspace_path .. project_name
 
 has_jdtls, jdtls = pcall(require, 'jdtls')
 if has_jdtls == true then
+  local bundles = {
+    vim.fn.glob(MASON .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar"),
+  };
+
+  vim.list_extend(bundles, vim.split(vim.fn.glob(MASON .. "/java-test/extension/server/*.jar"), "\n"))
+
   local config = {
      cmd = {
       "java",
@@ -26,30 +32,18 @@ if has_jdtls == true then
       "-data",
       project_path,
     },
+    on_attach = function(client, bufnr)
+      jdtls.setup_dap({
+        hotcodereplace = 'auto'
+      })
+      require('jdtls.dap').setup_dap_main_class_configs()
+    end,
     root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
     settings = {
     },
     init_options = {
-      bundles = {},
+      bundles = bundles,
     },
   }
-
-  local bundles = {
-    vim.fn.glob(HOME .. "/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar"),
-  };
-
-  config['on_attach'] = function(client, bufnr)
-    jdtls.setup_dap({
-      hotcodereplace = 'auto'
-    })
-  end
-
-  require('jdtls.dap').setup_dap_main_class_configs()
-
-  vim.list_extend(bundles, vim.split(vim.fn.glob(HOME .. "/vscode-java-test/server/*.jar"), "\n"))
-  config['init_options'] = {
-    bundles = bundles;
-  }
-  
   jdtls.start_or_attach(config)
 end

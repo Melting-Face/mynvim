@@ -99,6 +99,7 @@ local languages = {
   'eslint',
   'golangci_lint_ls',
   'gopls',
+  'jdtls',
   'jedi_language_server',
   'jsonls',
   'sumneko_lua',
