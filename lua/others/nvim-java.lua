@@ -44,10 +44,12 @@ if has_jdtls == true then
     })
   end
 
+  require('jdtls.dap').setup_dap_main_class_configs()
+
   vim.list_extend(bundles, vim.split(vim.fn.glob(HOME .. "/vscode-java-test/server/*.jar"), "\n"))
   config['init_options'] = {
     bundles = bundles;
   }
-
+  
   jdtls.start_or_attach(config)
 end
