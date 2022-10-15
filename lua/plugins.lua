@@ -23,6 +23,18 @@ return require('packer').startup(function(use)
   use 'chrisbra/csv.vim'
   -- vim-fugitive
   use 'tpope/vim-fugitive'
+  -- autopairs
+  use {
+	  'windwp/nvim-autopairs',
+    config = function()
+      require("nvim-autopairs").setup ({
+        disable_filetype = {
+          'TelescopePrompt',
+          'vim',
+        },
+      })
+    end
+  }
   -- whici keys
   use {
     'folke/which-key.nvim',
@@ -132,9 +144,12 @@ return require('packer').startup(function(use)
           'eslint',
           'golangci_lint_ls',
           'gopls',
+          'java-debug-adapter',
+          'java-test',
           'jdtls',
           'jedi_language_server',
           'jsonls',
+          'node-debug2-adapter',
           'sumneko_lua',
           'sqlls',
           'tsserver',
