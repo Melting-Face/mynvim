@@ -187,7 +187,6 @@ return require('packer').startup(function(use)
     config = function ()
       require('lint').linters_by_ft = {
         javascript = { 'eslint' },
-        markdown = {'vale' },
         python = { 'flake8' },
         typescript = { 'eslint' },
       }
