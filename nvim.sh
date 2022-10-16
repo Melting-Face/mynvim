@@ -60,6 +60,12 @@ function create_symlink() {
     mkdir -p "$HOME/.config/nvim"
     ln -s "$WORKDIR/lua" "$HOME/.config/nvim/lua"
   fi
+
+  if [ ! -d "$HOME/.config/nvim/ftplugin" ]; then
+    mkdir -p "$HOME/.config/nvim"
+    ln -s "$WORKDIR/ftplugin" "$HOME/.config/nvim/ftplugin"
+  fi
+
 }
 
 function install_plugins() {
