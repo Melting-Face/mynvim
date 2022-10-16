@@ -35,6 +35,19 @@ return require('packer').startup(function(use)
       })
     end
   }
+  -- markdown
+  use({
+    'iamcco/markdown-preview.nvim',
+    run = "cd app && npm install",
+    setup = function()
+      vim.g.mkdp_filetypes = {
+        'markdown'
+      }
+    end,
+    ft = {
+      'markdown'
+    },
+  })
   -- whici keys
   use {
     'folke/which-key.nvim',
@@ -150,6 +163,7 @@ return require('packer').startup(function(use)
           'jedi_language_server',
           'jsonls',
           'node-debug2-adapter',
+          'python-lsp-server',
           'sumneko_lua',
           'sqlls',
           'tsserver',

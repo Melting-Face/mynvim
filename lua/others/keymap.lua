@@ -61,6 +61,7 @@ wk.register({
     d = { '<cmd>tabclose<CR>', 'tab close' },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
+    p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>TagbarToggle<CR>', 'tagbar'},
   },
 }, {
