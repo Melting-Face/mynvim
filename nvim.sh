@@ -31,6 +31,7 @@ function install_package() {
   $PREFIX install tmux
   $PREFIX install universal-ctags
   $PREFIX install ripgrep
+  $PREFIX install go
   $PREFIX install lua
   $PREFIX install node
   $PREFIX install python

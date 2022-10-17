@@ -95,8 +95,6 @@ local languages = {
   'clangd',
   'cmake',
   'dockerls',
-  'eslint',
-  'golangci_lint_ls',
   'gopls',
   'jdtls',
   'jedi_language_server',
