@@ -158,7 +158,6 @@ return require('packer').startup(function(use)
           'jdtls',
           'jedi_language_server',
           'jsonls',
-          'python-lsp-server',
           'sumneko_lua',
           'sqlls',
           'tsserver',
