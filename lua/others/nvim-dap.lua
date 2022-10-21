@@ -2,10 +2,6 @@
 local dapui = require'dapui'
 -- node-path
 local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
--- codelldb-path
-local llvm_path = io.popen('echo $(brew --prefix llvm)'):read('l')
-local lldb_path = llvm_path .. '/bin/lldb-vscode'
-
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
@@ -74,30 +70,6 @@ if HAS_DAP == true then
       end,
     }
   }
-
-  if lldb_path ~= nil then
-    DAP.adapters.lldb = {
-      type = 'executable',
-      command = lldb_path,
-      name = 'lldb'
-    }
-
-    DAP.configurations.cpp = {
-      {
-        name = 'Launch',
-        type = 'lldb',
-        request = 'launch',
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
-        cwd = '${workspaceFolder}',
-        stopOnEntry = false,
-        args = {},
-      },
-    }
-    DAP.configurations.c = DAP.configurations.cpp
-    DAP.configurations.rust = DAP.configurations.cpp
-  end
 
   DAP.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
