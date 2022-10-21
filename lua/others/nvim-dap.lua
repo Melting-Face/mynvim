@@ -3,7 +3,7 @@ local dapui = require'dapui'
 -- node-path
 local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
 -- codelldb-path
-local lldb_path = MASON .. '/codelldb/codelldb'
+local lldb_path = io.popen('echo $(brew --prefix llvm)/bin/lldb-vscode'):read('l')
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
@@ -32,15 +32,6 @@ if HAS_DAP == true then
       require'osv'.run_this()
     end
   end
-
-  -- DAP.adapters.codelldb = {
-  --   type = 'server',
-  --   port = "${port}",
-  --   executable = {
-  --     command = lldb_path,
-  --     args = {"--port", "${port}"},
-  --   }
-  -- }
 
   -- config
   DAP.configurations.javascript = {
@@ -82,19 +73,28 @@ if HAS_DAP == true then
     }
   }
 
-  -- DAP.configurations.cpp = {
-  --   {
-  --     name = 'Launch',
-  --     type = 'codelldb',
-  --     request = 'launch',
-  --     program = '${file}',
-  --     cwd = '${workspaceFolder}',
-  --     terminal = 'integrated',
-  --     stopOnEntry = true,
-  --   },
-  -- }
-  -- DAP.configurations.c = DAP.configurations.cpp
-  -- DAP.configurations.rust = DAP.configurations.cpp
+  -- if lldb_path ~= nil then
+  --   DAP.adapters.lldb = {
+  --     type = 'executable',
+  --     name = 'lldb',
+  --     command = lldb_path,
+  --   }
+  --
+  --   DAP.configurations.cpp = {
+  --     {
+  --       name = 'Launch',
+  --       type = 'lldb',
+  --       request = 'launch',
+  --       program = '${file}',
+  --       cwd = '${workspaceFolder}',
+  --       args = {},
+  --       runInTerminal = 'integrated',
+  --       stopOnEntry = false,
+  --     },
+  --   }
+  --   DAP.configurations.c = DAP.configurations.cpp
+  --   DAP.configurations.rust = DAP.configurations.cpp
+  -- end
 
   DAP.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
