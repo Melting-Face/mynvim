@@ -1,9 +1,5 @@
 -- nvim-dap
 local dapui = require'dapui'
--- llvm-path
-local llvm_path = io.popen('echo $(brew --prefix llvm)/bin'):read("l")
--- lldb-path
-local lldb_path = llvm_path .. '/lldb-vscode'
 -- node-path
 local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
 -- dap-python
@@ -80,24 +76,6 @@ if HAS_DAP == true then
       end,
     }
   }
-
-  DAP.configurations.cpp = {
-    {
-      name = 'Launch',
-      type = 'lldb',
-      request = 'launch',
-      program = '${file}',
-      cwd = '${workspaceFolder}',
-      stopOnEntry = true,
-      args = {},
-      runInTerminal = true,
-    },
-  }
-
-  -- If you want to use this for Rust and C, add something like this:
-
-  DAP.configurations.c = DAP.configurations.cpp
-  DAP.configurations.rust = DAP.configurations.cpp
 
   DAP.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
