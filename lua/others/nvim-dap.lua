@@ -31,12 +31,6 @@ if HAS_DAP == true then
     end
   end
 
-  DAP.adapters.lldb = {
-    type = 'executable',
-    command = lldb_path,
-    name = 'lldb'
-  }
-
   -- config
   DAP.configurations.javascript = {
     {
