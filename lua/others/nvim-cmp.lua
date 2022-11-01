@@ -107,8 +107,22 @@ local languages = {
 }
 
 for idx, language in ipairs(languages) do
-  lspconfig[language].setup {
-    on_attach = on_attach,
-    capabilities = capabilities
-  }
+  if language == 'sumneko_lua' then
+    lspconfig[language].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = {'vim'},
+          },
+        },
+      },
+    }
+  else
+    lspconfig[language].setup {
+      on_attach = on_attach,
+      capabilities = capabilities
+    }
+  end
 end

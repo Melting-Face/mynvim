@@ -23,6 +23,29 @@ return require('packer').startup(function(use)
   use 'chrisbra/csv.vim'
   -- vim-fugitive
   use 'tpope/vim-fugitive'
+  -- null_ls
+  use({
+    'jose-elias-alvarez/null-ls.nvim',
+    config = function()
+        require("null-ls").setup({
+          sources = {
+            require("null-ls").builtins.code_actions.eslint_d,
+            require("null-ls").builtins.diagnostics.eslint_d,
+            require("null-ls").builtins.diagnostics.flake8,
+            require("null-ls").builtins.diagnostics.luacheck,
+          },
+        })
+    end,
+    requires = { 'nvim-lua/plenary.nvim' },
+  })
+  -- trouble
+  use {
+    'folke/trouble.nvim',
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      require'trouble'.setup ()
+    end
+  }
   -- autopairs
   use {
 	  'windwp/nvim-autopairs',
@@ -175,17 +198,6 @@ return require('packer').startup(function(use)
       require("mason").setup()
     end
   }
-  -- nvim-lint
-  use {
-    'mfussenegger/nvim-lint',
-    config = function ()
-      require('lint').linters_by_ft = {
-        javascript = { 'eslint' },
-        python = { 'flake8' },
-        typescript = { 'eslint' },
-      }
-    end
-  }
   -- alpha
   use {
     'goolord/alpha-nvim',
@@ -245,7 +257,19 @@ return require('packer').startup(function(use)
     requires = { 'nvim-lua/plenary.nvim' }
   }
   -- gitsigns
-  use 'lewis6991/gitsigns.nvim'
+  use {
+    'lewis6991/gitsigns.nvim',
+    config = function ()
+      require'gitsigns'.setup {
+        current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol',
+        delay = 500,
+        ignore_whitespace = false,
+      }
+    }
+    end
+  }
   -- cmp
   use {
     'hrsh7th/nvim-cmp',

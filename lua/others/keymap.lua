@@ -1,15 +1,16 @@
 -- keymap can use string | function
 -----------------------------------
 local wk = require('which-key')
+local gs = require('gitsigns')
 
 wk.register({
   b = {
     name = 'buffer & breakpoint',
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
     b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
-    d = { '<cmd>bdelete<CR>', 'buffer delete' },
     h = { '<cmd>sb<CR>', 'split horizontal' },
     v = { '<cmd>vs<CR>', 'spit vertical' },
+    x = { '<cmd>bdelete<CR>', 'buffer delete' },
   },
   d = {
     name = 'debug',
@@ -49,27 +50,77 @@ wk.register({
     n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
   },
+  h = {
+    name = 'hunk',
+    b = { function() gs.blame_line{ full=true } end, 'git blame all' },
+    d = { gs.diffthis, 'diff this' },
+    p = { gs.preview_hunk, 'preview huck' },
+    r = { gs.reset_buffer, 'reset buffer' },
+    s = { gs.stage_buffer, 'stage buffer' },
+    u = { gs.undo_stage_hunk, 'undo stage' },
+  },
   l = {
     name = 'lazy',
     d = { function () LazyDocker:toggle() end, 'lazy docker' },
     g = { function () LazyGit:toggle() end, 'lazy git' },
     n = { function () LazyNpm:toggle() end, 'lazy npm' },
+    p = {
+      function ()
+        require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+      end,
+      'set breakpoint with log point message',
+    },
   },
   n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
   t = {
     name = 'tab & toggle',
-    d = { '<cmd>tabclose<CR>', 'tab close' },
+    b = { gs.toggle_current_line_blame, 'gitsigns blame' },
+    c = { '<cmd>TroubleToggle<CR>', 'trouble' },
+    d = { gs.toggle_deleted, 'gitsigns deleted' },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>TagbarToggle<CR>', 'tagbar'},
+    x = { '<cmd>tabclose<CR>', 'tab close' },
+  },
+  B = {
+    function ()
+      require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+    end,
+    'set breakpoint with condition',
   },
 }, {
   prefix = '<leader>'
 })
 
 wk.register({
+  e = {
+    name = 'dapui',
+    v = { function () require("dapui").eval() end, 'eval' },
+  },
+  h = {
+    name = 'hunk',
+    r = { gs.reset_buffer, 'reset buffer' },
+    s = { gs.stage_buffer, 'stage buffer' },
+    u = { gs.undo_stage_hunk, 'undo stage' },
+  }
+}, {
+  mode = 'v',
+  prefix = '<leader>',
+})
+
+wk.register({
   b = { '<cmd>bp<cr>', 'buffer previous' },
+  c = {
+    function()
+      if vim.wo.diff then
+        return '[c'
+      end
+      vim.schedule(function() gs.prev_hunk() end)
+      return '<Ignore>'
+    end,
+    'prev hunk',
+  },
   d = { vim.diagnostic.goto_prev, 'diagnostic previous' },
   t = { '<cmd>tabprev<CR>', 'tab previous' },
 }, {
@@ -78,6 +129,16 @@ wk.register({
 
 wk.register({
   b = { '<cmd>bn<cr>', 'buffer next' },
+  c = {
+    function()
+      if vim.wo.diff then
+        return ']c'
+      end
+      vim.schedule(function() gs.next_hunk() end)
+      return '<Ignore>'
+    end,
+    'next hunk',
+  },
   d = { vim.diagnostic.goto_next, 'diagnostic next' },
   t = { '<cmd>tabnext<CR>', 'tab next' },
 }, {
@@ -91,12 +152,8 @@ vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = 
 vim.keymap.set('n', '<F10>', function () require'dap'.step_over() end, { silent = true })
 vim.keymap.set('n', '<F11>', function () require'dap'.step_into() end, { silent = true })
 vim.keymap.set('n', '<F12>', function () require'dap'.step_out() end, { silent = true })
-vim.keymap.set('n', '<Leader>B', function () require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, { silent = true })
-vim.keymap.set('n', '<Leader>lp', function () require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end, { silent = true }) 
 -- for nvim-dap-python
 vim.keymap.set('v', '<leader>ds <ESC>', function () require('dap-python').debug_selection() end, { silent = true })
--- for nvim-dap-ui
-vim.keymap.set('v', '<Leader>ev', function () require("dapui").eval() end)
 -- for bufferlie
 vim.keymap.set('n', '<leader>1', function () require("bufferline").go_to_buffer(1, true) end, { silent = true })
 vim.keymap.set('n', '<leader>2', function () require("bufferline").go_to_buffer(2, true) end, { silent = true })
