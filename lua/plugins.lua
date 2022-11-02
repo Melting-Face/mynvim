@@ -32,7 +32,6 @@ return require('packer').startup(function(use)
             require("null-ls").builtins.code_actions.eslint_d,
             require("null-ls").builtins.diagnostics.eslint_d,
             require("null-ls").builtins.diagnostics.flake8,
-            require("null-ls").builtins.diagnostics.luacheck,
           },
         })
     end,

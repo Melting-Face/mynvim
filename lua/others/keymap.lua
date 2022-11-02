@@ -8,9 +8,9 @@ wk.register({
     name = 'buffer & breakpoint',
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
     b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
+    c = { '<cmd>bdelete<CR>', 'buffer close' },
     h = { '<cmd>sb<CR>', 'split horizontal' },
     v = { '<cmd>vs<CR>', 'spit vertical' },
-    x = { '<cmd>bdelete<CR>', 'buffer delete' },
   },
   d = {
     name = 'debug',
@@ -75,13 +75,13 @@ wk.register({
   t = {
     name = 'tab & toggle',
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
-    c = { '<cmd>TroubleToggle<CR>', 'trouble' },
+    c = { '<cmd>tabclose<CR>', 'tab close' },
+    x = { '<cmd>TroubleToggle<CR>', 'trouble' },
     d = { gs.toggle_deleted, 'gitsigns deleted' },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>TagbarToggle<CR>', 'tagbar'},
-    x = { '<cmd>tabclose<CR>', 'tab close' },
   },
   B = {
     function ()
@@ -163,7 +163,7 @@ vim.keymap.set('n', '<leader>5', function () require("bufferline").go_to_buffer(
 vim.keymap.set('n', '<leader>6', function () require("bufferline").go_to_buffer(6, true) end, { silent = true })
 vim.keymap.set('n', '<leader>7', function () require("bufferline").go_to_buffer(7, true) end, { silent = true })
 vim.keymap.set('n', '<leader>8', function () require("bufferline").go_to_buffer(8, true) end, { silent = true })
-vim.keymap.set('n', '<leader>9', function () require("bufferline").go_to_buffer(9, true) end, { silent = true }) 
+vim.keymap.set('n', '<leader>9', function () require("bufferline").go_to_buffer(9, true) end, { silent = true })
 -- for wrap
 vim.keymap.set('n', 'j', 'v:count ? "j" : "gj"', { expr = true })
 vim.keymap.set('n', 'k', 'v:count ? "k" : "gk"', { expr = true })
