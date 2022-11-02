@@ -2,6 +2,8 @@
 local dapui = require'dapui'
 -- node-path
 local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
+-- codelldb
+local codelldb = MASON .. '/codelldb/codelldb'
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
@@ -30,6 +32,15 @@ if HAS_DAP == true then
       require'osv'.run_this()
     end
   end
+
+  DAP.adapters.codelldb = {
+    type = 'server',
+    port = "${port}",
+    executable = {
+      command = codelldb,
+      args = {"--port", "${port}"},
+    }
+  }
 
   -- config
   DAP.configurations.javascript = {
@@ -70,6 +81,22 @@ if HAS_DAP == true then
       end,
     }
   }
+
+  DAP.configurations.cpp = {
+    {
+      name = "Launch file",
+      type = "codelldb",
+      request = "launch",
+      program = function()
+        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = true,
+    },
+  }
+
+  DAP.configurations.c = DAP.configurations.cpp
+  DAP.configurations.rust = DAP.configurations.cpp
 
   DAP.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()

@@ -23,6 +23,11 @@ return require('packer').startup(function(use)
   use 'chrisbra/csv.vim'
   -- vim-fugitive
   use 'tpope/vim-fugitive'
+  -- firenvim
+  use {
+    'glacambre/firenvim',
+    run = function() vim.fn['firenvim#install'](0) end
+  }
   -- null_ls
   use({
     'jose-elias-alvarez/null-ls.nvim',
