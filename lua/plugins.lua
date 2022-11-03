@@ -23,6 +23,9 @@ return require('packer').startup(function(use)
   use 'chrisbra/csv.vim'
   -- vim-fugitive
   use 'tpope/vim-fugitive'
+  -- vim dadbod
+  use 'tpope/vim-dadbod'
+  use 'kristijanhusak/vim-dadbod-ui'
   -- firenvim
   use {
     'glacambre/firenvim',

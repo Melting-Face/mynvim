@@ -82,6 +82,15 @@ wk.register({
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>TagbarToggle<CR>', 'tagbar'},
+    u = { '<cmd>DBUIToggle<CR>', 'db ui' }
+  },
+  u = {
+    name = 'db ui',
+    a = { '<cmd>DBUIAddConnection<CR>', 'add connection' },
+    f = { '<cmd>DBUIFindBuffer<CR>', 'find buffer' },
+    l = { '<cmd>DBUILastQueryInfo<CR>', 'last query info' },
+    r = { '<cmd>DBUIRenameBuffer<CR>', 'rename buffer' },
+
   },
   B = {
     function ()
