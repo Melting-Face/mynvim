@@ -101,6 +101,7 @@ local languages = {
   'jsonls',
   'sumneko_lua',
   'sqlls',
+  'sqls',
   'tsserver',
   'vimls',
   'yamlls',

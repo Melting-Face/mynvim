@@ -190,6 +190,7 @@ return require('packer').startup(function(use)
           'jsonls',
           'sumneko_lua',
           'sqlls',
+          'sqls',
           'tsserver',
           'vimls',
           'yamlls',
