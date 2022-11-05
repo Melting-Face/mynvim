@@ -41,9 +41,11 @@ function install_package() {
   $PREFIX install jesseduffield/lazynpm/lazynpm
   $PREFIX install delve
   $PREFIX install llvm
+  $PREFIX install rust
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8
+  pip3 install pytest
 }
 
 function create_symlink() {

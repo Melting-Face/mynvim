@@ -92,13 +92,12 @@ cmp.setup.cmdline(':', {
 local capabilities = require'cmp_nvim_lsp'.default_capabilities()
 local languages = {
   'bashls',
-  'clangd',
-  'cmake',
   'dockerls',
   'gopls',
   'jdtls',
   'jedi_language_server',
   'jsonls',
+  'rust_analyzer',
   'sumneko_lua',
   'sqlls',
   'sqls',

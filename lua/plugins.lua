@@ -24,8 +24,10 @@ return require('packer').startup(function(use)
   -- vim-fugitive
   use 'tpope/vim-fugitive'
   -- vim dadbod
-  use 'tpope/vim-dadbod'
-  use 'kristijanhusak/vim-dadbod-ui'
+  use {
+    'kristijanhusak/vim-dadbod-ui',
+    requires = { 'tpope/vim-dadbod' }
+  }
   -- firenvim
   use {
     'glacambre/firenvim',
@@ -37,7 +39,6 @@ return require('packer').startup(function(use)
     config = function()
         require("null-ls").setup({
           sources = {
-            require("null-ls").builtins.code_actions.eslint_d,
             require("null-ls").builtins.diagnostics.eslint_d,
             require("null-ls").builtins.diagnostics.flake8,
           },
@@ -137,7 +138,6 @@ return require('packer').startup(function(use)
       end,
     }
   end
-
   -- nvim-dap-python
   if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
     use {
@@ -147,6 +147,30 @@ return require('packer').startup(function(use)
       },
     }
   end
+  -- rust-tools
+  use {
+    'simrat39/rust-tools.nvim',
+    requires = {
+      'neovim/nvim-lspconfig',
+      'nvim-lua/plenary.nvim',
+      'mfussenegger/nvim-dap',
+    },
+    config = function ()
+      local opt = {
+        server = {
+          standalone = true,
+        },
+        dap = {
+          adapter = {
+            type = "executable",
+            command = "lldb-vscode",
+            name = "rt_lldb",
+          },
+        },
+      }
+      require('rust-tools').setup (opt)
+    end
+  }
   -- nvim-dap-lua
   use {
     'jbyuki/one-small-step-for-vimkind',
@@ -181,13 +205,12 @@ return require('packer').startup(function(use)
       require("mason-lspconfig").setup({
         ensure_installed = {
           'bashls',
-          'clangd',
-          'cmake',
           'dockerls',
           'gopls',
           'jdtls',
           'jedi_language_server',
           'jsonls',
+          'rust_analyzer',
           'sumneko_lua',
           'sqlls',
           'sqls',
@@ -257,12 +280,59 @@ return require('packer').startup(function(use)
   -- nvim-treesitter
   use {
     'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate'
+    run = ':TSUpdate',
+    config = function ()
+      require'nvim-treesitter.configs'.setup {
+        sync_install = true,
+        ensure_installed = {
+          'bash',
+          'dockerfile',
+          'go',
+          'http',
+          'java',
+          'javascript',
+          'json',
+          'lua',
+          'markdown',
+          'python',
+          'regex',
+          'rust',
+          'sql',
+          'tsx',
+          'typescript',
+          'vim',
+          'yaml',
+        },
+      }
+    end
+  }
+  -- nvim neotest
+  use {
+    "nvim-neotest/neotest",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-neotest/neotest-python",
+      "nvim-neotest/neotest-plenary",
+      "nvim-neotest/neotest-go",
+      "rouge8/neotest-rust",
+    },
+    config = function ()
+      require("neotest").setup({
+        adapters = {
+          require"neotest-python",
+          require"neotest-plenary",
+          require"neotest-go",
+          require"neotest-rust",
+        },
+      })
+    end
   }
   -- telescope
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
-    requires = { 'nvim-lua/plenary.nvim' }
+    requires = { 'nvim-lua/plenary.nvim' },
   }
   -- gitsigns
   use {

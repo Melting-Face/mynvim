@@ -1,7 +1,6 @@
 require'plugins'
 require'others.variables'
 require'others.options'
-require'others.nvim-treesitter'
 require'others.nvim-dap'
 require'others.nvim-cmp'
 require'others.nvim-notify'

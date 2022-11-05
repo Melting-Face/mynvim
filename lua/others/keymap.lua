@@ -1,7 +1,8 @@
 -- keymap can use string | function
 -----------------------------------
-local wk = require('which-key')
 local gs = require('gitsigns')
+local rt = require("rust-tools")
+local wk = require('which-key')
 
 wk.register({
   b = {
@@ -72,6 +73,12 @@ wk.register({
     },
   },
   n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
+  r = {
+    name = 'rust_tools',
+    d = { '<cmd>RustDebuggables<CR>', 'rust debug' },
+    h = { function () rt.hover_actions.hover_actions() end, 'rust hover' },
+    r = { '<cmd>RustRunnables<CR>', 'rust run' },
+  },
   t = {
     name = 'tab & toggle',
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
@@ -90,7 +97,6 @@ wk.register({
     f = { '<cmd>DBUIFindBuffer<CR>', 'find buffer' },
     l = { '<cmd>DBUILastQueryInfo<CR>', 'last query info' },
     r = { '<cmd>DBUIRenameBuffer<CR>', 'rename buffer' },
-
   },
   B = {
     function ()
@@ -154,8 +160,6 @@ wk.register({
   prefix = ']'
 })
 
--- for nvim-tree
-vim.keymap.set('n', '<Leader>rn', '<cmd>NvimTreeRefresh<CR>')
 -- for nvim-dap
 vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = true })
 vim.keymap.set('n', '<F10>', function () require'dap'.step_over() end, { silent = true })
