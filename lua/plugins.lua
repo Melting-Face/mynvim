@@ -306,23 +306,6 @@ return require('packer').startup(function(use)
       }
     end
   }
-  -- nvim neotest
-  use {
-    "nvim-neotest/neotest",
-    requires = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "antoinemadec/FixCursorHold.nvim",
-      "nvim-neotest/neotest-python",
-    },
-    config = function ()
-      require("neotest").setup({
-        adapters = {
-          require"neotest-python",
-        },
-      })
-    end
-  }
   -- telescope
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
