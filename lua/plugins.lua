@@ -314,17 +314,11 @@ return require('packer').startup(function(use)
       "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-neotest/neotest-python",
-      "nvim-neotest/neotest-plenary",
-      "nvim-neotest/neotest-go",
-      "rouge8/neotest-rust",
     },
     config = function ()
       require("neotest").setup({
         adapters = {
           require"neotest-python",
-          require"neotest-plenary",
-          require"neotest-go",
-          require"neotest-rust",
         },
       })
     end

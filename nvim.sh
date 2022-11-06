@@ -46,6 +46,7 @@ function install_package() {
   pip3 install debugpy
   pip3 install flake8
   pip3 install pytest
+  pip3 install ipython
 }
 
 function create_symlink() {

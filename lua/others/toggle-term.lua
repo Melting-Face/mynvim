@@ -5,7 +5,6 @@ LazyGit = Terminal:new({
   float_opts = {
     border = 'single',
   },
-  hidden = true,
 })
 
 LazyDocker = Terminal:new({
@@ -14,7 +13,6 @@ LazyDocker = Terminal:new({
   float_opts = {
     border = 'single',
   },
-  hidden = true,
 })
 
 LazyNpm = Terminal:new({
@@ -23,5 +21,11 @@ LazyNpm = Terminal:new({
   float_opts = {
     border = 'single',
   },
-  hidden = true,
+})
+
+IPython = Terminal:new({
+  cmd = "ipython",
+  float_opts = {
+    border = 'single',
+  },
 })
