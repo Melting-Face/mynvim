@@ -75,9 +75,11 @@ wk.register({
   },
   n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
   r = {
-    name = 'rust_tools',
+    name = 'rust_tools & rest-nvim',
     d = { '<cmd>RustDebuggables<CR>', 'rust debug' },
     h = { function () rt.hover_actions.hover_actions() end, 'rust hover' },
+    l = { function () require('rest-nvim').last() end, 'rest nvim last' },
+    n = { function () require('rest-nvim').run() end, 'rest nvim run' },
     r = { '<cmd>RustRunnables<CR>', 'rust run' },
   },
   t = {

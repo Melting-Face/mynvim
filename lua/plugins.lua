@@ -28,6 +28,15 @@ return require('packer').startup(function(use)
     'kristijanhusak/vim-dadbod-ui',
     requires = { 'tpope/vim-dadbod' }
   }
+  use {
+    'rest-nvim/rest.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim'
+    },
+    config = function()
+      require("rest-nvim").setup()
+    end
+  }
   -- firenvim
   use {
     'glacambre/firenvim',
