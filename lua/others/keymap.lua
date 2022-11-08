@@ -44,9 +44,20 @@ wk.register({
     name = 'find',
     b = { function () require('telescope.builtin').buffers() end, 'find buffers' },
     c = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
-    f = { function () require('telescope.builtin').find_files() end, 'find files(telescope)' },
-    g = { function () require('telescope.builtin').live_grep() end, 'grep files' },
-    h = { function () require('telescope.builtin').help_tags() end, 'find helptag' },
+    f = { function () require('telescope.builtin').find_files({ hidden=HIDDEN }) end, 'find files(telescope)' },
+    g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN }) end, 'grep files' },
+    h = {
+      function ()
+        vim.notify(
+          tostring(HIDDEN),
+          "info", {
+            title = 'find hidden option',
+            icon = "",
+            timeout = 1000,
+          }
+        )
+      end, 'find hidden option'
+    },
     k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
     n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
