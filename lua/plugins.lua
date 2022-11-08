@@ -29,6 +29,18 @@ return require('packer').startup(function(use)
     requires = { 'tpope/vim-dadbod' }
   }
   use {
+    'pwntester/octo.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'kyazdani42/nvim-web-devicons',
+    },
+    config = function ()
+      require"octo".setup()
+    end
+  }
+  -- restnvim
+  use {
     'rest-nvim/rest.nvim',
     requires = {
       'nvim-lua/plenary.nvim'
