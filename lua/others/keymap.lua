@@ -48,6 +48,7 @@ wk.register({
     g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN }) end, 'grep files' },
     h = {
       function ()
+        HIDDEN = not HIDDEN
         vim.notify(
           tostring(HIDDEN),
           "info", {
