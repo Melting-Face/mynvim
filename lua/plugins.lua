@@ -15,7 +15,7 @@ return require('packer').startup(function(use)
   use 'preservim/tagbar'
   -- async
   use 'nvim-lua/plenary.nvim'
--- rainbow csv
+  -- rainbow csv
   use 'mechatroner/rainbow_csv'
   -- csv.vim
   use 'chrisbra/csv.vim'
@@ -26,10 +26,15 @@ return require('packer').startup(function(use)
   -- vim dadbod
   use {
     'kristijanhusak/vim-dadbod-ui',
-    requires = { 'tpope/vim-dadbod' }
+    requires = {
+      'tpope/vim-dadbod',
+    }
   }
+  -- nvim-treesitter extension
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
+  -- telescope-dap
+  use 'nvim-telescope/telescope-dap.nvim'
   -- noice
   use {
     "folke/noice.nvim",
@@ -397,7 +402,15 @@ return require('packer').startup(function(use)
   -- telescope
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
-    requires = { 'nvim-lua/plenary.nvim' },
+    requires = {
+      'nvim-lua/plenary.nvim'
+    },
+    config = function ()
+      local telescope = require('telescope')
+      telescope.setup ()
+      telescope.load_extension("noice")
+      telescope.load_extension('dap')
+    end,
   }
   -- gitsigns
   use {

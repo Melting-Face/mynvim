@@ -66,6 +66,7 @@ wk.register({
     },
     k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
     n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
+    r = { function () require('telescope.builtin').registers() end, 'find register' },
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
   },
   h = {
