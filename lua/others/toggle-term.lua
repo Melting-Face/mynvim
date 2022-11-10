@@ -29,3 +29,10 @@ IPython = Terminal:new({
     border = 'single',
   },
 })
+
+Node = Terminal:new({
+  cmd = "node",
+  float_opts = {
+    border = 'single',
+  },
+})

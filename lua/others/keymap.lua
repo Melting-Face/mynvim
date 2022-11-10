@@ -13,6 +13,11 @@ wk.register({
     h = { '<cmd>sb<CR>', 'split horizontal' },
     v = { '<cmd>vs<CR>', 'spit vertical' },
   },
+  c = {
+    name = 'cmd',
+    i = { function () IPython:toggle() end, 'ipython' },
+    n = { function () Node:toggle() end, 'node' },
+  },
   d = {
     name = 'debug',
     f = {
@@ -76,7 +81,6 @@ wk.register({
     name = 'lazy',
     d = { function () LazyDocker:toggle() end, 'lazy docker' },
     g = { function () LazyGit:toggle() end, 'lazy git' },
-    i = { function () IPython:toggle() end, 'ipython' },
     n = { function () LazyNpm:toggle() end, 'lazy npm' },
     p = {
       function ()
