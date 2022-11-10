@@ -15,18 +15,29 @@ return require('packer').startup(function(use)
   use 'preservim/tagbar'
   -- async
   use 'nvim-lua/plenary.nvim'
-  -- notify
-  use 'rcarriga/nvim-notify'
-  -- rainbow csv
+-- rainbow csv
   use 'mechatroner/rainbow_csv'
   -- csv.vim
   use 'chrisbra/csv.vim'
   -- vim-fugitive
   use 'tpope/vim-fugitive'
+  -- notify
+  use 'rcarriga/nvim-notify'
   -- vim dadbod
   use {
     'kristijanhusak/vim-dadbod-ui',
     requires = { 'tpope/vim-dadbod' }
+  }
+  -- noice
+  use {
+    "folke/noice.nvim",
+    config = function()
+      require("noice").setup()
+    end,
+    requires = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    }
   }
   -- restnvim
   use {
