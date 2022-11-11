@@ -6,8 +6,10 @@ local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
 if has_dap_python == true then
-  local python_path = io.popen('which python3'):read('l')
-  dap_python.setup(python_path)
+  ASYNC.run(function ()
+    local python_path = io.popen('which python3'):read('l')
+    dap_python.setup(python_path)
+  end)
 end
 
 if HAS_DAP == true then
