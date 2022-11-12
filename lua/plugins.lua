@@ -33,6 +33,7 @@ return require('packer').startup(function(use)
   -- nvim-treesitter extension
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use 'windwp/nvim-ts-autotag'
   -- telescope-dap
   use 'nvim-telescope/telescope-dap.nvim'
   -- noice
@@ -355,6 +356,9 @@ return require('packer').startup(function(use)
           'typescript',
           'vim',
           'yaml',
+        },
+        autotag = {
+          enable = true,
         },
         textsubjects = {
           enable = true,
