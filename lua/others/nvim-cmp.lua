@@ -100,7 +100,6 @@ local languages = {
   'rust_analyzer',
   'sumneko_lua',
   'sqlls',
-  'sqls',
   'tsserver',
   'vimls',
   'yamlls',

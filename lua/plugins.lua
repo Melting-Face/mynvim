@@ -23,6 +23,8 @@ return require('packer').startup(function(use)
   use 'tpope/vim-fugitive'
   -- notify
   use 'rcarriga/nvim-notify'
+  -- emmet
+  use 'mattn/emmet-vim'
   -- vim dadbod
   use {
     'kristijanhusak/vim-dadbod-ui',
@@ -267,7 +269,6 @@ return require('packer').startup(function(use)
           'rust_analyzer',
           'sumneko_lua',
           'sqlls',
-          'sqls',
           'tsserver',
           'vimls',
           'yamlls',
