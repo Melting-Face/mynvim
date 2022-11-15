@@ -38,6 +38,30 @@ return require('packer').startup(function(use)
   use 'windwp/nvim-ts-autotag'
   -- telescope-dap
   use 'nvim-telescope/telescope-dap.nvim'
+  -- neorg
+  use {
+    'nvim-neorg/neorg',
+    run = ':Neorg sync-parsers',
+    config = function()
+        require'neorg'.setup {
+          load = {
+            ["core.defaults"] = {},
+		        ["core.norg.completion"] = {
+              config = {
+                engine = "nvim-cmp",
+              },
+	          },
+            ["core.integrations.nvim-cmp"] = {},
+            ["core.export"] = {},
+            ["core.integrations.telescope"] = {},
+          }
+        }
+    end,
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-neorg/neorg-telescope',
+    }
+  }
   -- noice
   use {
     "folke/noice.nvim",
@@ -349,6 +373,7 @@ return require('packer').startup(function(use)
           'json',
           'lua',
           'markdown',
+          'norg',
           'python',
           'regex',
           'rust',
