@@ -37,31 +37,7 @@ return require('packer').startup(function(use)
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'windwp/nvim-ts-autotag'
   -- telescope-dap
-  use 'nvim-telescope/telescope-dap.nvim'
-  -- neorg
-  use {
-    'nvim-neorg/neorg',
-    run = ':Neorg sync-parsers',
-    config = function()
-        require'neorg'.setup {
-          load = {
-            ["core.defaults"] = {},
-		        ["core.norg.completion"] = {
-              config = {
-                engine = "nvim-cmp",
-              },
-	          },
-            ["core.integrations.nvim-cmp"] = {},
-            ["core.export"] = {},
-            ["core.integrations.telescope"] = {},
-          }
-        }
-    end,
-    requires = {
-      'nvim-lua/plenary.nvim',
-      'nvim-neorg/neorg-telescope',
-    }
-  }
+  use 'nvim-telescope/telescope-dap.nvim' 
   -- noice
   use {
     "folke/noice.nvim",
@@ -131,7 +107,9 @@ return require('packer').startup(function(use)
     'folke/trouble.nvim',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function()
-      require'trouble'.setup ()
+      require'trouble'.setup ({
+        mode = 'document_diagnostics'
+      })
     end
   }
   -- autopairs
@@ -373,7 +351,7 @@ return require('packer').startup(function(use)
           'json',
           'lua',
           'markdown',
-          'norg',
+          --[[ 'norg', ]]
           'python',
           'regex',
           'rust',
@@ -429,6 +407,30 @@ return require('packer').startup(function(use)
       }
     end
   }
+  -- neorg
+  -- use {
+  --   'nvim-neorg/neorg',
+  --   run = ':Neorg sync-parsers',
+  --   config = function()
+  --       require'neorg'.setup {
+  --         load = {
+  --           ["core.defaults"] = {},
+		--         ["core.norg.completion"] = {
+  --             config = {
+  --               engine = "nvim-cmp",
+  --             },
+	 --          },
+  --           ["core.integrations.nvim-cmp"] = {},
+  --           ["core.export"] = {},
+  --           ["core.integrations.telescope"] = {},
+  --         }
+  --       }
+  --   end,
+  --   requires = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-neorg/neorg-telescope',
+  --   }
+  -- }
   -- telescope
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
