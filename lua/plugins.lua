@@ -9,9 +9,7 @@ return require('packer').startup(function(use)
   use 'mg979/vim-visual-multi'
   -- theme tokyonight
   use 'folke/tokyonight.nvim'
-  -- minimap
-  use 'wfxr/minimap.vim'
-  -- tagbar
+    -- tagbar
   use 'preservim/tagbar'
   -- async
   use 'nvim-lua/plenary.nvim'
@@ -36,18 +34,26 @@ return require('packer').startup(function(use)
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'windwp/nvim-ts-autotag'
+  use 'nvim-treesitter/nvim-treesitter-context'
   -- telescope-dap
-  use 'nvim-telescope/telescope-dap.nvim' 
+  use 'nvim-telescope/telescope-dap.nvim'
   -- noice
   use {
-    "folke/noice.nvim",
+    'folke/noice.nvim',
     config = function()
-      require("noice").setup()
+      require('noice').setup()
     end,
     requires = {
-      "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
     }
+  }
+  -- outline
+  use {
+    'simrat39/symbols-outline.nvim',
+    config = function ()
+      require('symbols-outline').setup()
+    end
   }
   -- restnvim
   use {
@@ -56,7 +62,7 @@ return require('packer').startup(function(use)
       'nvim-lua/plenary.nvim'
     },
     config = function()
-      require("rest-nvim").setup({
+      require('rest-nvim').setup({
         result_split_horizontal = false,
         result_split_in_place = false,
         skip_ssl_verification = false,
@@ -70,9 +76,9 @@ return require('packer').startup(function(use)
           show_http_info = true,
           show_headers = true,
           formatters = {
-            json = "jq",
+            json = 'jq',
             html = function(body)
-              return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
+              return vim.fn.system({'tidy', '-i', '-q', '-'}, body)
             end
           },
         },
@@ -93,10 +99,10 @@ return require('packer').startup(function(use)
   use({
     'jose-elias-alvarez/null-ls.nvim',
     config = function()
-        require("null-ls").setup({
+        require('null-ls').setup({
           sources = {
-            require("null-ls").builtins.diagnostics.eslint_d,
-            require("null-ls").builtins.diagnostics.flake8,
+            require('null-ls').builtins.diagnostics.eslint_d,
+            require('null-ls').builtins.diagnostics.flake8,
           },
         })
     end,
@@ -116,7 +122,7 @@ return require('packer').startup(function(use)
   use {
 	  'windwp/nvim-autopairs',
     config = function()
-      require("nvim-autopairs").setup ({
+      require('nvim-autopairs').setup ({
         disable_filetype = {
           'TelescopePrompt',
           'vim',
@@ -127,7 +133,7 @@ return require('packer').startup(function(use)
   -- markdown
   use({
     'iamcco/markdown-preview.nvim',
-    run = "cd app && npm install",
+    run = 'cd app && npm install',
     setup = function()
       vim.g.mkdp_filetypes = {
         'markdown'
@@ -141,7 +147,7 @@ return require('packer').startup(function(use)
   use {
     'folke/which-key.nvim',
     config = function()
-      require("which-key").setup ()
+      require('which-key').setup ()
     end
   }
   -- indent-blankline
@@ -158,16 +164,16 @@ return require('packer').startup(function(use)
   -- bufferline
   use {
     'akinsho/bufferline.nvim',
-    tag = "v2.*",
+    tag = 'v2.*',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function ()
-      require("bufferline").setup {
+      require('bufferline').setup {
         options = {
           separator_style = 'padded_slant',
           numbers = function(opts)
             return string.format('%s·%s', opts.raise(opts.id), opts.lower(opts.ordinal))
           end,
-          diagnostics = "nvim_lsp",
+          diagnostics = 'nvim_lsp',
         },
       }
     end
@@ -176,7 +182,7 @@ return require('packer').startup(function(use)
   use {
     'tiagovla/scope.nvim',
     config = function ()
-      require("scope").setup ()
+      require('scope').setup ()
     end
   }
   -- nvim-jdtls
@@ -188,6 +194,7 @@ return require('packer').startup(function(use)
   if io.popen('which dlv'):read('l') ~= nil then
     use {
       'leoluz/nvim-dap-go',
+      ft = 'go',
       requires = {
         'mfussenegger/nvim-dap'
       },
@@ -220,9 +227,9 @@ return require('packer').startup(function(use)
         },
         dap = {
           adapter = {
-            type = "executable",
-            command = "lldb-vscode",
-            name = "rt_lldb",
+            type = 'executable',
+            command = 'lldb-vscode',
+            name = 'rt_lldb',
           },
         },
       }
@@ -257,10 +264,10 @@ return require('packer').startup(function(use)
   }
   -- lsp installer
   use {
-    "williamboman/mason-lspconfig.nvim",
+    'williamboman/mason-lspconfig.nvim',
     requires = { 'neovim/nvim-lspconfig' },
     config = function()
-      require("mason-lspconfig").setup({
+      require('mason-lspconfig').setup({
         ensure_installed = {
           'bashls',
           'dockerls',
@@ -280,10 +287,10 @@ return require('packer').startup(function(use)
     end
   }
   use {
-    "williamboman/mason.nvim",
+    'williamboman/mason.nvim',
     requires = { 'williamboman/mason-lspconfig.nvim' },
     config = function()
-      require("mason").setup()
+      require('mason').setup()
     end
   }
   -- alpha
@@ -305,10 +312,10 @@ return require('packer').startup(function(use)
   }
   -- surround
   use {
-      "kylechui/nvim-surround",
-      tag = "*",
+      'kylechui/nvim-surround',
+      tag = '*',
       config = function()
-          require("nvim-surround").setup ()
+          require('nvim-surround').setup ()
       end
   }
   -- nvim tree
@@ -339,6 +346,7 @@ return require('packer').startup(function(use)
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     config = function ()
+      require'nvim-treesitter.install'.compilers = { 'gcc-11' }
       require'nvim-treesitter.configs'.setup {
         sync_install = true,
         ensure_installed = {
@@ -351,7 +359,7 @@ return require('packer').startup(function(use)
           'json',
           'lua',
           'markdown',
-          --[[ 'norg', ]]
+          'norg',
           'python',
           'regex',
           'rust',
@@ -377,10 +385,10 @@ return require('packer').startup(function(use)
               enable = true,
               lookahead = true,
               keymaps = {
-                  ["af"] = "@function.outer",
-                  ["if"] = "@function.inner",
-                  ["ac"] = "@class.outer",
-                  ["ic"] = "@class.inner"
+                  ['af'] = '@function.outer',
+                  ['if'] = '@function.inner',
+                  ['ac'] = '@class.outer',
+                  ['ic'] = '@class.inner'
               }
           },
           move = {
@@ -408,29 +416,43 @@ return require('packer').startup(function(use)
     end
   }
   -- neorg
-  -- use {
-  --   'nvim-neorg/neorg',
-  --   run = ':Neorg sync-parsers',
-  --   config = function()
-  --       require'neorg'.setup {
-  --         load = {
-  --           ["core.defaults"] = {},
-		--         ["core.norg.completion"] = {
-  --             config = {
-  --               engine = "nvim-cmp",
-  --             },
-	 --          },
-  --           ["core.integrations.nvim-cmp"] = {},
-  --           ["core.export"] = {},
-  --           ["core.integrations.telescope"] = {},
-  --         }
-  --       }
-  --   end,
-  --   requires = {
-  --     'nvim-lua/plenary.nvim',
-  --     'nvim-neorg/neorg-telescope',
-  --   }
-  -- }
+  use {
+    'nvim-neorg/neorg',
+    ft = 'norg',
+    after = 'nvim-treesitter',
+    run = ':Neorg sync-parsers',
+    config = function()
+        require'neorg'.setup {
+          load = {
+            ['core.defaults'] = {},
+		        ['core.norg.completion'] = {
+              config = {
+                engine = 'nvim-cmp',
+              },
+	          },
+            ['core.integrations.nvim-cmp'] = {
+              config = {
+                sources = {
+                  { name = 'neorg' },
+                },
+              }
+            },
+            ['core.export'] = {},
+            ['core.export.markdown'] = {},
+            ['core.integrations.telescope'] = {},
+            ['core.presenter'] = {
+              config = {
+                zen_mode = 'truezen',
+              },
+            },
+          }
+        }
+    end,
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-neorg/neorg-telescope',
+    }
+  }
   -- telescope
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
@@ -440,7 +462,7 @@ return require('packer').startup(function(use)
     config = function ()
       local telescope = require('telescope')
       telescope.setup ()
-      telescope.load_extension("noice")
+      telescope.load_extension('noice')
       telescope.load_extension('dap')
     end,
   }
@@ -472,10 +494,10 @@ return require('packer').startup(function(use)
   }
   -- toggleterm
   use {
-    "akinsho/toggleterm.nvim",
+    'akinsho/toggleterm.nvim',
     tag = 'v2.*',
     config = function()
-      require("toggleterm").setup ()
+      require('toggleterm').setup ()
     end
   }
 end)

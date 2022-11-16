@@ -19,7 +19,7 @@ wk.register({
     n = { function () Node:toggle() end, 'node' },
   },
   d = {
-    name = 'debug',
+    name = 'dap',
     f = {
       function ()
         if vim.bo.filetype == 'python' then
@@ -119,9 +119,9 @@ wk.register({
     c = { '<cmd>tabclose<CR>', 'tab close' },
     x = { '<cmd>TroubleToggle<CR>', 'trouble' },
     d = { gs.toggle_deleted, 'gitsigns deleted' },
-    m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
+    s = { '<cmd>SymbolsOutline<CR>', 'symbols outline' },
     t = { '<cmd>TagbarToggle<CR>', 'tagbar'},
     u = { '<cmd>DBUIToggle<CR>', 'db ui' }
   },
