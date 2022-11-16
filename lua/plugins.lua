@@ -9,8 +9,6 @@ return require('packer').startup(function(use)
   use 'mg979/vim-visual-multi'
   -- theme tokyonight
   use 'folke/tokyonight.nvim'
-    -- tagbar
-  use 'preservim/tagbar'
   -- async
   use 'nvim-lua/plenary.nvim'
   -- rainbow csv

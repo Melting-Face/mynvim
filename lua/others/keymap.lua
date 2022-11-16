@@ -122,7 +122,6 @@ wk.register({
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     s = { '<cmd>SymbolsOutline<CR>', 'symbols outline' },
-    t = { '<cmd>TagbarToggle<CR>', 'tagbar'},
     u = { '<cmd>DBUIToggle<CR>', 'db ui' }
   },
   u = {

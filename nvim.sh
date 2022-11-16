@@ -29,7 +29,6 @@ function install_package() {
 
   $PREFIX install neovim
   $PREFIX install tmux
-  $PREFIX install universal-ctags
   $PREFIX install ripgrep
   $PREFIX install go
   $PREFIX install lua
