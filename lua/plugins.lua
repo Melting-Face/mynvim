@@ -215,7 +215,6 @@ return require('packer').startup(function(use)
   -- rust-tools
   use {
     'simrat39/rust-tools.nvim',
-    ft = 'rust',
     requires = {
       'neovim/nvim-lspconfig',
       'nvim-lua/plenary.nvim',
@@ -347,7 +346,7 @@ return require('packer').startup(function(use)
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     config = function ()
-      require'nvim-treesitter.install'.compilers = { 'gcc-11' }
+      require'nvim-treesitter.install'.compilers = { 'gcc-12' }
       require'nvim-treesitter.configs'.setup {
         sync_install = true,
         ensure_installed = {

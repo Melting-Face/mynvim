@@ -94,7 +94,14 @@ wk.register({
   r = {
     name = 'rust_tools & rest-nvim',
     d = { '<cmd>RustDebuggables<CR>', 'rust debug' },
-    h = { function () rt.hover_actions.hover_actions() end, 'rust hover' },
+    h = {
+      function ()
+        if vim.bo.filetype == 'rust' then
+          rt.hover_actions.hover_actions()
+        end
+      end,
+      'rust hover',
+    },
     l = {
       function ()
         if vim.bo.filetype == 'http' then
