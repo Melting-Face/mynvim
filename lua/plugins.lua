@@ -56,6 +56,7 @@ return require('packer').startup(function(use)
   -- restnvim
   use {
     'rest-nvim/rest.nvim',
+    ft = 'http',
     requires = {
       'nvim-lua/plenary.nvim'
     },
@@ -97,12 +98,12 @@ return require('packer').startup(function(use)
   use({
     'jose-elias-alvarez/null-ls.nvim',
     config = function()
-        require('null-ls').setup({
-          sources = {
-            require('null-ls').builtins.diagnostics.eslint_d,
-            require('null-ls').builtins.diagnostics.flake8,
-          },
-        })
+      require('null-ls').setup({
+        sources = {
+          require('null-ls').builtins.diagnostics.eslint_d,
+          require('null-ls').builtins.diagnostics.flake8,
+        },
+      })
     end,
     requires = { 'nvim-lua/plenary.nvim' },
   })
@@ -205,6 +206,7 @@ return require('packer').startup(function(use)
   if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
     use {
       'mfussenegger/nvim-dap-python',
+      ft = 'python',
       requires = {
         'mfussenegger/nvim-dap'
       },
@@ -213,6 +215,7 @@ return require('packer').startup(function(use)
   -- rust-tools
   use {
     'simrat39/rust-tools.nvim',
+    ft = 'rust',
     requires = {
       'neovim/nvim-lspconfig',
       'nvim-lua/plenary.nvim',
@@ -447,6 +450,18 @@ return require('packer').startup(function(use)
           ['core.presenter'] = {
             config = {
               zen_mode = 'truezen',
+            },
+          },
+          ["core.norg.dirman"] = {
+            config = {
+              workspaces = {
+                note = '~/note',
+              }
+            }
+          },
+          ["core.gtd.base"] = {
+            config = {
+              workspace = 'note',
             },
           },
         }
