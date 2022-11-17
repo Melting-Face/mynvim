@@ -413,6 +413,18 @@ return require('packer').startup(function(use)
       }
     end
   }
+  -- cmp
+  use {
+    'hrsh7th/nvim-cmp',
+    requires = {
+      'L3MON4D3/LuaSnip',
+      'saadparwaiz1/cmp_luasnip',
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+    }
+  }
   -- neorg
   use {
     'nvim-neorg/neorg',
@@ -420,31 +432,25 @@ return require('packer').startup(function(use)
     after = 'nvim-treesitter',
     run = ':Neorg sync-parsers',
     config = function()
-        require'neorg'.setup {
-          load = {
-            ['core.defaults'] = {},
-		        ['core.norg.completion'] = {
-              config = {
-                engine = 'nvim-cmp',
-              },
-	          },
-            ['core.integrations.nvim-cmp'] = {
-              config = {
-                sources = {
-                  { name = 'neorg' },
-                },
-              }
+      require'neorg'.setup {
+        load = {
+          ['core.defaults'] = {},
+          ['core.norg.concealer'] = {},
+          ['core.norg.completion'] = {
+            config = {
+              engine = 'nvim-cmp',
             },
-            ['core.export'] = {},
-            ['core.export.markdown'] = {},
-            ['core.integrations.telescope'] = {},
-            ['core.presenter'] = {
-              config = {
-                zen_mode = 'truezen',
-              },
+          },
+          ['core.export'] = {},
+          ['core.export.markdown'] = {},
+          ['core.integrations.telescope'] = {},
+          ['core.presenter'] = {
+            config = {
+              zen_mode = 'truezen',
             },
-          }
+          },
         }
+      }
     end,
     requires = {
       'nvim-lua/plenary.nvim',
@@ -477,18 +483,6 @@ return require('packer').startup(function(use)
       }
     }
     end
-  }
-  -- cmp
-  use {
-    'hrsh7th/nvim-cmp',
-    requires = {
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-    }
   }
   -- toggleterm
   use {
