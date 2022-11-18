@@ -220,6 +220,7 @@ return require('packer').startup(function(use)
       'nvim-lua/plenary.nvim',
       'mfussenegger/nvim-dap',
     },
+    ft = 'rust',
     config = function ()
       local opt = {
         server = {

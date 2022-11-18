@@ -1,7 +1,6 @@
 -- keymap can use string | function
 -----------------------------------
 local gs = require('gitsigns')
-local rt = require("rust-tools")
 local wk = require('which-key')
 
 wk.register({
@@ -97,7 +96,7 @@ wk.register({
     h = {
       function ()
         if vim.bo.filetype == 'rust' then
-          rt.hover_actions.hover_actions()
+          require("rust-tools").hover_actions.hover_actions()
         end
       end,
       'rust hover',
