@@ -193,7 +193,6 @@ return require('packer').startup(function(use)
   if io.popen('which dlv'):read('l') ~= nil then
     use {
       'leoluz/nvim-dap-go',
-      ft = 'go',
       requires = {
         'mfussenegger/nvim-dap'
       },
@@ -206,7 +205,6 @@ return require('packer').startup(function(use)
   if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
     use {
       'mfussenegger/nvim-dap-python',
-      ft = 'python',
       requires = {
         'mfussenegger/nvim-dap'
       },
@@ -220,7 +218,6 @@ return require('packer').startup(function(use)
       'nvim-lua/plenary.nvim',
       'mfussenegger/nvim-dap',
     },
-    ft = 'rust',
     config = function ()
       local opt = {
         server = {
@@ -354,6 +351,7 @@ return require('packer').startup(function(use)
           'bash',
           'dockerfile',
           'go',
+          'html',
           'http',
           'java',
           'javascript',
