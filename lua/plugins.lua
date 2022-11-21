@@ -276,6 +276,7 @@ return require('packer').startup(function(use)
           'jdtls',
           'jedi_language_server',
           'jsonls',
+          'pylsp',
           'rust_analyzer',
           'sumneko_lua',
           'sqlls',
