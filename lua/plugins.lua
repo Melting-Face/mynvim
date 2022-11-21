@@ -98,10 +98,13 @@ return require('packer').startup(function(use)
   use({
     'jose-elias-alvarez/null-ls.nvim',
     config = function()
-      require('null-ls').setup({
+      local null_ls = require('null-ls')
+      null_ls.setup({
         sources = {
-          require('null-ls').builtins.diagnostics.eslint_d,
-          require('null-ls').builtins.diagnostics.flake8,
+          null_ls.builtins.diagnostics.eslint_d,
+          null_ls.builtins.diagnostics.flake8,
+          null_ls.builtins.formatting.eslint_d,
+          null_ls.builtins.formatting.black,
         },
       })
     end,
