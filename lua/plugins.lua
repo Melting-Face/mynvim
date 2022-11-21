@@ -274,7 +274,6 @@ return require('packer').startup(function(use)
           'dockerls',
           'gopls',
           'jdtls',
-          'jedi_language_server',
           'jsonls',
           'pylsp',
           'rust_analyzer',
