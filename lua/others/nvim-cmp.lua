@@ -37,7 +37,6 @@ end
 
 cmp.setup({
   snippet = {
-    -- REQUIRED - you must specify a snippet engine
     expand = function(args)
       require('luasnip').lsp_expand(args.body)
     end,
@@ -96,8 +95,8 @@ local languages = {
   'dockerls',
   'gopls',
   'jdtls',
+  'jedi_language_server',
   'jsonls',
-  'pylsp',
   'rust_analyzer',
   'sumneko_lua',
   'sqlls',

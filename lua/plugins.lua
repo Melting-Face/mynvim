@@ -103,6 +103,9 @@ return require('packer').startup(function(use)
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.flake8,
+          null_ls.builtins.diagnostics.golangci_lint,
+          null_ls.builtins.diagnostics.hadolint,
+          null_ls.builtins.diagnostics.misspell,
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.black,
         },
@@ -193,26 +196,22 @@ return require('packer').startup(function(use)
     ft = { 'java' }
   }
   -- nvim-dap-go
-  if io.popen('which dlv'):read('l') ~= nil then
-    use {
-      'leoluz/nvim-dap-go',
-      requires = {
-        'mfussenegger/nvim-dap'
-      },
-      config = function ()
-        require('dap-go').setup ()
-      end,
-    }
-  end
+  use {
+    'leoluz/nvim-dap-go',
+    requires = {
+      'mfussenegger/nvim-dap'
+    },
+    config = function ()
+      require('dap-go').setup ()
+    end,
+  }
   -- nvim-dap-python
-  if io.popen('pip list | grep -n debugpy'):read('l') ~= nil then
-    use {
-      'mfussenegger/nvim-dap-python',
-      requires = {
-        'mfussenegger/nvim-dap'
-      },
-    }
-  end
+  use {
+    'mfussenegger/nvim-dap-python',
+    requires = {
+      'mfussenegger/nvim-dap'
+    },
+  }
   -- rust-tools
   use {
     'simrat39/rust-tools.nvim',
@@ -274,8 +273,8 @@ return require('packer').startup(function(use)
           'dockerls',
           'gopls',
           'jdtls',
+          'jedi_language_server',
           'jsonls',
-          'pylsp',
           'rust_analyzer',
           'sumneko_lua',
           'sqlls',
