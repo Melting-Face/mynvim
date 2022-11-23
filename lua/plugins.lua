@@ -100,12 +100,12 @@ return require('packer').startup(function(use)
     config = function()
       local null_ls = require('null-ls')
       null_ls.setup({
+        debounce = 750,
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.flake8,
           null_ls.builtins.diagnostics.golangci_lint,
           null_ls.builtins.diagnostics.hadolint,
-          null_ls.builtins.diagnostics.misspell,
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.black,
         },
@@ -275,7 +275,6 @@ return require('packer').startup(function(use)
           'jdtls',
           'jedi_language_server',
           'jsonls',
-          'pyright',
           'rust_analyzer',
           'sumneko_lua',
           'sqlls',

@@ -97,7 +97,6 @@ local languages = {
   'jdtls',
   'jedi_language_server',
   'jsonls',
-  'pyright',
   'rust_analyzer',
   'sumneko_lua',
   'sqlls',
