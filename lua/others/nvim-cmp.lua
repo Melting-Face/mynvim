@@ -95,7 +95,6 @@ local languages = {
   'dockerls',
   'gopls',
   'jdtls',
-  'jedi_language_server',
   'jsonls',
   'pyright',
   'rust_analyzer',
