@@ -275,6 +275,7 @@ return require('packer').startup(function(use)
           'jdtls',
           'jedi_language_server',
           'jsonls',
+          'pyright',
           'rust_analyzer',
           'sumneko_lua',
           'sqlls',
@@ -445,7 +446,6 @@ return require('packer').startup(function(use)
             },
           },
           ['core.export'] = {},
-          ['core.export.markdown'] = {},
           ['core.integrations.telescope'] = {},
           ['core.presenter'] = {
             config = {
