@@ -118,6 +118,19 @@ for idx, language in ipairs(languages) do
         },
       },
     }
+  elseif language == 'pyright' then
+    lspconfig[language].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        python = {
+          analysis = {
+            diagnosticMode = 'openFilesOnly',
+            useLibraryCodeForTypes = false,
+          },
+        },
+      },
+    }
   else
     lspconfig[language].setup {
       on_attach = on_attach,

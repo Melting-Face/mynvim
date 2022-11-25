@@ -100,6 +100,7 @@ return require('packer').startup(function(use)
     config = function()
       local null_ls = require('null-ls')
       null_ls.setup({
+        diagnostics_format = '[#{c}] #{m} (#{s})',
         debounce = 750,
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
@@ -446,11 +447,6 @@ return require('packer').startup(function(use)
           },
           ['core.export'] = {},
           ['core.integrations.telescope'] = {},
-          ['core.presenter'] = {
-            config = {
-              zen_mode = 'truezen',
-            },
-          },
           ["core.norg.dirman"] = {
             config = {
               workspaces = {
