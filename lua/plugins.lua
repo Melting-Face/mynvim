@@ -47,6 +47,8 @@ return require('packer').startup(function(use)
   use 'nvim-treesitter/nvim-treesitter-context'
   -- telescope-dap
   use 'nvim-telescope/telescope-dap.nvim'
+  -- telescope-repo
+  use 'cljoly/telescope-repo.nvim'
   -- noice
   use {
     'folke/noice.nvim',
@@ -338,7 +340,21 @@ return require('packer').startup(function(use)
       'kyazdani42/nvim-web-devicons',
     },
     config = function()
-      require'nvim-tree'.setup ()
+      require'nvim-tree'.setup {
+        sync_root_with_cwd = true,
+        respect_buf_cwd = true,
+        update_focused_file = {
+          enable = true,
+          update_root = true
+        },
+      }
+    end
+  }
+  -- project nvim
+  use {
+    "ahmedkhalf/project.nvim",
+    config = function()
+      require("project_nvim").setup ()
     end
   }
   -- lualine
@@ -490,6 +506,7 @@ return require('packer').startup(function(use)
       telescope.setup ()
       telescope.load_extension('noice')
       telescope.load_extension('dap')
+      telescope.load_extension'repo'
     end,
   }
   -- gitsigns
