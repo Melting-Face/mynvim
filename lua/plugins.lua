@@ -28,6 +28,18 @@ return require('packer').startup(function(use)
       'tpope/vim-dadbod',
     }
   }
+  -- winbar
+  use {
+    "utilyre/barbecue.nvim",
+    requires = {
+      "neovim/nvim-lspconfig",
+      "smiteshp/nvim-navic",
+      "kyazdani42/nvim-web-devicons",
+    },
+    config = function()
+      require("barbecue").setup()
+    end,
+  }
   -- nvim-treesitter extension
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
