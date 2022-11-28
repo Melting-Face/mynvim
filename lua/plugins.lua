@@ -37,7 +37,16 @@ return require('packer').startup(function(use)
       "kyazdani42/nvim-web-devicons",
     },
     config = function()
-      require("barbecue").setup()
+      require("barbecue").setup ({
+        exclude_filetypes = {
+          'alpha',
+          'dbout',
+          'dbui',
+          'NvimTree',
+          'packer',
+          'toggleterm',
+        },
+      })
     end,
   }
   -- nvim-treesitter extension
