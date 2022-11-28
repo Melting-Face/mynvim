@@ -21,6 +21,8 @@ return require('packer').startup(function(use)
   use 'rcarriga/nvim-notify'
   -- emmet
   use 'mattn/emmet-vim'
+  -- starttime
+  use 'dstein64/vim-startuptime'
   -- vim dadbod
   use {
     'kristijanhusak/vim-dadbod-ui',
