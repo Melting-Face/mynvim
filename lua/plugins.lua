@@ -30,27 +30,6 @@ return require('packer').startup(function(use)
       'tpope/vim-dadbod',
     }
   }
-  -- winbar
-  use {
-    "utilyre/barbecue.nvim",
-    requires = {
-      "neovim/nvim-lspconfig",
-      "smiteshp/nvim-navic",
-      "kyazdani42/nvim-web-devicons",
-    },
-    config = function()
-      require("barbecue").setup ({
-        exclude_filetypes = {
-          'alpha',
-          'dbout',
-          'dbui',
-          'NvimTree',
-          'packer',
-          'toggleterm',
-        },
-      })
-    end,
-  }
   -- nvim-treesitter extension
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -351,14 +330,7 @@ return require('packer').startup(function(use)
       'kyazdani42/nvim-web-devicons',
     },
     config = function()
-      require'nvim-tree'.setup {
-        sync_root_with_cwd = true,
-        respect_buf_cwd = true,
-        update_focused_file = {
-          enable = true,
-          update_root = true
-        },
-      }
+      require'nvim-tree'.setup ()
     end
   }
   -- project nvim
