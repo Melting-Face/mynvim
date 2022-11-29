@@ -38,10 +38,9 @@ vim.opt.linebreak = true
 vim.opt.list = true
 vim.opt.listchars:append "eol:↴"
 
-vim.g.minimap_width = 10
-vim.g.minimap_auto_start_win_enter = 1
-vim.g.minimap_block_filetypes = { 'gitsigns', 'nvim-tree', 'tagbar', 'fzf' }
-vim.g.minimap_close_filetypes = { 'alpha', 'vim-plug' }
-vim.g.minimap_git_colors = 1
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_database_icon = 1
+
+-- magma
+vim.g.magma_automatically_open_output = false
+vim.g.magma_image_provider = 'ueberzug'

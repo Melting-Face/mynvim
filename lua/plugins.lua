@@ -23,13 +23,6 @@ return require('packer').startup(function(use)
   use 'mattn/emmet-vim'
   -- starttime
   use 'dstein64/vim-startuptime'
-  -- vim dadbod
-  use {
-    'kristijanhusak/vim-dadbod-ui',
-    requires = {
-      'tpope/vim-dadbod',
-    }
-  }
   -- nvim-treesitter extension
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -39,6 +32,13 @@ return require('packer').startup(function(use)
   use 'nvim-telescope/telescope-dap.nvim'
   -- telescope-repo
   use 'cljoly/telescope-repo.nvim'
+  -- vim dadbod
+  use {
+    'kristijanhusak/vim-dadbod-ui',
+    requires = {
+      'tpope/vim-dadbod',
+    }
+  }
   -- noice
   use {
     'folke/noice.nvim',
@@ -443,7 +443,6 @@ return require('packer').startup(function(use)
   -- neorg
   use {
     'nvim-neorg/neorg',
-    ft = 'norg',
     after = 'nvim-treesitter',
     run = ':Neorg sync-parsers',
     config = function()

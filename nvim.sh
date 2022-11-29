@@ -34,7 +34,6 @@ function install_package() {
   $PREFIX install lua
   $PREFIX install node
   $PREFIX install python
-  $PREFIX install code-minimap
   $PREFIX install lazygit
   $PREFIX install lazydocker
   $PREFIX install jesseduffield/lazynpm/lazynpm
@@ -46,6 +45,7 @@ function install_package() {
   pip3 install flake8
   pip3 install pytest
   pip3 install ipython
+  pip3 install jupyter_client
 }
 
 function create_symlink() {
