@@ -32,6 +32,16 @@ return require('packer').startup(function(use)
   use 'nvim-telescope/telescope-dap.nvim'
   -- telescope-repo
   use 'cljoly/telescope-repo.nvim'
+  -- for winbar
+  use {
+    'SmiteshP/nvim-navic',
+    requires = 'neovim/nvim-lspconfig',
+    config = function ()
+      require('nvim-navic').setup {
+        highlight = true,
+      }
+    end
+  }
   -- magma
   use {
     'dccsillag/magma-nvim',
@@ -353,9 +363,9 @@ return require('packer').startup(function(use)
   }
   -- project nvim
   use {
-    "ahmedkhalf/project.nvim",
+    'ahmedkhalf/project.nvim',
     config = function()
-      require("project_nvim").setup ()
+      require('project_nvim').setup ()
     end
   }
   -- lualine
@@ -365,9 +375,27 @@ return require('packer').startup(function(use)
       'kyazdani42/nvim-web-devicons',
       opt = true
     },
+    after = 'nvim-navic',
     config = function()
+      local navic = require'nvim-navic'
       require'lualine'.setup {
-        options = { theme = 'palenight' }
+        options = {
+          theme = 'palenight',
+        },
+        winbar = {
+          lualine_x = {
+            {
+              navic.get_location,
+              cond = navic.is_available,
+            }
+          }
+        },
+        extensions = {
+          'fugitive',
+          'nvim-dap-ui',
+          'nvim-tree',
+          'toggleterm',
+        }
       }
     end
   }
@@ -475,14 +503,14 @@ return require('packer').startup(function(use)
           },
           ['core.export'] = {},
           ['core.integrations.telescope'] = {},
-          ["core.norg.dirman"] = {
+          ['core.norg.dirman'] = {
             config = {
               workspaces = {
                 note = '~/note',
               }
             }
           },
-          ["core.gtd.base"] = {
+          ['core.gtd.base'] = {
             config = {
               workspace = 'note',
             },

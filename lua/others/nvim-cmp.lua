@@ -1,6 +1,5 @@
--- nvim-cmp.
 local cmp = require'cmp'
--- lspconfig
+local navic = require'nvim-navic'
 local lspconfig = require'lspconfig'
 
 -- setup nvim-lspconfig
@@ -33,6 +32,9 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
+  if client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
 end
 
 cmp.setup({
