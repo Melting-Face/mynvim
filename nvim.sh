@@ -45,7 +45,7 @@ function install_package() {
   pip3 install flake8
   pip3 install pytest
   pip3 install ipython
-  pip3 install jupyter_client
+  pip3 install jupyter
   pip3 install pynvim
   pip3 install kitty
   pip3 install pillow
