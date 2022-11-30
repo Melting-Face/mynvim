@@ -207,6 +207,16 @@ wk.register({
   prefix = ']'
 })
 
+wk.register({
+  j = {
+    name = 'jupyter with magma',
+    l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
+  }
+}, {
+  mode = "v",
+  prefix = '<leader>',
+})
+
 -- for nvim-dap
 vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = true })
 vim.keymap.set('n', '<F10>', function () require'dap'.step_over() end, { silent = true })
