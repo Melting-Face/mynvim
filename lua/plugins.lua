@@ -32,12 +32,30 @@ return require('packer').startup(function(use)
   use 'nvim-telescope/telescope-dap.nvim'
   -- telescope-repo
   use 'cljoly/telescope-repo.nvim'
+  -- magma
+  use {
+    'dccsillag/magma-nvim',
+    run = ':UpdateRemotePlugins',
+  }
   -- vim dadbod
   use {
     'kristijanhusak/vim-dadbod-ui',
     requires = {
       'tpope/vim-dadbod',
     }
+  }
+  -- crates
+  use {
+    'saecki/crates.nvim',
+    event = {
+      'BufRead Cargo.toml'
+    },
+    requires = {
+      'nvim-lua/plenary.nvim',
+    },
+    config = function()
+      require('crates').setup()
+    end,
   }
   -- noice
   use {

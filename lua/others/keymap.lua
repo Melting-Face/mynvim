@@ -77,6 +77,14 @@ wk.register({
     s = { gs.stage_buffer, 'stage buffer' },
     u = { gs.undo_stage_hunk, 'undo stage' },
   },
+  j = {
+    name = 'jupyter with magma',
+    c = { '<cmd>MagmaReevaluateCell<CR>', 'reevaluate cell' },
+    d = { '<cmd>MagmaDelete<CR>', 'delete' },
+    l = { '<cmd>MagmaEvaluateLine<CR>', 'evaluate line' },
+    r = { '<cmd>MagmaEvaluateOperator<CR>', 'evaluate operator' },
+    s = { '<cmd>MagmaShowOutput<CR>', 'show output' },
+  },
   l = {
     name = 'lazy',
     d = { function () LazyDocker:toggle() end, 'lazy docker' },

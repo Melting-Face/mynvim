@@ -43,4 +43,4 @@ vim.g.db_ui_show_database_icon = 1
 
 -- magma
 vim.g.magma_automatically_open_output = false
-vim.g.magma_image_provider = 'ueberzug'
+vim.g.magma_image_provider = 'kitty'
