@@ -46,7 +46,7 @@ function install_package() {
   pip3 install pytest
   pip3 install ipython
   pip3 install jupyter_client
-  pip3 install lpynvim
+  pip3 install pynvim
   pip3 install kitty
   pip3 install pillow
   pip3 install cairosvg
