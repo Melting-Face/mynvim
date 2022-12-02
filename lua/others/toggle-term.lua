@@ -22,17 +22,3 @@ LazyNpm = Terminal:new({
     border = 'single',
   },
 })
-
-IPython = Terminal:new({
-  cmd = "ipython",
-  float_opts = {
-    border = 'single',
-  },
-})
-
-Node = Terminal:new({
-  cmd = "node",
-  float_opts = {
-    border = 'single',
-  },
-})

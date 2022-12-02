@@ -146,6 +146,14 @@ return require('packer').startup(function(use)
     end,
     requires = { 'nvim-lua/plenary.nvim' },
   })
+  -- todo comment
+  use {
+    "folke/todo-comments.nvim",
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("todo-comments").setup ()
+    end
+  }
   -- trouble
   use {
     'folke/trouble.nvim',

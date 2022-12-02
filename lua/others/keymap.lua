@@ -1,6 +1,7 @@
 -- keymap can use string | function
 -----------------------------------
 local gs = require('gitsigns')
+local tc = require('todo-comments')
 local wk = require('which-key')
 
 wk.register({
@@ -13,9 +14,9 @@ wk.register({
     v = { '<cmd>vs<CR>', 'spit vertical' },
   },
   c = {
-    name = 'cmd',
-    i = { function () IPython:toggle() end, 'ipython' },
-    n = { function () Node:toggle() end, 'node' },
+    name = 'todo comment',
+    f = { ':TodoTelescope<CR>', 'find by telescope' },
+    x = { ':TodoTrouble<CR>', 'find by trouble' },
   },
   d = {
     name = 'dap',
@@ -175,15 +176,21 @@ wk.register({
   b = { '<cmd>bp<cr>', 'buffer previous' },
   c = {
     function()
+      require("todo-comments").jump_prev()
+    end,
+    'Previous todo comment',
+  },
+  d = { vim.diagnostic.goto_prev, 'diagnostic previous' },
+  h = {
+    function()
       if vim.wo.diff then
-        return '[c'
+        return '[h'
       end
       vim.schedule(function() gs.prev_hunk() end)
       return '<Ignore>'
     end,
     'prev hunk',
   },
-  d = { vim.diagnostic.goto_prev, 'diagnostic previous' },
   t = { '<cmd>tabprev<CR>', 'tab previous' },
 }, {
   prefix = '['
@@ -193,6 +200,13 @@ wk.register({
   b = { '<cmd>bn<cr>', 'buffer next' },
   c = {
     function()
+      require("todo-comments").jump_next()
+    end,
+    'Next todo comment',
+  },
+  d = { vim.diagnostic.goto_next, 'diagnostic next' },
+  h = {
+    function()
       if vim.wo.diff then
         return ']c'
       end
@@ -201,7 +215,6 @@ wk.register({
     end,
     'next hunk',
   },
-  d = { vim.diagnostic.goto_next, 'diagnostic next' },
   t = { '<cmd>tabnext<CR>', 'tab next' },
 }, {
   prefix = ']'
