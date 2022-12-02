@@ -402,6 +402,7 @@ return require('packer').startup(function(use)
           theme = 'palenight',
           disabled_filetypes = {
             winbar = {
+              'alpha',
               'NvimTree',
               'packer',
             }
