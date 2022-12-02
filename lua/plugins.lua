@@ -234,7 +234,9 @@ return require('packer').startup(function(use)
   -- nvim-jdtls
   use {
     'mfussenegger/nvim-jdtls',
-    ft = { 'java' }
+    ft = {
+      'java'
+    },
   }
   -- nvim-dap-go
   use {
@@ -300,7 +302,7 @@ return require('packer').startup(function(use)
       'mfussenegger/nvim-dap'
     },
     config = function ()
-      require('nvim-dap-virtual-text').setup ()
+      require'nvim-dap-virtual-text'.setup ()
     end
   }
   -- lsp installer
@@ -308,7 +310,7 @@ return require('packer').startup(function(use)
     'williamboman/mason-lspconfig.nvim',
     requires = { 'neovim/nvim-lspconfig' },
     config = function()
-      require('mason-lspconfig').setup({
+      require'mason-lspconfig'.setup({
         ensure_installed = {
           'bashls',
           'dockerls',
@@ -329,9 +331,11 @@ return require('packer').startup(function(use)
   }
   use {
     'williamboman/mason.nvim',
-    requires = { 'williamboman/mason-lspconfig.nvim' },
+    requires = {
+      'williamboman/mason-lspconfig.nvim',
+    },
     config = function()
-      require('mason').setup()
+      require'mason'.setup()
     end
   }
   -- alpha
@@ -390,6 +394,7 @@ return require('packer').startup(function(use)
         options = {
           theme = 'palenight',
         },
+        -- TODO : fix winbar
         winbar = {
           lualine_x = {
             {
@@ -533,12 +538,13 @@ return require('packer').startup(function(use)
   }
   -- telescope
   use {
-    'nvim-telescope/telescope.nvim', tag = '0.1.0',
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.0',
     requires = {
       'nvim-lua/plenary.nvim'
     },
     config = function ()
-      local telescope = require('telescope')
+      local telescope = require'telescope'
       telescope.setup ()
       telescope.load_extension('noice')
       telescope.load_extension('dap')
@@ -564,7 +570,7 @@ return require('packer').startup(function(use)
     'akinsho/toggleterm.nvim',
     tag = 'v2.*',
     config = function()
-      require('toggleterm').setup ()
+      require'toggleterm'.setup ()
     end
   }
 end)

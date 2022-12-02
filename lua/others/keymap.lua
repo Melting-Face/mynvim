@@ -1,7 +1,6 @@
 -- keymap can use string | function
 -----------------------------------
 local gs = require('gitsigns')
-local tc = require('todo-comments')
 local wk = require('which-key')
 
 wk.register({
@@ -12,11 +11,6 @@ wk.register({
     c = { '<cmd>bdelete<CR>', 'buffer close' },
     h = { '<cmd>sb<CR>', 'split horizontal' },
     v = { '<cmd>vs<CR>', 'spit vertical' },
-  },
-  c = {
-    name = 'todo comment',
-    f = { ':TodoTelescope<CR>', 'find by telescope' },
-    x = { ':TodoTrouble<CR>', 'find by trouble' },
   },
   d = {
     name = 'dap',
@@ -48,22 +42,10 @@ wk.register({
   f = {
     name = 'find',
     b = { function () require('telescope.builtin').buffers() end, 'find buffers' },
-    c = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
-    f = { function () require('telescope.builtin').find_files({ hidden=HIDDEN }) end, 'find files(telescope)' },
-    g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN }) end, 'grep files' },
-    h = {
-      function ()
-        HIDDEN = not HIDDEN
-        vim.notify(
-          tostring(HIDDEN),
-          "info", {
-            title = 'find hidden option',
-            icon = "",
-            timeout = 1000,
-          }
-        )
-      end, 'find hidden option'
-    },
+    c = { '<cmd>TodoTelescope<CR>', 'find todo comments' },
+    f = { function () require('telescope.builtin').find_files({ hidden=HIDDEN_FILE }) end, 'find files(telescope)' },
+    g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN_FILE }) end, 'grep files' },
+    h = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
     k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
     n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
     r = { function () require('telescope.builtin').registers() end, 'find register' },
@@ -99,6 +81,23 @@ wk.register({
     },
   },
   n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
+  o = {
+    name = 'options',
+    h = {
+      function ()
+        HIDDEN_FILE = not HIDDEN_FILE
+        vim.notify(
+          tostring(HIDDEN_FILE),
+          "info", {
+            title = 'find hidden option',
+            icon = "",
+            timeout = 1000,
+          }
+        )
+      end,
+      'hidden(find files & grep files)'
+    },
+  },
   r = {
     name = 'rust_tools & rest-nvim',
     d = { '<cmd>RustDebuggables<CR>', 'rust debug' },
