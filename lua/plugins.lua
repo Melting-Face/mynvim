@@ -393,10 +393,15 @@ return require('packer').startup(function(use)
       require'lualine'.setup {
         options = {
           theme = 'palenight',
+          disabled_filetypes = {
+            winbar = {
+              'NvimTree'
+            }
+          }
         },
         -- TODO : fix winbar
         winbar = {
-          lualine_x = {
+          lualine_a = {
             {
               navic.get_location,
               cond = navic.is_available,
