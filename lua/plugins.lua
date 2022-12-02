@@ -389,22 +389,29 @@ return require('packer').startup(function(use)
     },
     after = 'nvim-navic',
     config = function()
-      local navic = require'nvim-navic'
+      local function navic_winbar ()
+        local navic = require'nvim-navic'
+        if navic.is_available() then
+          return '%#WinBarSeparator#' .. navic.get_location() .. '%#WinBarSeparator#'
+        else
+          return ' '
+        end
+      end
       require'lualine'.setup {
         options = {
           theme = 'palenight',
           disabled_filetypes = {
             winbar = {
-              'NvimTree'
+              'NvimTree',
+              'packer',
             }
           }
         },
-        -- TODO : fix winbar
+        -- TODO: fix winbar
         winbar = {
           lualine_a = {
             {
-              navic.get_location,
-              cond = navic.is_available,
+              navic_winbar,
             }
           }
         },
