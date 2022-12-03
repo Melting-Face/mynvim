@@ -139,8 +139,17 @@ return require('packer').startup(function(use)
           null_ls.builtins.diagnostics.flake8,
           null_ls.builtins.diagnostics.golangci_lint,
           null_ls.builtins.diagnostics.hadolint,
-          null_ls.builtins.formatting.eslint_d,
+          null_ls.builtins.diagnostics.luacheck,
+          null_ls.builtins.diagnostics.shellcheck,
+          null_ls.builtins.diagnostics.yamllint,
+
           null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.eslint_d,
+          null_ls.builtins.formatting.remark,
+          null_ls.builtins.formatting.rustfmt,
+          null_ls.builtins.formatting.shellharden,
+          null_ls.builtins.formatting.stylua,
+          null_ls.builtins.formatting.yamlfmt,
         },
       })
     end,
@@ -394,7 +403,7 @@ return require('packer').startup(function(use)
         if navic.is_available() then
           return '%#WinBarSeparator#' .. navic.get_location() .. '%#WinBarSeparator#'
         else
-          return ' '
+          return '%#WinBarSeparator#' .. '%#WinBarSeparator#'
         end
       end
       require'lualine'.setup {
@@ -403,12 +412,13 @@ return require('packer').startup(function(use)
           disabled_filetypes = {
             winbar = {
               'alpha',
+              'dbui',
+              'dbout',
               'NvimTree',
               'packer',
             }
           }
         },
-        -- TODO: fix winbar
         winbar = {
           lualine_a = {
             {
@@ -559,8 +569,8 @@ return require('packer').startup(function(use)
     config = function ()
       local telescope = require'telescope'
       telescope.setup ()
-      telescope.load_extension('noice')
-      telescope.load_extension('dap')
+      telescope.load_extension'noice'
+      telescope.load_extension'dap'
       telescope.load_extension'repo'
     end,
   }
