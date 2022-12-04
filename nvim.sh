@@ -1,5 +1,4 @@
 UNAME="$(uname -s)"
-STARTPATH="$(pwd)"
 
 function install_manager() {
   echo "check packer ..."
@@ -53,6 +52,7 @@ function install_package() {
   pip3 install pnglatex
   pip3 install plotly
   pip3 install kaleido
+  sudo gem install tmuxinator
 }
 
 function create_symlink() {

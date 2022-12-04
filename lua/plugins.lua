@@ -32,6 +32,67 @@ return require('packer').startup(function(use)
   use 'nvim-telescope/telescope-dap.nvim'
   -- telescope-repo
   use 'cljoly/telescope-repo.nvim'
+  -- telescope tmuxinator
+  use 'danielpieper/telescope-tmuxinator.nvim'
+  -- neogen
+  use {
+    'danymat/neogen',
+    config = function()
+        require('neogen').setup({
+          snippet_engine = 'luasnip',
+          languages = {
+            go = {
+              template = {
+                annotation_convention = 'godoc',
+              }
+            },
+            lua = {
+              template = {
+                annotation_convention = "ldoc",
+              },
+            },
+            java = {
+              template = {
+                annotation_convention = 'javadoc',
+              }
+            },
+            javascript = {
+              template = {
+                annotation_convention = "jsdoc",
+              },
+            },
+            python = {
+              template = {
+                annotation_convention = "google_docstrings",
+              },
+            },
+            rust = {
+              template = {
+                annotation_convention = "rustdoc",
+              },
+            },
+            sh = {
+              template = {
+                annotation_convention = "google_bash",
+              },
+            },
+            typescript = {
+              template = {
+                annotation_convention = "tsdoc",
+              },
+            },
+            typescriptreact = {
+              template = {
+                annotation_convention = "tsdoc",
+              },
+            },
+          },
+        })
+    end,
+    requires = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+  }
   -- for winbar
   use {
     'SmiteshP/nvim-navic',
@@ -157,10 +218,10 @@ return require('packer').startup(function(use)
   })
   -- todo comment
   use {
-    "folke/todo-comments.nvim",
-    requires = "nvim-lua/plenary.nvim",
+    'folke/todo-comments.nvim',
+    requires = 'nvim-lua/plenary.nvim',
     config = function()
-      require("todo-comments").setup ()
+      require('todo-comments').setup ()
     end
   }
   -- trouble
@@ -572,6 +633,7 @@ return require('packer').startup(function(use)
       telescope.load_extension'noice'
       telescope.load_extension'dap'
       telescope.load_extension'repo'
+      telescope.load_extension'tmuxinator'
     end,
   }
   -- gitsigns
