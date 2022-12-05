@@ -24,16 +24,6 @@ return require('packer').startup(function(use)
   -- starttime
   use 'dstein64/vim-startuptime'
   -- nvim-treesitter extension
-  use 'RRethy/nvim-treesitter-textsubjects'
-  use 'nvim-treesitter/nvim-treesitter-textobjects'
-  use 'windwp/nvim-ts-autotag'
-  use 'nvim-treesitter/nvim-treesitter-context'
-  -- telescope-dap
-  use 'nvim-telescope/telescope-dap.nvim'
-  -- telescope-repo
-  use 'cljoly/telescope-repo.nvim'
-  -- telescope tmuxinator
-  use 'danielpieper/telescope-tmuxinator.nvim'
   -- neogen
   use {
     'danymat/neogen',
@@ -499,6 +489,12 @@ return require('packer').startup(function(use)
   -- nvim-treesitter
   use {
     'nvim-treesitter/nvim-treesitter',
+    requires = {
+      'RRethy/nvim-treesitter-textsubjects',
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      'windwp/nvim-ts-autotag',
+      'nvim-treesitter/nvim-treesitter-context',
+    },
     run = ':TSUpdate',
     config = function ()
       require'nvim-treesitter.install'.compilers = { 'gcc-12' }
@@ -621,19 +617,20 @@ return require('packer').startup(function(use)
     }
   }
   -- telescope
+  use 'nvim-telescope/telescope-dap.nvim'
+  use 'cljoly/telescope-repo.nvim'
+  use 'danielpieper/telescope-tmuxinator.nvim'
   use {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.0',
     requires = {
-      'nvim-lua/plenary.nvim'
+      'nvim-lua/plenary.nvim',
     },
     config = function ()
-      local telescope = require'telescope'
-      telescope.setup ()
-      telescope.load_extension'noice'
-      telescope.load_extension'dap'
-      telescope.load_extension'repo'
-      telescope.load_extension'tmuxinator'
+      require'telescope'.setup ()
+      require'telescope'.load_extension('noice')
+      require'telescope'.load_extension('dap')
+      require'telescope'.load_extension('repo')
+      require'telescope'.load_extension('tmuxinator')
     end,
   }
   -- gitsigns

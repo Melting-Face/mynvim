@@ -108,7 +108,7 @@ local languages = {
   'yamlls',
 }
 
-for idx, language in ipairs(languages) do
+for _, language in ipairs(languages) do
   if language == 'sumneko_lua' then
     lspconfig[language].setup {
       on_attach = on_attach,

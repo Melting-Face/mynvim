@@ -17,9 +17,9 @@ function install_manager() {
 
 function install_package() {
   PREFIX=""
-  if [ $UNAME == "Darwin" ]; then
+  if [ "$UNAME" == "Darwin" ]; then
     PREFIX=brew
-  elif [ $UNAME == "Linux" ]; then
+  elif [ "$UNAME" == "Linux" ]; then
     PREFIX=apt-get
   else
     echo "check to kurnel: $UNAME"
@@ -83,7 +83,7 @@ function install_plugins() {
   nvim +PackerSync 
 } 
 
-if [ $1 == 'all' ]; then
+if [ "$1" == "all" ]; then
   install_package;
   install_manager;
   create_symlink;
@@ -94,7 +94,7 @@ else
   echo "create symlink [3]"
   echo "install plugins [4]"
 
-  read -p "select option :" OPT
+  read -rp "select option :" OPT
 
   case $OPT in
     1) install_manager;;
