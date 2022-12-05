@@ -28,56 +28,56 @@ return require('packer').startup(function(use)
   use {
     'danymat/neogen',
     config = function()
-        require('neogen').setup({
-          snippet_engine = 'luasnip',
-          languages = {
-            go = {
-              template = {
-                annotation_convention = 'godoc',
-              }
-            },
-            lua = {
-              template = {
-                annotation_convention = "ldoc",
-              },
-            },
-            java = {
-              template = {
-                annotation_convention = 'javadoc',
-              }
-            },
-            javascript = {
-              template = {
-                annotation_convention = "jsdoc",
-              },
-            },
-            python = {
-              template = {
-                annotation_convention = "google_docstrings",
-              },
-            },
-            rust = {
-              template = {
-                annotation_convention = "rustdoc",
-              },
-            },
-            sh = {
-              template = {
-                annotation_convention = "google_bash",
-              },
-            },
-            typescript = {
-              template = {
-                annotation_convention = "tsdoc",
-              },
-            },
-            typescriptreact = {
-              template = {
-                annotation_convention = "tsdoc",
-              },
+      require('neogen').setup({
+        snippet_engine = 'luasnip',
+        languages = {
+          go = {
+            template = {
+              annotation_convention = 'godoc',
+            }
+          },
+          lua = {
+            template = {
+              annotation_convention = "ldoc",
             },
           },
-        })
+          java = {
+            template = {
+              annotation_convention = 'javadoc',
+            }
+          },
+          javascript = {
+            template = {
+              annotation_convention = "jsdoc",
+            },
+          },
+          python = {
+            template = {
+              annotation_convention = "google_docstrings",
+            },
+          },
+          rust = {
+            template = {
+              annotation_convention = "rustdoc",
+            },
+          },
+          sh = {
+            template = {
+              annotation_convention = "google_bash",
+            },
+          },
+          typescript = {
+            template = {
+              annotation_convention = "tsdoc",
+            },
+          },
+          typescriptreact = {
+            template = {
+              annotation_convention = "tsdoc",
+            },
+          },
+        },
+      })
     end,
     requires = {
       'nvim-treesitter/nvim-treesitter',
@@ -617,20 +617,21 @@ return require('packer').startup(function(use)
     }
   }
   -- telescope
-  use 'nvim-telescope/telescope-dap.nvim'
-  use 'cljoly/telescope-repo.nvim'
-  use 'danielpieper/telescope-tmuxinator.nvim'
   use {
     'nvim-telescope/telescope.nvim',
     requires = {
       'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-dap.nvim',
+      'cljoly/telescope-repo.nvim',
+      'danielpieper/telescope-tmuxinator.nvim',
     },
     config = function ()
-      require'telescope'.setup ()
-      require'telescope'.load_extension('noice')
-      require'telescope'.load_extension('dap')
-      require'telescope'.load_extension('repo')
-      require'telescope'.load_extension('tmuxinator')
+      local telescope = require'telescope'
+      telescope.setup ()
+      telescope.load_extension('noice')
+      telescope.load_extension('dap')
+      telescope.load_extension('repo')
+      telescope.load_extension('tmuxinator')
     end,
   }
   -- gitsigns
