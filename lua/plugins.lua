@@ -23,60 +23,31 @@ return require('packer').startup(function(use)
   use 'mattn/emmet-vim'
   -- starttime
   use 'dstein64/vim-startuptime'
-  -- nvim-treesitter extension
   -- neogen
   use {
     'danymat/neogen',
     config = function()
+      local lang_doc_map = {
+        go = 'godoc',
+        lua = 'ldoc',
+        java ='javadoc',
+        javascript = 'jsdoc',
+        python = 'google_docstrings',
+        rust = 'rustdoc',
+        sh = 'google_bash',
+        typescript = "tsdoc",
+        typescriptreact = "tsdoc",
+      }
+
+      local languages = {}
+
+      for lang, doc in ipairs(lang_doc_map) do
+        languages[lang]['template']['annotation_convention'] = doc
+      end
+
       require('neogen').setup({
         snippet_engine = 'luasnip',
-        languages = {
-          go = {
-            template = {
-              annotation_convention = 'godoc',
-            }
-          },
-          lua = {
-            template = {
-              annotation_convention = "ldoc",
-            },
-          },
-          java = {
-            template = {
-              annotation_convention = 'javadoc',
-            }
-          },
-          javascript = {
-            template = {
-              annotation_convention = "jsdoc",
-            },
-          },
-          python = {
-            template = {
-              annotation_convention = "google_docstrings",
-            },
-          },
-          rust = {
-            template = {
-              annotation_convention = "rustdoc",
-            },
-          },
-          sh = {
-            template = {
-              annotation_convention = "google_bash",
-            },
-          },
-          typescript = {
-            template = {
-              annotation_convention = "tsdoc",
-            },
-          },
-          typescriptreact = {
-            template = {
-              annotation_convention = "tsdoc",
-            },
-          },
-        },
+        languages = languages,
       })
     end,
     requires = {
