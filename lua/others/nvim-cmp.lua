@@ -115,8 +115,13 @@ for _, language in ipairs(languages) do
       capabilities = capabilities,
       settings = {
         Lua = {
+          completion = {
+            callSnippet = "Replace"
+          },
           diagnostics = {
-            globals = {'vim'},
+            globals = {
+              'vim'
+            },
           },
         },
       },

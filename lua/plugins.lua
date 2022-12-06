@@ -23,6 +23,13 @@ return require('packer').startup(function(use)
   use 'mattn/emmet-vim'
   -- starttime
   use 'dstein64/vim-startuptime'
+  -- neodev
+  use {
+    "folke/neodev.nvim",
+    config = function ()
+      require("neodev").setup ()
+    end
+  }
   -- neogen
   use {
     'danymat/neogen',
