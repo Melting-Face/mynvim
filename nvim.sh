@@ -39,6 +39,7 @@ function install_package() {
   $PREFIX install delve
   $PREFIX install llvm
   $PREFIX install rust
+  $PREFIX install jq
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8
