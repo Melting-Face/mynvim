@@ -30,6 +30,13 @@ return require('packer').startup(function(use)
       require("neodev").setup ()
     end
   }
+  -- luapad
+  use {
+    'rafcamlet/nvim-luapad',
+    config = function ()
+      require('luapad').setup()
+    end
+  }
   -- neogen
   use {
     'danymat/neogen',
