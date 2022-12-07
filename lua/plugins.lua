@@ -23,6 +23,17 @@ return require('packer').startup(function(use)
   use 'mattn/emmet-vim'
   -- starttime
   use 'dstein64/vim-startuptime'
+  -- jester
+  use {
+    'David-Kunz/jester',
+    config = function ()
+      require("jester").setup({
+        dap = {
+          console = "externalTerminal"
+        }
+      })
+    end
+  }
   -- neodev
   use {
     "folke/neodev.nvim",
