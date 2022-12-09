@@ -69,8 +69,10 @@ wk.register({
     s = { '<cmd>MagmaShowOutput<CR>', 'show output' },
   },
   l = {
-    name = 'lazy',
+    name = 'lazy & lsp',
+    c = { function () vim.lsp.buf.code_action() end, 'lsp code action' },
     d = { function () LazyDocker:toggle() end, 'lazy docker' },
+    f = { function () vim.lsp.buf.formatting() end, 'lsp formatting' }, 
     g = { function () LazyGit:toggle() end, 'lazy git' },
     n = { function () LazyNpm:toggle() end, 'lazy npm' },
     p = {
