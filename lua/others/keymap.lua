@@ -61,12 +61,9 @@ wk.register({
     u = { gs.undo_stage_hunk, 'undo stage' },
   },
   j = {
-    name = 'jupyter with magma',
-    c = { '<cmd>MagmaReevaluateCell<CR>', 'reevaluate cell' },
-    d = { '<cmd>MagmaDelete<CR>', 'delete' },
-    l = { '<cmd>MagmaEvaluateLine<CR>', 'evaluate line' },
-    r = { '<cmd>MagmaEvaluateOperator<CR>', 'evaluate operator' },
-    s = { '<cmd>MagmaShowOutput<CR>', 'show output' },
+    name = 'jester',
+    d = { function () require('jester').debug() end, 'debug' },
+    r = { function () require('jester').run() end, 'run' },
   },
   l = {
     name = 'lazy & lsp',
@@ -81,6 +78,14 @@ wk.register({
       end,
       'set breakpoint with log point message',
     },
+  },
+  m = {
+    name = 'Magma(jupyer)',
+    c = { '<cmd>MagmaReevaluateCell<CR>', 'reevaluate cell' },
+    d = { '<cmd>MagmaDelete<CR>', 'delete' },
+    l = { '<cmd>MagmaEvaluateLine<CR>', 'evaluate line' },
+    r = { '<cmd>MagmaEvaluateOperator<CR>', 'evaluate operator' },
+    s = { '<cmd>MagmaShowOutput<CR>', 'show output' },
   },
   n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
   o = {
