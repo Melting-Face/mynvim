@@ -3,7 +3,7 @@ local workspace_path = HOME .. "/workspace/java/"
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local project_path = workspace_path .. project_name
 
-has_jdtls, jdtls = pcall(require, 'jdtls')
+local has_jdtls, jdtls = pcall(require, 'jdtls')
 if has_jdtls == true then
   local bundles = {
     vim.fn.glob(MASON .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar"),
