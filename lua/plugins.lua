@@ -23,22 +23,37 @@ return require('packer').startup(function(use)
   use 'mattn/emmet-vim'
   -- starttime
   use 'dstein64/vim-startuptime'
+  -- octo
+  use {
+    'pwntester/octo.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'kyazdani42/nvim-web-devicons',
+    },
+    config = function ()
+      require'octo'.setup()
+    end
+  }
+  -- java/typescript
+  use {
+    'mxsdev/nvim-dap-vscode-js',
+    requires = {
+      'mfussenegger/nvim-dap'
+    },
+  }
   -- jester
   use {
     'David-Kunz/jester',
     config = function ()
-      require("jester").setup({
-        dap = {
-          console = "externalTerminal"
-        }
-      })
+      require('jester').setup()
     end
   }
   -- neodev
   use {
-    "folke/neodev.nvim",
+    'folke/neodev.nvim',
     config = function ()
-      require("neodev").setup ()
+      require('neodev').setup ()
     end
   }
   -- luapad
@@ -60,8 +75,8 @@ return require('packer').startup(function(use)
         python = 'google_docstrings',
         rust = 'rustdoc',
         sh = 'google_bash',
-        typescript = "tsdoc",
-        typescriptreact = "tsdoc",
+        typescript = 'tsdoc',
+        typescriptreact = 'tsdoc',
       }
 
       local languages = {}
@@ -491,6 +506,7 @@ return require('packer').startup(function(use)
       'nvim-treesitter/nvim-treesitter-textobjects',
       'windwp/nvim-ts-autotag',
       'nvim-treesitter/nvim-treesitter-context',
+      'nvim-treesitter/playground',
     },
     run = ':TSUpdate',
     config = function ()
@@ -520,6 +536,24 @@ return require('packer').startup(function(use)
         },
         autotag = {
           enable = true,
+        },
+        playground = {
+          enable = true,
+          disable = {},
+          updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+          persist_queries = false, -- Whether the query persists across vim sessions
+          keybindings = {
+            toggle_query_editor = 'o',
+            toggle_hl_groups = 'i',
+            toggle_injected_languages = 't',
+            toggle_anonymous_nodes = 'a',
+            toggle_language_display = 'I',
+            focus_language = 'f',
+            unfocus_language = 'F',
+            update = 'R',
+            goto_node = '<cr>',
+            show_help = '?',
+          },
         },
         textsubjects = {
           enable = true,
@@ -562,6 +596,16 @@ return require('packer').startup(function(use)
           }
         },
       }
+    end
+  }
+  use {
+    'ThePrimeagen/refactoring.nvim',
+    requires = {
+        {'nvim-lua/plenary.nvim'},
+        {'nvim-treesitter/nvim-treesitter'}
+    },
+    config = function ()
+      require('refactoring').setup()
     end
   }
   -- cmp
@@ -625,8 +669,9 @@ return require('packer').startup(function(use)
     config = function ()
       local telescope = require'telescope'
       telescope.setup ()
-      telescope.load_extension('noice')
       telescope.load_extension('dap')
+      telescope.load_extension('noice')
+      telescope.load_extension('refactoring')
       telescope.load_extension('repo')
       telescope.load_extension('tmuxinator')
     end,

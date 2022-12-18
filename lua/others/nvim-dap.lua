@@ -1,7 +1,5 @@
 -- nvim-dap
 local dapui = require'dapui'
--- node-path
-local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
@@ -13,14 +11,6 @@ if has_dap_python == true then
 end
 
 if HAS_DAP == true then
-  DAP.adapters.node2 = {
-    type = 'executable',
-    command = 'node',
-    args = {
-      node_path,
-    },
-  }
-
   DAP.adapters.nlua = function(callback, config)
     if config.port ~= nil then
       callback({
@@ -32,27 +22,6 @@ if HAS_DAP == true then
       require'osv'.run_this()
     end
   end
-
-  -- config
-  DAP.configurations.javascript = {
-    {
-      name = 'Launch',
-      type = 'node2',
-      request = 'launch',
-      program = '${file}',
-      cwd = '${workspaceFolder}',
-      sourceMaps = true,
-      protocol = 'inspector',
-      console = 'integratedTerminal',
-    },
-    {
-      -- For this to work you need to make sure the node process is started with the `--inspect` flag.
-      name = 'Attach to process',
-      type = 'node2',
-      request = 'attach',
-      processId = require'dap.utils'.pick_process,
-    },
-  }
 
   DAP.configurations.lua = {
     {
