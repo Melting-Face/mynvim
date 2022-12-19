@@ -1,3 +1,5 @@
+#!/bin/bash
+
 UNAME="$(uname -s)"
 
 function install_manager() {
@@ -40,6 +42,7 @@ function install_package() {
   $PREFIX install llvm
   $PREFIX install rust
   $PREFIX install jq
+  $PREFIX install gh
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8

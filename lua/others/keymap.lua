@@ -3,6 +3,7 @@
 local gs = require('gitsigns')
 local wk = require('which-key')
 
+-- INFO: <leader> key (normal)
 wk.register({
   b = {
     name = 'buffer & breakpoint',
@@ -66,7 +67,7 @@ wk.register({
     r = { function () require('jester').run() end, 'run' },
   },
   l = {
-    name = 'lazy & lsp',
+    name = 'lazy',
     c = { function () vim.lsp.buf.code_action() end, 'lsp code action' },
     d = { function () LazyDocker:toggle() end, 'lazy docker' },
     f = { function () vim.lsp.buf.formatting() end, 'lsp formatting' },
@@ -162,6 +163,56 @@ wk.register({
   prefix = '<leader>'
 })
 
+-- INFO: <leader> key (visual)
+wk.register({
+  j = {
+    name = 'jupyter with magma',
+    l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
+  }
+}, {
+  mode = "v",
+  prefix = '<leader>',
+})
+
+-- INFO: <space> key
+wk.register({
+  c = {
+    name = 'Code',
+    a = { vim.lsp.buf.code_action, 'Action' },
+  },
+  e = { vim.diagnostic.open_float, 'Open float' },
+  f = { vim.lsp.buf.formatting, 'Lsp formatting' },
+  q = { vim.diagnostic.setloclist, 'Set location list'},
+  r = {
+    name = 'Buffer',
+    n = { vim.lsp.buf.rename, 'Lsp Rename' },
+  },
+  w = {
+    name = 'Workspace',
+    a = { vim.lsp.buf.add_workspace_folder, 'Add' },
+    l = {
+      function()
+        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+      end,
+      'List'
+    },
+    r = { vim.lsp.buf.remove_workspace_folder, 'Remove' }
+  },
+  D = { vim.lsp.buf.type_definition, 'Type definition' },
+}, {
+  prefix = '<space>'
+})
+
+-- INFO: 'g' key
+wk.register({
+  d = { vim.lsp.buf.definition, 'Go to definition' },
+  i = { vim.lsp.buf.implementation, 'Go to implementation' },
+  r = { vim.lsp.buf.references, 'Go to references' },
+  D = { vim.lsp.buf.declaration, 'Go to declaration' },
+}, {
+  prefix = 'g'
+})
+
 wk.register({
   e = {
     name = 'dapui',
@@ -178,6 +229,7 @@ wk.register({
   prefix = '<leader>',
 })
 
+-- INFO: '[' key
 wk.register({
   b = { '<cmd>bp<cr>', 'buffer previous' },
   c = {
@@ -202,6 +254,7 @@ wk.register({
   prefix = '['
 })
 
+-- INFO: ']' key
 wk.register({
   b = { '<cmd>bn<cr>', 'buffer next' },
   c = {
@@ -226,24 +279,20 @@ wk.register({
   prefix = ']'
 })
 
-wk.register({
-  j = {
-    name = 'jupyter with magma',
-    l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
-  }
-}, {
-  mode = "v",
-  prefix = '<leader>',
-})
+-- INFO: For lsp
+vim.keymap.set('n', 'K', vim.lsp.buf.hover, { silent = true })
+vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
 
--- for nvim-dap
+-- INFO: For dap
 vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = true })
 vim.keymap.set('n', '<F10>', function () require'dap'.step_over() end, { silent = true })
 vim.keymap.set('n', '<F11>', function () require'dap'.step_into() end, { silent = true })
 vim.keymap.set('n', '<F12>', function () require'dap'.step_out() end, { silent = true })
--- for nvim-dap-python
+
+-- INFO: For dap-python
 vim.keymap.set('v', '<leader>ds <ESC>', function () require('dap-python').debug_selection() end, { silent = true })
--- for bufferlie
+
+-- INFO: For bufferlie
 vim.keymap.set('n', '<leader>1', function () require("bufferline").go_to_buffer(1, true) end, { silent = true })
 vim.keymap.set('n', '<leader>2', function () require("bufferline").go_to_buffer(2, true) end, { silent = true })
 vim.keymap.set('n', '<leader>3', function () require("bufferline").go_to_buffer(3, true) end, { silent = true })
@@ -253,6 +302,7 @@ vim.keymap.set('n', '<leader>6', function () require("bufferline").go_to_buffer(
 vim.keymap.set('n', '<leader>7', function () require("bufferline").go_to_buffer(7, true) end, { silent = true })
 vim.keymap.set('n', '<leader>8', function () require("bufferline").go_to_buffer(8, true) end, { silent = true })
 vim.keymap.set('n', '<leader>9', function () require("bufferline").go_to_buffer(9, true) end, { silent = true })
--- for wrap
+
+-- INFO: For wrap
 vim.keymap.set('n', 'j', 'v:count ? "j" : "gj"', { expr = true })
 vim.keymap.set('n', 'k', 'v:count ? "k" : "gk"', { expr = true })

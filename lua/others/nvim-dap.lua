@@ -3,6 +3,8 @@ local dapui = require'dapui'
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
+local js_adapter_path = MASON .. '/js-debug-adapter';
+
 if has_dap_python == true then
   ASYNC.run(function ()
     local python_path = io.popen('which python3'):read('l')
@@ -11,6 +13,39 @@ if has_dap_python == true then
 end
 
 if HAS_DAP == true then
+  local has_dap_js, dap_js = pcall(require, 'dap-vscode-js')
+  if has_dap_js == true then
+    dap_js.setup({
+      debugger_path = js_adapter_path,
+      adapters = {
+        'pwa-node',
+        'pwa-chrome',
+        'pwa-msedge',
+        'node-terminal',
+        'pwa-extensionHost',
+      },
+    })
+
+    for _, language in ipairs { "typescript", "javascript" } do
+      DAP.configurations[language] = {
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          cwd = "${workspaceFolder}",
+        },
+        {
+          type = "pwa-node",
+          request = "attach",
+          name = "Attach",
+          processId = require("dap.utils").pick_process,
+          cwd = "${workspaceFolder}",
+        },
+      }
+    end
+  end
+
   DAP.adapters.nlua = function(callback, config)
     if config.port ~= nil then
       callback({
