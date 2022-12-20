@@ -1,4 +1,5 @@
 require'plugins'
+require'impatient'
 require'others.variables'
 require'others.options'
 require'others.nvim-dap'
