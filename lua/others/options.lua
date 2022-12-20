@@ -23,6 +23,7 @@ vim.o.ruler = true
 vim.o.clipboard = 'unnamed'
 vim.o.fileencodings = 'utf8'
 vim.o.encoding = 'UTF-8'
+vim.o.updatetime=30
 vim.o.timeoutlen=800
 -- mouse option is 'all'
 vim.o.mouse = 'a'
@@ -44,3 +45,6 @@ vim.g.db_ui_show_database_icon = 1
 -- magma
 vim.g.magma_automatically_open_output = false
 vim.g.magma_image_provider = 'kitty'
+
+-- vim-better-whitespace
+vim.g.better_whitespace_guicolor='#C0CAF5'

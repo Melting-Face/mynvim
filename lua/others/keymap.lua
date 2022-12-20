@@ -68,9 +68,7 @@ wk.register({
   },
   l = {
     name = 'lazy',
-    c = { function () vim.lsp.buf.code_action() end, 'lsp code action' },
     d = { function () LazyDocker:toggle() end, 'lazy docker' },
-    f = { function () vim.lsp.buf.formatting() end, 'lsp formatting' },
     g = { function () LazyGit:toggle() end, 'lazy git' },
     n = { function () LazyNpm:toggle() end, 'lazy npm' },
     p = {

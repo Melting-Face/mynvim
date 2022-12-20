@@ -2,6 +2,11 @@
 
 - `<c-n>`: auto complete
 
+- visual mode => `:Tab /:` => Tabular arrangement `:`
+> [Tabular cheatsheet](https://devhints.io/tabular)
+
+<br>
+
 ## Install
 
 ### nvim + tmux
@@ -10,6 +15,8 @@ sh nvim.sh all
 # or
 sh nvim.sh
 ```
+
+<br>
 
 ## Plugins to be installed
 
@@ -26,6 +33,8 @@ sh nvim.sh
 - [battery](https://github.com/tmux-plugins/tmux-battery)
 
 - [prefix highlight](https://github.com/tmux-plugins/tmux-prefix-highlight)
+
+<br>
 
 ## Attempt to install
 
