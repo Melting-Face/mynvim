@@ -1,6 +1,13 @@
 vim.cmd [[packadd packer.nvim]]
 
-return require('packer').startup(function(use)
+local packer = require('packer')
+
+-- INFO: add max jobs
+packer.init {
+  max_jobs = 50,
+}
+
+return packer.startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
   -- devicons
@@ -21,6 +28,8 @@ return require('packer').startup(function(use)
   use 'mechatroner/rainbow_csv'
   -- starttime
   use 'dstein64/vim-startuptime'
+  -- cache
+  use 'lewis6991/impatient.nvim'
   -- java/typescript
   use {
     'mxsdev/nvim-dap-vscode-js',
