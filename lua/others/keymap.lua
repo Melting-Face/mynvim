@@ -137,12 +137,14 @@ wk.register({
     name = 'tab & toggle',
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
     c = { '<cmd>tabclose<CR>', 'tab close' },
-    x = { '<cmd>TroubleToggle<CR>', 'trouble' },
     d = { gs.toggle_deleted, 'gitsigns deleted' },
+    g = { '<cmd>TSPlaygroundToggle<CR>', 'playground' },
+    m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
-    s = { '<cmd>SymbolsOutline<CR>', 'symbols outline' },
-    u = { '<cmd>DBUIToggle<CR>', 'db ui' }
+    t = { '<cmd>TagbarToggle<CR>', 'Tagbar' },
+    u = { '<cmd>DBUIToggle<CR>', 'db ui' },
+    x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },
   u = {
     name = 'db ui',

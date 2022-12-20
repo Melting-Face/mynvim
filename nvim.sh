@@ -43,6 +43,8 @@ function install_package() {
   $PREFIX install rust
   $PREFIX install jq
   $PREFIX install gh
+  $PREFIX install universal-ctags
+  $PREFIX install code-minimap
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8
