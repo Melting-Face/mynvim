@@ -34,8 +34,13 @@ return packer.startup(function(use)
   use 'godlygeek/tabular'
   -- whitespace
   use 'ntpeters/vim-better-whitespace'
-  -- tagbar
-  use 'preservim/tagbar'
+  -- outline
+  use {
+    'simrat39/symbols-outline.nvim',
+    config = function ()
+      require("symbols-outline").setup()
+    end
+  }
   -- minimap
   use 'wfxr/minimap.vim'
   -- java/typescript
