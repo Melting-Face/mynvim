@@ -142,7 +142,7 @@ wk.register({
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
-    t = { '<cmd>TagbarToggle<CR>', 'Tagbar' },
+    t = { '<cmd>SymbolsOutline<CR>', 'Tagbar' },
     u = { '<cmd>DBUIToggle<CR>', 'db ui' },
     x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },
@@ -304,5 +304,5 @@ vim.keymap.set('n', '<leader>8', function () require("bufferline").go_to_buffer(
 vim.keymap.set('n', '<leader>9', function () require("bufferline").go_to_buffer(9, true) end, { silent = true })
 
 -- INFO: For wrap
-vim.keymap.set('n', 'j', 'v:count ? "j" : "gj"', { expr = true })
-vim.keymap.set('n', 'k', 'v:count ? "k" : "gk"', { expr = true })
+vim.keymap.set('n', 'j', '"gj"', { expr = true })
+vim.keymap.set('n', 'k', '"gk"', { expr = true })
