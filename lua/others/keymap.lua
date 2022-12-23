@@ -5,13 +5,10 @@ local wk = require('which-key')
 
 -- INFO: <leader> key (normal)
 wk.register({
-  b = {
-    name = 'buffer & breakpoint',
-    a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
-    b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
-    c = { '<cmd>bdelete<CR>', 'buffer close' },
-    h = { '<cmd>sb<CR>', 'split horizontal' },
-    v = { '<cmd>vs<CR>', 'spit vertical' },
+  b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
+  c = {
+    name = 'current',
+    n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
   },
   d = {
     name = 'dap',
@@ -48,7 +45,6 @@ wk.register({
     g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN_FILE }) end, 'grep files' },
     h = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
     k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
-    n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
     r = { function () require('telescope.builtin').registers() end, 'find register' },
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
   },
@@ -60,11 +56,6 @@ wk.register({
     r = { gs.reset_buffer, 'reset buffer' },
     s = { gs.stage_buffer, 'stage buffer' },
     u = { gs.undo_stage_hunk, 'undo stage' },
-  },
-  j = {
-    name = 'jester',
-    d = { function () require('jester').debug() end, 'debug' },
-    r = { function () require('jester').run() end, 'run' },
   },
   l = {
     name = 'lazy',
@@ -86,7 +77,12 @@ wk.register({
     r = { '<cmd>MagmaEvaluateOperator<CR>', 'evaluate operator' },
     s = { '<cmd>MagmaShowOutput<CR>', 'show output' },
   },
-  n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
+  n = {
+    name = 'Neo',
+    g = { '<cmd>Neogen<CR>', 'neogen' },
+    s = { function () require("neotest").run.stop() end, 'neotest stop' },
+    t = { function () require('neotest').run.run({ strategy = 'dap' }) end, 'neotest start' },
+  },
   o = {
     name = 'options',
     h = {
@@ -138,9 +134,8 @@ wk.register({
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
     c = { '<cmd>tabclose<CR>', 'tab close' },
     d = { gs.toggle_deleted, 'gitsigns deleted' },
-    g = { '<cmd>TSPlaygroundToggle<CR>', 'playground' },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
-    n = { '<cmd>tabnew<CR>', 'new tab' },
+    n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>SymbolsOutline<CR>', 'Tagbar' },
     u = { '<cmd>DBUIToggle<CR>', 'db ui' },
@@ -176,6 +171,13 @@ wk.register({
 
 -- INFO: <space> key
 wk.register({
+  b = {
+    name = 'buffer',
+    a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
+    c = { '<cmd>bdelete<CR>', 'buffer close' },
+    h = { '<cmd>sb<CR>', 'split horizontal' },
+    v = { '<cmd>vs<CR>', 'spit vertical' },
+  },
   c = {
     name = 'Code',
     a = { vim.lsp.buf.code_action, 'Action' },
@@ -186,6 +188,11 @@ wk.register({
   r = {
     name = 'Buffer',
     n = { vim.lsp.buf.rename, 'Lsp Rename' },
+  },
+  t = {
+    name = 'tab',
+    c = { '<cmd>tabclose<CR>', 'tab close' },
+    n = { '<cmd>tabnew<CR>', 'new tab' },
   },
   w = {
     name = 'Workspace',
