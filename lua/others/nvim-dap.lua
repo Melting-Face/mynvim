@@ -3,8 +3,6 @@ local dapui = require'dapui'
 -- dap-python
 local has_dap_python, dap_python = pcall(require, 'dap-python')
 
-local node_path = MASON .. '/node-debug2-adapter/out/src/nodeDebug.js'
-
 local js_adapter_path = MASON .. '/js-debug-adapter';
 
 if has_dap_python == true then
