@@ -632,18 +632,6 @@ return packer.startup(function(use)
 					},
 					["core.export"] = {},
 					["core.integrations.telescope"] = {},
-					["core.norg.dirman"] = {
-						config = {
-							workspaces = {
-								note = "~/note",
-							},
-						},
-					},
-					["core.gtd.base"] = {
-						config = {
-							workspace = "note",
-						},
-					},
 				},
 			})
 		end,
