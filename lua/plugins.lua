@@ -23,6 +23,16 @@ return {
 	'godlygeek/tabular',
 	-- whitespace
 	'ntpeters/vim-better-whitespace',
+  -- minimap
+	'wfxr/minimap.vim',
+  -- package-info
+  {
+    'vuki656/package-info.nvim',
+    dependencies = {
+			'MunifTanjim/nui.nvim',
+		},
+    config = true,
+  },
 	-- neotest
 	{
 		'nvim-neotest/neotest',
@@ -47,12 +57,8 @@ return {
 	-- outline
 	{
 		'simrat39/symbols-outline.nvim',
-		config = function()
-			require('symbols-outline').setup()
-		end,
+		config = true,
 	},
-	-- minimap
-	'wfxr/minimap.vim',
 	-- java/typescript
 	{
 		'mxsdev/nvim-dap-vscode-js',
@@ -65,16 +71,19 @@ return {
 		'folke/neodev.nvim',
 		config = function()
 			require('neodev').setup({
-				library = { plugins = { 'neotest' }, types = true },
+				library = {
+          plugins = {
+            'neotest',
+          },
+          types = true,
+        },
 			})
 		end,
 	},
 	-- luapad
 	{
 		'rafcamlet/nvim-luapad',
-		config = function()
-			require('luapad').setup()
-		end,
+		config = true,
 	},
 	-- neogen
 	{
@@ -138,16 +147,12 @@ return {
 		dependencies = {
 			'nvim-lua/plenary.nvim',
 		},
-		config = function()
-			require('crates').setup()
-		end,
+		config = true,
 	},
 	-- noice
 	{
 		'folke/noice.nvim',
-		config = function()
-			require('noice').setup()
-		end,
+		config = true,
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 			'rcarriga/nvim-notify',
@@ -209,6 +214,7 @@ return {
 					null_ls.builtins.formatting.black,
 					null_ls.builtins.formatting.eslint_d,
 					null_ls.builtins.formatting.isort,
+          null_ls.builtins.formatting.jq,
 					null_ls.builtins.formatting.remark,
 					null_ls.builtins.formatting.rustfmt,
 					null_ls.builtins.formatting.shellharden,
@@ -225,9 +231,7 @@ return {
 	{
 		'folke/todo-comments.nvim',
 		dependencies = 'nvim-lua/plenary.nvim',
-		config = function()
-			require('todo-comments').setup()
-		end,
+		config = true,
 	},
 	-- trouble
 	{
@@ -301,9 +305,7 @@ return {
 	-- scope.nvim for tab
 	{
 		'tiagovla/scope.nvim',
-		config = function()
-			require('scope').setup()
-		end,
+		config = true,
 	},
 	-- nvim-jdtls
 	{
@@ -318,9 +320,7 @@ return {
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
-		config = function()
-			require('dap-go').setup()
-		end,
+		config = true,
 	},
 	-- nvim-dap-python
 	{
@@ -366,18 +366,14 @@ return {
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
-		config = function()
-			require('dapui').setup()
-		end,
+		config = true,
 	},
 	{
 		'theHamsta/nvim-dap-virtual-text',
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
-		config = function()
-			require('nvim-dap-virtual-text').setup()
-		end,
+		config = true,
 	},
 	-- lsp installer
 	{
@@ -408,9 +404,7 @@ return {
 		dependencies = {
 			'williamboman/mason-lspconfig.nvim',
 		},
-		config = function()
-			require('mason').setup()
-		end,
+		config = true,
 	},
 	-- alpha
 	{
@@ -425,16 +419,12 @@ return {
 	-- comment
 	{
 		'numToStr/Comment.nvim',
-		config = function()
-			require('Comment').setup()
-		end,
+		config = true,
 	},
 	-- surround
 	{
 		'kylechui/nvim-surround',
-		config = function()
-			require('nvim-surround').setup()
-		end,
+		config = true,
 	},
 	-- nvim tree
 	{
@@ -442,15 +432,13 @@ return {
 		dependencies = {
 			'kyazdani42/nvim-web-devicons',
 		},
-		config = function()
-			require('nvim-tree').setup()
-		end,
+		config = true,
 	},
 	-- project nvim
 	{
 		'ahmedkhalf/project.nvim',
-		config = function()
-			require('project_nvim').setup()
+		config = function ()
+		  require('project_nvim').setup()
 		end,
 	},
 	-- lualine
