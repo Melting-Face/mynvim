@@ -1,178 +1,167 @@
-vim.cmd([[packadd packer.nvim]])
-
-local packer = require("packer")
-
--- INFO: add max jobs
-packer.init({
-	max_jobs = 50,
-})
-
-return packer.startup(function(use)
-	-- Packer can manage itself
-	use("wbthomason/packer.nvim")
+return {
 	-- devicons
-	use("kyazdani42/nvim-web-devicons")
+	'kyazdani42/nvim-web-devicons',
 	-- multi cursor
-	use("mg979/vim-visual-multi")
+	'mg979/vim-visual-multi',
 	-- theme tokyonight
-	use("folke/tokyonight.nvim")
+	'folke/tokyonight.nvim',
 	-- async
-	use("nvim-lua/plenary.nvim")
+	'nvim-lua/plenary.nvim',
 	-- vim-fugitive
-	use("tpope/vim-fugitive")
+	'tpope/vim-fugitive',
 	-- notify
-	use("rcarriga/nvim-notify")
+	'rcarriga/nvim-notify',
 	-- emmet
-	use("mattn/emmet-vim")
+	'mattn/emmet-vim',
 	-- rainbow csv
-	use("mechatroner/rainbow_csv")
+	'mechatroner/rainbow_csv',
 	-- starttime
-	use("dstein64/vim-startuptime")
+	'dstein64/vim-startuptime',
 	-- cache
-	use("lewis6991/impatient.nvim")
+	'lewis6991/impatient.nvim',
 	-- tabular
-	use("godlygeek/tabular")
+	'godlygeek/tabular',
 	-- whitespace
-	use("ntpeters/vim-better-whitespace")
+	'ntpeters/vim-better-whitespace',
 	-- neotest
-	use({
-		"nvim-neotest/neotest",
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-			"antoinemadec/FixCursorHold.nvim",
-			"nvim-neotest/neotest-plenary",
-			"nvim-neotest/neotest-python",
-			"haydenmeade/neotest-jest",
+	{
+		'nvim-neotest/neotest',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			'nvim-treesitter/nvim-treesitter',
+			'antoinemadec/FixCursorHold.nvim',
+			'nvim-neotest/neotest-plenary',
+			'nvim-neotest/neotest-python',
+			'haydenmeade/neotest-jest',
 		},
 		config = function()
-			require("neotest").setup({
+			require('neotest').setup({
 				adapters = {
-					require("neotest-python"),
-					require("neotest-plenary"),
-					require("neotest-jest"),
+					require('neotest-python'),
+					require('neotest-plenary'),
+					require('neotest-jest'),
 				},
 			})
 		end,
-	})
+	},
 	-- outline
-	use({
-		"simrat39/symbols-outline.nvim",
+	{
+		'simrat39/symbols-outline.nvim',
 		config = function()
-			require("symbols-outline").setup()
+			require('symbols-outline').setup()
 		end,
-	})
+	},
 	-- minimap
-	use("wfxr/minimap.vim")
+	'wfxr/minimap.vim',
 	-- java/typescript
-	use({
-		"mxsdev/nvim-dap-vscode-js",
-		requires = {
-			"mfussenegger/nvim-dap",
+	{
+		'mxsdev/nvim-dap-vscode-js',
+		dependencies = {
+			'mfussenegger/nvim-dap',
 		},
-	})
+	},
 	-- neodev
-	use({
-		"folke/neodev.nvim",
+	{
+		'folke/neodev.nvim',
 		config = function()
-			require("neodev").setup({
-				library = { plugins = { "neotest" }, types = true },
+			require('neodev').setup({
+				library = { plugins = { 'neotest' }, types = true },
 			})
 		end,
-	})
+	},
 	-- luapad
-	use({
-		"rafcamlet/nvim-luapad",
+	{
+		'rafcamlet/nvim-luapad',
 		config = function()
-			require("luapad").setup()
+			require('luapad').setup()
 		end,
-	})
+	},
 	-- neogen
-	use({
-		"danymat/neogen",
-		requires = {
-			"nvim-treesitter/nvim-treesitter",
+	{
+		'danymat/neogen',
+		dependencies = {
+			'nvim-treesitter/nvim-treesitter',
 		},
 		config = function()
 			local lang_doc_map = {
-				go = "godoc",
-				lua = "ldoc",
-				java = "javadoc",
-				javascript = "jsdoc",
-				python = "google_docstrings",
-				rust = "rustdoc",
-				sh = "google_bash",
-				typescript = "tsdoc",
-				typescriptreact = "tsdoc",
+				go = 'godoc',
+				lua = 'ldoc',
+				java = 'javadoc',
+				javascript = 'jsdoc',
+				python = 'google_docstrings',
+				rust = 'rustdoc',
+				sh = 'google_bash',
+				typescript = 'tsdoc',
+				typescriptreact = 'tsdoc',
 			}
 
 			local languages = {}
 
 			for lang, doc in ipairs(lang_doc_map) do
-				languages[lang]["template"]["annotation_convention"] = doc
+				languages[lang]['template']['annotation_convention'] = doc
 			end
 
-			require("neogen").setup({
-				snippet_engine = "luasnip",
+			require('neogen').setup({
+				snippet_engine = 'luasnip',
 				languages = languages,
 			})
 		end,
-	})
+	},
 	-- for winbar
-	use({
-		"SmiteshP/nvim-navic",
-		requires = "neovim/nvim-lspconfig",
+	{
+		'SmiteshP/nvim-navic',
+		dependencies = 'neovim/nvim-lspconfig',
 		config = function()
-			require("nvim-navic").setup({
+			require('nvim-navic').setup({
 				highlight = true,
 			})
 		end,
-	})
+	},
 	-- magma
-	use({
-		"dccsillag/magma-nvim",
-		run = ":UpdateRemotePlugins",
-	})
+	{
+		'dccsillag/magma-nvim',
+		build = ':UpdateRemotePlugins',
+	},
 	-- vim dadbod
-	use({
-		"kristijanhusak/vim-dadbod-ui",
-		requires = {
-			"tpope/vim-dadbod",
+	{
+		'kristijanhusak/vim-dadbod-ui',
+		dependencies = {
+			'tpope/vim-dadbod',
 		},
-	})
+	},
 	-- crates
-	use({
-		"saecki/crates.nvim",
+	{
+		'saecki/crates.nvim',
 		event = {
-			"BufRead Cargo.toml",
+			'BufRead Cargo.toml',
 		},
-		requires = {
-			"nvim-lua/plenary.nvim",
+		dependencies = {
+			'nvim-lua/plenary.nvim',
 		},
 		config = function()
-			require("crates").setup()
+			require('crates').setup()
 		end,
-	})
+	},
 	-- noice
-	use({
-		"folke/noice.nvim",
+	{
+		'folke/noice.nvim',
 		config = function()
-			require("noice").setup()
+			require('noice').setup()
 		end,
-		requires = {
-			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
+		dependencies = {
+			'MunifTanjim/nui.nvim',
+			'rcarriga/nvim-notify',
 		},
-	})
+	},
 	-- restnvim
-	use({
-		"rest-nvim/rest.nvim",
-		ft = "http",
-		requires = {
-			"nvim-lua/plenary.nvim",
+	{
+		'rest-nvim/rest.nvim',
+		ft = 'http',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
 		},
 		config = function()
-			require("rest-nvim").setup({
+			require('rest-nvim').setup({
 				result_split_horizontal = false,
 				result_split_in_place = false,
 				skip_ssl_verification = false,
@@ -186,27 +175,27 @@ return packer.startup(function(use)
 					show_http_info = true,
 					show_headers = true,
 					formatters = {
-						json = "jq",
+						json = 'jq',
 						html = function(body)
-							return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
+							return vim.fn.system({ 'tidy', '-i', '-q', '-' }, body)
 						end,
 					},
 				},
 				-- Jump to request line on run
 				jump_to_request = false,
-				env_file = ".env",
+				env_file = '.env',
 				custom_dynamic_variables = {},
 				yank_dry_run = true,
 			})
 		end,
-	})
+	},
 	-- null_ls
-	use({
-		"jose-elias-alvarez/null-ls.nvim",
+	{
+		'jose-elias-alvarez/null-ls.nvim',
 		config = function()
-			local null_ls = require("null-ls")
+			local null_ls = require('null-ls')
 			null_ls.setup({
-				diagnostics_format = "[#{c}] #{m} (#{s})",
+				diagnostics_format = '[#{c}] #{m} (#{s})',
 				debounce = 750,
 				sources = {
 					null_ls.builtins.diagnostics.eslint_d,
@@ -228,125 +217,125 @@ return packer.startup(function(use)
 				},
 			})
 		end,
-		requires = {
-			"nvim-lua/plenary.nvim",
+		dependencies = {
+			'nvim-lua/plenary.nvim',
 		},
-	})
+	},
 	-- todo comment
-	use({
-		"folke/todo-comments.nvim",
-		requires = "nvim-lua/plenary.nvim",
+	{
+		'folke/todo-comments.nvim',
+		dependencies = 'nvim-lua/plenary.nvim',
 		config = function()
-			require("todo-comments").setup()
+			require('todo-comments').setup()
 		end,
-	})
+	},
 	-- trouble
-	use({
-		"folke/trouble.nvim",
-		requires = "kyazdani42/nvim-web-devicons",
+	{
+		'folke/trouble.nvim',
+		dependencies = 'kyazdani42/nvim-web-devicons',
 		config = function()
-			require("trouble").setup({
-				mode = "document_diagnostics",
+			require('trouble').setup({
+				mode = 'document_diagnostics',
 			})
 		end,
-	})
+	},
 	-- autopairs
-	use({
-		"windwp/nvim-autopairs",
+	{
+		'windwp/nvim-autopairs',
 		config = function()
-			require("nvim-autopairs").setup({
+			require('nvim-autopairs').setup({
 				disable_filetype = {
-					"TelescopePrompt",
-					"vim",
+					'TelescopePrompt',
+					'vim',
 				},
 			})
 		end,
-	})
+	},
 	-- markdown
-	use({
-		"iamcco/markdown-preview.nvim",
-		run = "cd app && npm install",
+	{
+		'iamcco/markdown-preview.nvim',
+		build = 'cd app && npm install',
 		setup = function()
 			vim.g.mkdp_filetypes = {
-				"markdown",
+				'markdown',
 			}
 		end,
 		ft = {
-			"markdown",
+			'markdown',
 		},
-	})
+	},
 	-- whici keys
-	use({
-		"folke/which-key.nvim",
+	{
+		'folke/which-key.nvim',
 		config = function()
-			require("which-key").setup()
+			require('which-key').setup()
 		end,
-	})
+	},
 	-- indent-blankline
-	use({
-		"lukas-reineke/indent-blankline.nvim",
+	{
+		'lukas-reineke/indent-blankline.nvim',
 		config = function()
-			require("indent_blankline").setup({
+			require('indent_blankline').setup({
 				show_current_context = true,
 				show_current_context_start = true,
 				show_end_of_line = true,
 			})
 		end,
-	})
+	},
 	-- bufferline
-	use({
-		"akinsho/bufferline.nvim",
-		requires = "kyazdani42/nvim-web-devicons",
+	{
+		'akinsho/bufferline.nvim',
+		dependencies = 'kyazdani42/nvim-web-devicons',
 		config = function()
-			require("bufferline").setup({
+			require('bufferline').setup({
 				options = {
-					separator_style = "padded_slant",
+					separator_style = 'padded_slant',
 					numbers = function(opts)
-						return string.format("%s·%s", opts.raise(opts.id), opts.lower(opts.ordinal))
+						return string.format('%s·%s', opts.raise(opts.id), opts.lower(opts.ordinal))
 					end,
-					diagnostics = "nvim_lsp",
+					diagnostics = 'nvim_lsp',
 				},
 			})
 		end,
-	})
+	},
 	-- scope.nvim for tab
-	use({
-		"tiagovla/scope.nvim",
+	{
+		'tiagovla/scope.nvim',
 		config = function()
-			require("scope").setup()
+			require('scope').setup()
 		end,
-	})
+	},
 	-- nvim-jdtls
-	use({
-		"mfussenegger/nvim-jdtls",
+	{
+		'mfussenegger/nvim-jdtls',
 		ft = {
-			"java",
+			'java',
 		},
-	})
+	},
 	-- nvim-dap-go
-	use({
-		"leoluz/nvim-dap-go",
-		requires = {
-			"mfussenegger/nvim-dap",
+	{
+		'leoluz/nvim-dap-go',
+		dependencies = {
+			'mfussenegger/nvim-dap',
 		},
 		config = function()
-			require("dap-go").setup()
+			require('dap-go').setup()
 		end,
-	})
+	},
 	-- nvim-dap-python
-	use({
-		"mfussenegger/nvim-dap-python",
-		requires = {
-			"mfussenegger/nvim-dap",
+	{
+		'mfussenegger/nvim-dap-python',
+		dependencies = {
+			'mfussenegger/nvim-dap',
 		},
-	})
+	},
 	-- rust-tools
-	use({
-		"simrat39/rust-tools.nvim",
-		requires = {
-			"neovim/nvim-lspconfig",
-			"nvim-lua/plenary.nvim",
-			"mfussenegger/nvim-dap",
+	{
+		'simrat39/rust-tools.nvim',
+		dependencies = {
+			'neovim/nvim-lspconfig',
+			'nvim-lua/plenary.nvim',
+			'mfussenegger/nvim-dap',
 		},
 		config = function()
 			local opt = {
@@ -355,144 +344,143 @@ return packer.startup(function(use)
 				},
 				dap = {
 					adapter = {
-						type = "executable",
-						command = "lldb-vscode",
-						name = "rt_lldb",
+						type = 'executable',
+						command = 'lldb-vscode',
+						name = 'rt_lldb',
 					},
 				},
 			}
-			require("rust-tools").setup(opt)
+			require('rust-tools').setup(opt)
 		end,
-	})
+	},
 	-- nvim-dap-lua
-	use({
-		"jbyuki/one-small-step-for-vimkind",
-		requires = {
-			"mfussenegger/nvim-dap",
+	{
+		'jbyuki/one-small-step-for-vimkind',
+		dependencies = {
+			'mfussenegger/nvim-dap',
 		},
-	})
+	},
 	-- nvim-dap-ui
-	use({
-		"rcarriga/nvim-dap-ui",
-		requires = {
-			"mfussenegger/nvim-dap",
+	{
+		'rcarriga/nvim-dap-ui',
+		dependencies = {
+			'mfussenegger/nvim-dap',
 		},
 		config = function()
-			require("dapui").setup()
+			require('dapui').setup()
 		end,
-	})
-	use({
-		"theHamsta/nvim-dap-virtual-text",
-		requires = {
-			"mfussenegger/nvim-dap",
+	},
+	{
+		'theHamsta/nvim-dap-virtual-text',
+		dependencies = {
+			'mfussenegger/nvim-dap',
 		},
 		config = function()
-			require("nvim-dap-virtual-text").setup()
+			require('nvim-dap-virtual-text').setup()
 		end,
-	})
+	},
 	-- lsp installer
-	use({
-		"williamboman/mason-lspconfig.nvim",
-		requires = { "neovim/nvim-lspconfig" },
+	{
+		'williamboman/mason-lspconfig.nvim',
+		dependencies = { 'neovim/nvim-lspconfig' },
 		config = function()
-			require("mason-lspconfig").setup({
+			require('mason-lspconfig').setup({
 				ensure_installed = {
-					"bashls",
-					"dockerls",
-					"gopls",
-					"jdtls",
-					"jsonls",
-					"pyright",
-					"rust_analyzer",
-					"sumneko_lua",
-					"sqlls",
-					"tsserver",
-					"vimls",
-					"yamlls",
+					'bashls',
+					'dockerls',
+					'gopls',
+					'jdtls',
+					'jsonls',
+					'pyright',
+					'rust_analyzer',
+					'sumneko_lua',
+					'sqlls',
+					'tsserver',
+					'vimls',
+					'yamlls',
 				},
 				automatic_installation = true,
 			})
 		end,
-	})
-	use({
-		"williamboman/mason.nvim",
-		requires = {
-			"williamboman/mason-lspconfig.nvim",
+	},
+	{
+		'williamboman/mason.nvim',
+		dependencies = {
+			'williamboman/mason-lspconfig.nvim',
 		},
 		config = function()
-			require("mason").setup()
+			require('mason').setup()
 		end,
-	})
+	},
 	-- alpha
-	use({
-		"goolord/alpha-nvim",
-		requires = {
-			"kyazdani42/nvim-web-devicons",
+	{
+		'goolord/alpha-nvim',
+		dependencies = {
+			'kyazdani42/nvim-web-devicons',
 		},
 		config = function()
-			require("alpha").setup(require("alpha.themes.dashboard").config)
+			require('alpha').setup(require('alpha.themes.dashboard').config)
 		end,
-	})
+	},
 	-- comment
-	use({
-		"numToStr/Comment.nvim",
+	{
+		'numToStr/Comment.nvim',
 		config = function()
-			require("Comment").setup()
+			require('Comment').setup()
 		end,
-	})
+	},
 	-- surround
-	use({
-		"kylechui/nvim-surround",
-		tag = "*",
+	{
+		'kylechui/nvim-surround',
 		config = function()
-			require("nvim-surround").setup()
+			require('nvim-surround').setup()
 		end,
-	})
+	},
 	-- nvim tree
-	use({
-		"kyazdani42/nvim-tree.lua",
-		requires = {
-			"kyazdani42/nvim-web-devicons",
+	{
+		'kyazdani42/nvim-tree.lua',
+		dependencies = {
+			'kyazdani42/nvim-web-devicons',
 		},
 		config = function()
-			require("nvim-tree").setup()
+			require('nvim-tree').setup()
 		end,
-	})
+	},
 	-- project nvim
-	use({
-		"ahmedkhalf/project.nvim",
+	{
+		'ahmedkhalf/project.nvim',
 		config = function()
-			require("project_nvim").setup()
+			require('project_nvim').setup()
 		end,
-	})
+	},
 	-- lualine
-	use({
-		"nvim-lualine/lualine.nvim",
-		requires = {
-			"kyazdani42/nvim-web-devicons",
+	{
+		'nvim-lualine/lualine.nvim',
+		dependencies = {
+			'kyazdani42/nvim-web-devicons',
 			opt = true,
 		},
-		after = "nvim-navic",
+		after = 'nvim-navic',
 		config = function()
 			local function navic_winbar()
-				local navic = require("nvim-navic")
+				local navic = require('nvim-navic')
 				if navic.is_available() then
-					return "%#WinBarSeparator#" .. navic.get_location() .. "%#WinBarSeparator#"
+					return '%#WinBarSeparator#' .. navic.get_location() .. '%#WinBarSeparator#'
 				else
-					return "%#WinBarSeparator#" .. "%#WinBarSeparator#"
+					return '%#WinBarSeparator#' .. '%#WinBarSeparator#'
 				end
 			end
-			require("lualine").setup({
+			require('lualine').setup({
 				options = {
-					theme = "palenight",
+					theme = 'palenight',
 					disabled_filetypes = {
 						winbar = {
-							"alpha",
-							"dbui",
-							"dbout",
-							"notify",
-							"NvimTree",
-							"packer",
+							'alpha',
+							'dbui',
+							'dbout',
+							'notify',
+							'NvimTree',
+							'packer',
 						},
 					},
 				},
@@ -504,48 +492,48 @@ return packer.startup(function(use)
 					},
 				},
 				extensions = {
-					"fugitive",
-					"nvim-dap-ui",
-					"nvim-tree",
-					"toggleterm",
+					'fugitive',
+					'nvim-dap-ui',
+					'nvim-tree',
+					'toggleterm',
 				},
 			})
 		end,
-	})
+	},
 	-- nvim-treesitter
-	use({
-		"nvim-treesitter/nvim-treesitter",
-		requires = {
-			"RRethy/nvim-treesitter-textsubjects",
-			"nvim-treesitter/nvim-treesitter-textobjects",
-			"windwp/nvim-ts-autotag",
-			"nvim-treesitter/nvim-treesitter-context",
+	{
+		'nvim-treesitter/nvim-treesitter',
+		dependencies = {
+			'RRethy/nvim-treesitter-textsubjects',
+			'nvim-treesitter/nvim-treesitter-textobjects',
+			'windwp/nvim-ts-autotag',
+			'nvim-treesitter/nvim-treesitter-context',
 		},
-		run = ":TSUpdate",
+		build = ':TSUpdate',
 		config = function()
-			require("nvim-treesitter.install").compilers = { "gcc-12" }
-			require("nvim-treesitter.configs").setup({
+			require('nvim-treesitter.install').compilers = { 'gcc-12' }
+			require('nvim-treesitter.configs').setup({
 				sync_install = true,
 				ensure_installed = {
-					"bash",
-					"dockerfile",
-					"go",
-					"html",
-					"http",
-					"java",
-					"javascript",
-					"json",
-					"lua",
-					"markdown",
-					"norg",
-					"python",
-					"regex",
-					"rust",
-					"sql",
-					"tsx",
-					"typescript",
-					"vim",
-					"yaml",
+					'bash',
+					'dockerfile',
+					'go',
+					'html',
+					'http',
+					'java',
+					'javascript',
+					'json',
+					'lua',
+					'markdown',
+					'norg',
+					'python',
+					'regex',
+					'rust',
+					'sql',
+					'tsx',
+					'typescript',
+					'vim',
+					'yaml',
 				},
 				autotag = {
 					enable = true,
@@ -553,9 +541,9 @@ return packer.startup(function(use)
 				textsubjects = {
 					enable = true,
 					keymaps = {
-						["."] = "textsubjects-smart",
-						[";"] = "textsubjects-container-outer",
-						["i;"] = "textsubjects-container-inner",
+						['.'] = 'textsubjects-smart',
+						[';'] = 'textsubjects-container-outer',
+						['i;'] = 'textsubjects-container-inner',
 					},
 				},
 				textobjects = {
@@ -563,122 +551,118 @@ return packer.startup(function(use)
 						enable = true,
 						lookahead = true,
 						keymaps = {
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
+							['af'] = '@function.outer',
+							['if'] = '@function.inner',
+							['ac'] = '@class.outer',
+							['ic'] = '@class.inner',
 						},
 					},
 					move = {
 						enable = true,
 						set_jumps = true,
 						goto_next_start = {
-							["]m"] = "@function.outer",
-							["]]"] = "@class.outer",
+							[']m'] = '@function.outer',
+							[']]'] = '@class.outer',
 						},
 						goto_next_end = {
-							["]M"] = "@function.outer",
-							["]["] = "@class.outer",
+							[']M'] = '@function.outer',
+							[']['] = '@class.outer',
 						},
 						goto_previous_start = {
-							["[m"] = "@function.outer",
-							["[["] = "@class.outer",
+							['[m'] = '@function.outer',
+							['[['] = '@class.outer',
 						},
 						goto_previous_end = {
-							["[M"] = "@function.outer",
-							["[]"] = "@class.outer",
+							['[M'] = '@function.outer',
+							['[]'] = '@class.outer',
 						},
 					},
 				},
 			})
 		end,
-	})
-	use({
-		"ThePrimeagen/refactoring.nvim",
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
+	},
+  -- refactoring
+	{
+		'ThePrimeagen/refactoring.nvim',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			'nvim-treesitter/nvim-treesitter',
 		},
-		config = function()
-			require("refactoring").setup()
-		end,
-	})
+		config = true,
+	},
 	-- cmp
-	use({
-		"hrsh7th/nvim-cmp",
-		requires = {
-			"L3MON4D3/LuaSnip",
-			"saadparwaiz1/cmp_luasnip",
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
-			"hrsh7th/cmp-cmdline",
+	{
+		'hrsh7th/nvim-cmp',
+		dependencies = {
+			'L3MON4D3/LuaSnip',
+			'saadparwaiz1/cmp_luasnip',
+			'hrsh7th/cmp-nvim-lsp',
+			'hrsh7th/cmp-buffer',
+			'hrsh7th/cmp-path',
+			'hrsh7th/cmp-cmdline',
 		},
-	})
+	},
 	-- neorg
-	use({
-		"nvim-neorg/neorg",
-		after = "nvim-treesitter",
-		run = ":Neorg sync-parsers",
+	{
+		'nvim-neorg/neorg',
+		after = 'nvim-treesitter',
+		build = ':Neorg sync-parsers',
 		config = function()
-			require("neorg").setup({
+			require('neorg').setup({
 				load = {
-					["core.defaults"] = {},
-					["core.norg.concealer"] = {},
-					["core.norg.completion"] = {
+					['core.defaults'] = {},
+					['core.norg.concealer'] = {},
+					['core.norg.completion'] = {
 						config = {
-							engine = "nvim-cmp",
+							engine = 'nvim-cmp',
 						},
 					},
-					["core.export"] = {},
-					["core.integrations.telescope"] = {},
+					['core.export'] = {},
+					['core.integrations.telescope'] = {},
 				},
 			})
 		end,
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-neorg/neorg-telescope",
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			'nvim-neorg/neorg-telescope',
 		},
-	})
+	},
 	-- telescope
-	use({
-		"nvim-telescope/telescope.nvim",
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-telescope/telescope-dap.nvim",
-			"cljoly/telescope-repo.nvim",
-			"danielpieper/telescope-tmuxinator.nvim",
+	{
+		'nvim-telescope/telescope.nvim',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			'nvim-telescope/telescope-dap.nvim',
+			'cljoly/telescope-repo.nvim',
+			'danielpieper/telescope-tmuxinator.nvim',
 		},
 		config = function()
-			local telescope = require("telescope")
+			local telescope = require('telescope')
 			telescope.setup()
-			telescope.load_extension("dap")
-			telescope.load_extension("noice")
-			telescope.load_extension("refactoring")
-			telescope.load_extension("repo")
-			telescope.load_extension("tmuxinator")
+			telescope.load_extension('dap')
+			telescope.load_extension('noice')
+			telescope.load_extension('refactoring')
+			telescope.load_extension('repo')
+			telescope.load_extension('tmuxinator')
 		end,
-	})
+	},
 	-- gitsigns
-	use({
-		"lewis6991/gitsigns.nvim",
+	{
+		'lewis6991/gitsigns.nvim',
 		config = function()
-			require("gitsigns").setup({
+			require('gitsigns').setup({
 				current_line_blame_opts = {
 					virt_text = true,
-					virt_text_pos = "eol",
+					virt_text_pos = 'eol',
 					delay = 500,
 					ignore_whitespace = false,
 				},
 			})
 		end,
-	})
+	},
 	-- toggleterm
-	use({
-		"akinsho/toggleterm.nvim",
-		tag = "v2.*",
-		config = function()
-			require("toggleterm").setup()
-		end,
-	})
-end)
+	{
+		'akinsho/toggleterm.nvim',
+		config = true,
+	},
+}
