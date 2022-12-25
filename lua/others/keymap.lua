@@ -59,9 +59,9 @@ wk.register({
   },
   l = {
     name = 'lazy',
-    d = { function () LazyDocker:toggle() end, 'lazy docker' },
-    g = { function () LazyGit:toggle() end, 'lazy git' },
-    n = { function () LazyNpm:toggle() end, 'lazy npm' },
+    d = { function () lazydocker:toggle() end, 'lazy docker' },
+    g = { '<cmd>lua _lazygit()<CR>', 'lazy git' },
+    n = { function () lazynpm:toggle() end, 'lazy npm' },
     p = {
       function ()
         require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
@@ -160,7 +160,7 @@ wk.register({
 
 -- INFO: <leader> key (visual)
 wk.register({
-  j = {
+  m = {
     name = 'jupyter with magma',
     l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
   }
