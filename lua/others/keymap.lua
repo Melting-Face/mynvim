@@ -59,9 +59,9 @@ wk.register({
   },
   l = {
     name = 'lazy',
-    d = { function () lazydocker:toggle() end, 'lazy docker' },
+    d = { '<cmd>lua _lazydocker()<CR>', 'lazy docker' },
     g = { '<cmd>lua _lazygit()<CR>', 'lazy git' },
-    n = { function () lazynpm:toggle() end, 'lazy npm' },
+    n = { '<cmd>lua _lazynpm()<CR>', 'lazy npm' },
     p = {
       function ()
         require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
