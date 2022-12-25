@@ -42,8 +42,6 @@ function install_package() {
   $PREFIX install llvm
   $PREFIX install rust
   $PREFIX install jq
-  $PREFIX install gh
-  $PREFIX install universal-ctags
   $PREFIX install code-minimap
   pip3 install neovim
   pip3 install debugpy
@@ -86,7 +84,7 @@ function create_symlink() {
 }
 
 function install_plugins() {
-  nvim +PackerSync 
+  nvim --headless "+Lazy! sync" +qa
 } 
 
 if [ "$1" == "all" ]; then
