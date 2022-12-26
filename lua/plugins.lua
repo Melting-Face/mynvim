@@ -25,6 +25,87 @@ return {
 	'ntpeters/vim-better-whitespace',
   -- minimap
 	'wfxr/minimap.vim',
+  -- nvim-treesitter
+	{
+		'nvim-treesitter/nvim-treesitter',
+		dependencies = {
+			'RRethy/nvim-treesitter-textsubjects',
+			'nvim-treesitter/nvim-treesitter-textobjects',
+			'windwp/nvim-ts-autotag',
+			'nvim-treesitter/nvim-treesitter-context',
+		},
+		build = ':TSUpdate',
+		config = function()
+			require('nvim-treesitter.install').compilers = { 'gcc-12' }
+			require('nvim-treesitter.configs').setup({
+				sync_install = true,
+				ensure_installed = {
+					'bash',
+					'dockerfile',
+					'go',
+					'html',
+					'http',
+					'java',
+					'javascript',
+					'json',
+					'lua',
+					'markdown',
+					'norg',
+					'python',
+					'regex',
+					'rust',
+					'tsx',
+					'typescript',
+          'vim',
+					'yaml',
+				},
+				autotag = {
+					enable = true,
+				},
+				textsubjects = {
+					enable = true,
+					keymaps = {
+						['.'] = 'textsubjects-smart',
+						[';'] = 'textsubjects-container-outer',
+						['i;'] = 'textsubjects-container-inner',
+					},
+				},
+				textobjects = {
+					select = {
+						enable = true,
+						lookahead = true,
+						keymaps = {
+							['af'] = '@function.outer',
+							['if'] = '@function.inner',
+							['ac'] = '@class.outer',
+							['ic'] = '@class.inner',
+						},
+					},
+					move = {
+						enable = true,
+						set_jumps = true,
+						goto_next_start = {
+							[']m'] = '@function.outer',
+							[']]'] = '@class.outer',
+						},
+						goto_next_end = {
+							[']M'] = '@function.outer',
+							[']['] = '@class.outer',
+						},
+						goto_previous_start = {
+							['[m'] = '@function.outer',
+							['[['] = '@class.outer',
+						},
+						goto_previous_end = {
+							['[M'] = '@function.outer',
+							['[]'] = '@class.outer',
+						},
+					},
+				},
+			})
+		end,
+	},
+
   -- package-info
   {
     'vuki656/package-info.nvim',
@@ -152,11 +233,11 @@ return {
 	-- noice
 	{
 		'folke/noice.nvim',
-		config = true,
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 			'rcarriga/nvim-notify',
 		},
+    config = {},
 	},
 	-- restnvim
 	{
@@ -376,6 +457,14 @@ return {
 		config = true,
 	},
 	-- lsp installer
+  -- mason
+  {
+		'williamboman/mason.nvim',
+		dependencies = {
+			'williamboman/mason-lspconfig.nvim',
+		},
+		config = true,
+	},
 	{
 		'williamboman/mason-lspconfig.nvim',
 		dependencies = { 'neovim/nvim-lspconfig' },
@@ -398,13 +487,6 @@ return {
 				automatic_installation = true,
 			})
 		end,
-	},
-	{
-		'williamboman/mason.nvim',
-		dependencies = {
-			'williamboman/mason-lspconfig.nvim',
-		},
-		config = true,
 	},
 	-- alpha
 	{
@@ -488,88 +570,7 @@ return {
 			})
 		end,
 	},
-	-- nvim-treesitter
-	{
-		'nvim-treesitter/nvim-treesitter',
-		dependencies = {
-			'RRethy/nvim-treesitter-textsubjects',
-			'nvim-treesitter/nvim-treesitter-textobjects',
-			'windwp/nvim-ts-autotag',
-			'nvim-treesitter/nvim-treesitter-context',
-		},
-		build = ':TSUpdate',
-		config = function()
-			require('nvim-treesitter.install').compilers = { 'gcc-12' }
-			require('nvim-treesitter.configs').setup({
-				sync_install = true,
-				ensure_installed = {
-					'bash',
-					'dockerfile',
-					'go',
-					'html',
-					'http',
-					'java',
-					'javascript',
-					'json',
-					'lua',
-					'markdown',
-					'norg',
-					'python',
-					'regex',
-					'rust',
-					'sql',
-					'tsx',
-					'typescript',
-					'vim',
-					'yaml',
-				},
-				autotag = {
-					enable = true,
-				},
-				textsubjects = {
-					enable = true,
-					keymaps = {
-						['.'] = 'textsubjects-smart',
-						[';'] = 'textsubjects-container-outer',
-						['i;'] = 'textsubjects-container-inner',
-					},
-				},
-				textobjects = {
-					select = {
-						enable = true,
-						lookahead = true,
-						keymaps = {
-							['af'] = '@function.outer',
-							['if'] = '@function.inner',
-							['ac'] = '@class.outer',
-							['ic'] = '@class.inner',
-						},
-					},
-					move = {
-						enable = true,
-						set_jumps = true,
-						goto_next_start = {
-							[']m'] = '@function.outer',
-							[']]'] = '@class.outer',
-						},
-						goto_next_end = {
-							[']M'] = '@function.outer',
-							[']['] = '@class.outer',
-						},
-						goto_previous_start = {
-							['[m'] = '@function.outer',
-							['[['] = '@class.outer',
-						},
-						goto_previous_end = {
-							['[M'] = '@function.outer',
-							['[]'] = '@class.outer',
-						},
-					},
-				},
-			})
-		end,
-	},
-  -- refactoring
+	-- refactoring
 	{
 		'ThePrimeagen/refactoring.nvim',
 		dependencies = {
