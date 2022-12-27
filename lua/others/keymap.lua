@@ -45,6 +45,7 @@ wk.register({
     g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN_FILE }) end, 'grep files' },
     h = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
     k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
+    p = { '<cmd>Telescope projects<CR>', 'find projects' },
     r = { function () require('telescope.builtin').registers() end, 'find register' },
     t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
   },
@@ -174,9 +175,9 @@ wk.register({
   b = {
     name = 'buffer',
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
-    c = { '<cmd>bdelete<CR>', 'buffer close' },
     h = { '<cmd>sb<CR>', 'split horizontal' },
     v = { '<cmd>vs<CR>', 'spit vertical' },
+    x = { '<cmd>bdelete<CR>', 'buffer close' },
   },
   c = {
     name = 'Code',
@@ -191,8 +192,8 @@ wk.register({
   },
   t = {
     name = 'tab',
-    c = { '<cmd>tabclose<CR>', 'tab close' },
     n = { '<cmd>tabnew<CR>', 'new tab' },
+    x = { '<cmd>tabclose<CR>', 'tab close' },
   },
   w = {
     name = 'Workspace',
