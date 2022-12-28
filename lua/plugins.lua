@@ -75,7 +75,17 @@ return {
               ['@function.outer'] = 'V',
               ['@class.outer'] = '<c-v>',
             },
+            include_surrounding_whitespace = true,
 					},
+          lsp_interop = {
+            enable = true,
+            border = 'none',
+            floating_preview_opts = {},
+            peek_definition_code = {
+              ["<leader>df"] = "@function.outer",
+              ["<leader>dF"] = "@class.outer",
+            },
+          },
 					move = {
 						enable = true,
 						set_jumps = true,
@@ -96,20 +106,19 @@ return {
 							['[]'] = '@class.outer',
 						},
 					},
-          lsp_interop = {
+          swap = {
             enable = true,
-            border = 'none',
-            floating_preview_opts = {},
-            peek_definition_code = {
-              ["<leader>df"] = "@function.outer",
-              ["<leader>dF"] = "@class.outer",
+            swap_next = {
+              ["<leader>a"] = "@parameter.inner",
+            },
+            swap_previous = {
+              ["<leader>A"] = "@parameter.inner",
             },
           },
 				},
 			})
 		end,
 	},
-
   -- package-info
   {
     'vuki656/package-info.nvim',
