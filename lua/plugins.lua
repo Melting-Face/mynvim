@@ -29,10 +29,8 @@ return {
 	{
 		'nvim-treesitter/nvim-treesitter',
 		dependencies = {
-			'RRethy/nvim-treesitter-textsubjects',
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'windwp/nvim-ts-autotag',
-			'nvim-treesitter/nvim-treesitter-context',
 		},
 		build = ':TSUpdate',
 		config = function()
@@ -61,14 +59,6 @@ return {
 				},
 				autotag = {
 					enable = true,
-				},
-				textsubjects = {
-					enable = true,
-					keymaps = {
-						['.'] = 'textsubjects-smart',
-						[';'] = 'textsubjects-container-outer',
-						['i;'] = 'textsubjects-container-inner',
-					},
 				},
 				textobjects = {
 					select = {
@@ -101,6 +91,15 @@ return {
 							['[]'] = '@class.outer',
 						},
 					},
+          lsp_interop = {
+            enable = true,
+            border = 'none',
+            floating_preview_opts = {},
+            peek_definition_code = {
+              ["<leader>df"] = "@function.outer",
+              ["<leader>dF"] = "@class.outer",
+            },
+          },
 				},
 			})
 		end,
