@@ -477,7 +477,6 @@ return {
 		},
 		config = true,
 	},
-	-- lsp installer
 	-- mason
 	{
 		'williamboman/mason.nvim',
@@ -486,29 +485,56 @@ return {
 		},
 		config = true,
 	},
+  -- mason lsp
 	{
 		'williamboman/mason-lspconfig.nvim',
 		dependencies = { 'neovim/nvim-lspconfig' },
-		config = function()
-			require('mason-lspconfig').setup({
-				ensure_installed = {
-					'bashls',
-					'dockerls',
-					'gopls',
-					'jdtls',
-					'jsonls',
-					'pyright',
-					'rust_analyzer',
-					'sumneko_lua',
-					'sqlls',
-					'tsserver',
-					'vimls',
-					'yamlls',
-				},
-				automatic_installation = true,
-			})
-		end,
+		config = {
+      ensure_installed = {
+        'bashls',
+        'dockerls',
+        'gopls',
+        'jdtls',
+        'jsonls',
+        'pyright',
+        'rust_analyzer',
+        'sumneko_lua',
+        'sqlls',
+        'tsserver',
+        'vimls',
+        'yamlls',
+      },
+      automatic_installation = true,
+    }
 	},
+  -- mason null-ls
+  {
+    'jayp0521/mason-null-ls.nvim',
+		dependencies = {
+		  'williamboman/mason.nvim',
+      'jose-elias-alvarez/null-ls.nvim'
+    },
+    config = {
+      ensure_installed = {
+        'black',
+        'eslint_d',
+        'flake8',
+        'golangci_lint',
+        'hadolint',
+        'isort',
+        'jq',
+        'luacheck',
+        'remark',
+        'rustfmt',
+        'shellcheck',
+        'shellharden',
+        'stylua',
+        'yamlfmt',
+        'yamllint',
+      },
+      automatic_installation = true,
+    },
+  },
 	-- alpha
 	{
 		'goolord/alpha-nvim',
