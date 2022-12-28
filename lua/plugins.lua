@@ -23,9 +23,17 @@ return {
 	'godlygeek/tabular',
 	-- whitespace
 	'ntpeters/vim-better-whitespace',
-  -- minimap
+	-- minimap
 	'wfxr/minimap.vim',
-  -- nvim-treesitter
+	-- neogit
+	{
+		'TimUntersberger/neogit',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+		},
+    config={},
+	},
+	-- nvim-treesitter
 	{
 		'nvim-treesitter/nvim-treesitter',
 		dependencies = {
@@ -54,7 +62,7 @@ return {
 					'rust',
 					'tsx',
 					'typescript',
-          'vim',
+					'vim',
 					'yaml',
 				},
 				autotag = {
@@ -70,22 +78,22 @@ return {
 							['ac'] = '@class.outer',
 							['ic'] = '@class.inner',
 						},
-            selection_modes = {
-              ['@parameter.outer'] = 'v',
-              ['@function.outer'] = 'V',
-              ['@class.outer'] = '<c-v>',
-            },
-            include_surrounding_whitespace = true,
+						selection_modes = {
+							['@parameter.outer'] = 'v',
+							['@function.outer'] = 'V',
+							['@class.outer'] = '<c-v>',
+						},
+						include_surrounding_whitespace = true,
 					},
-          lsp_interop = {
-            enable = true,
-            border = 'none',
-            floating_preview_opts = {},
-            peek_definition_code = {
-              ["<leader>df"] = "@function.outer",
-              ["<leader>dF"] = "@class.outer",
-            },
-          },
+					lsp_interop = {
+						enable = true,
+						border = 'none',
+						floating_preview_opts = {},
+						peek_definition_code = {
+							['<leader>df'] = '@function.outer',
+							['<leader>dF'] = '@class.outer',
+						},
+					},
 					move = {
 						enable = true,
 						set_jumps = true,
@@ -106,27 +114,27 @@ return {
 							['[]'] = '@class.outer',
 						},
 					},
-          swap = {
-            enable = true,
-            swap_next = {
-              ["<leader>a"] = "@parameter.inner",
-            },
-            swap_previous = {
-              ["<leader>A"] = "@parameter.inner",
-            },
-          },
+					swap = {
+						enable = true,
+						swap_next = {
+							['<leader>a'] = '@parameter.inner',
+						},
+						swap_previous = {
+							['<leader>A'] = '@parameter.inner',
+						},
+					},
 				},
 			})
 		end,
 	},
-  -- package-info
-  {
-    'vuki656/package-info.nvim',
-    dependencies = {
+	-- package-info
+	{
+		'vuki656/package-info.nvim',
+		dependencies = {
 			'MunifTanjim/nui.nvim',
 		},
-    config = true,
-  },
+		config = true,
+	},
 	-- neotest
 	{
 		'nvim-neotest/neotest',
@@ -166,11 +174,11 @@ return {
 		config = function()
 			require('neodev').setup({
 				library = {
-          plugins = {
-            'neotest',
-          },
-          types = true,
-        },
+					plugins = {
+						'neotest',
+					},
+					types = true,
+				},
 			})
 		end,
 	},
@@ -250,7 +258,7 @@ return {
 			'MunifTanjim/nui.nvim',
 			'rcarriga/nvim-notify',
 		},
-    config = {},
+		config = {},
 	},
 	-- restnvim
 	{
@@ -308,7 +316,7 @@ return {
 					null_ls.builtins.formatting.black,
 					null_ls.builtins.formatting.eslint_d,
 					null_ls.builtins.formatting.isort,
-          null_ls.builtins.formatting.jq,
+					null_ls.builtins.formatting.jq,
 					null_ls.builtins.formatting.remark,
 					null_ls.builtins.formatting.rustfmt,
 					null_ls.builtins.formatting.shellharden,
@@ -470,8 +478,8 @@ return {
 		config = true,
 	},
 	-- lsp installer
-  -- mason
-  {
+	-- mason
+	{
 		'williamboman/mason.nvim',
 		dependencies = {
 			'williamboman/mason-lspconfig.nvim',
@@ -532,8 +540,8 @@ return {
 	-- project nvim
 	{
 		'ahmedkhalf/project.nvim',
-		config = function ()
-		  require('project_nvim').setup()
+		config = function()
+			require('project_nvim').setup()
 		end,
 	},
 	-- lualine
@@ -643,7 +651,7 @@ return {
 			telescope.setup()
 			telescope.load_extension('dap')
 			telescope.load_extension('noice')
-      telescope.load_extension('projects')
+			telescope.load_extension('projects')
 			telescope.load_extension('refactoring')
 			telescope.load_extension('repo')
 			telescope.load_extension('tmuxinator')
@@ -666,7 +674,7 @@ return {
 	-- toggleterm
 	{
 		'akinsho/toggleterm.nvim',
-    version = '*',
+		version = '*',
 		config = true,
 	},
 }
