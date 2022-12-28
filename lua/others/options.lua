@@ -22,7 +22,7 @@ vim.o.ruler = true
 vim.o.clipboard = 'unnamed'
 vim.o.fileencodings = 'utf8'
 vim.o.encoding = 'UTF-8'
-vim.o.updatetime=30
+vim.o.updatetime=150
 vim.o.timeoutlen=800
 -- mouse option is 'all'
 vim.o.mouse = 'a'
