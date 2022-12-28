@@ -70,6 +70,11 @@ return {
 							['ac'] = '@class.outer',
 							['ic'] = '@class.inner',
 						},
+            selection_modes = {
+              ['@parameter.outer'] = 'v',
+              ['@function.outer'] = 'V',
+              ['@class.outer'] = '<c-v>',
+            },
 					},
 					move = {
 						enable = true,
