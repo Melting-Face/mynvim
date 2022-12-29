@@ -3,14 +3,10 @@ return {
 	'kyazdani42/nvim-web-devicons',
 	-- multi cursor
 	'mg979/vim-visual-multi',
-	-- theme tokyonight
-	'folke/tokyonight.nvim',
 	-- async
 	'nvim-lua/plenary.nvim',
 	-- vim-fugitive
 	'tpope/vim-fugitive',
-	-- notify
-	'rcarriga/nvim-notify',
 	-- emmet
 	'mattn/emmet-vim',
 	-- rainbow csv
@@ -25,6 +21,20 @@ return {
 	'ntpeters/vim-better-whitespace',
 	-- minimap
 	'wfxr/minimap.vim',
+  -- notify
+  {
+    'rcarriga/nvim-notify',
+    config = function ()
+      vim.notify = require'notify'
+    end
+  },
+  -- theme tokyonight
+	{
+    'folke/tokyonight.nvim',
+    config = function ()
+      vim.cmd[[colorscheme tokyonight]]
+    end
+  },
 	-- neogit
 	{
 		'TimUntersberger/neogit',
@@ -373,9 +383,8 @@ return {
 	-- whici keys
 	{
 		'folke/which-key.nvim',
-		config = function()
-			require('which-key').setup()
-		end,
+    lazy = true,
+		config = true,
 	},
 	-- indent-blankline
 	{

@@ -22,7 +22,7 @@ vim.o.ruler = true
 vim.o.clipboard = 'unnamed'
 vim.o.fileencodings = 'utf8'
 vim.o.encoding = 'UTF-8'
-vim.o.updatetime=150
+vim.o.updatetime=100
 vim.o.timeoutlen=800
 -- mouse option is 'all'
 vim.o.mouse = 'a'
@@ -37,6 +37,8 @@ vim.opt.linebreak = true
 
 vim.opt.list = true
 vim.opt.listchars:append "eol:↴"
+
+vim.g.mapleader = ','
 
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_database_icon = 1
