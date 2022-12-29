@@ -1,4 +1,4 @@
-vim.g.mapleader = ','
+require'others.options'
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -18,7 +18,6 @@ require'lazy'.setup('plugins', {
 })
 
 require'impatient'
-require'others.options'
 require'others.variables'
 require'others.nvim-dap'
 require'others.nvim-cmp'
