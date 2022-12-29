@@ -589,7 +589,7 @@ return {
 			end
 			require('lualine').setup({
 				options = {
-					theme = 'palenight',
+					theme = 'tokyonight',
 					disabled_filetypes = {
 						winbar = {
 							'alpha',
