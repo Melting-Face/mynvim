@@ -80,8 +80,9 @@ wk.register({
   },
   n = {
     name = 'Neo',
-    g = { '<cmd>Neogen<CR>', 'neogen' },
-    s = { function () require("neotest").run.stop() end, 'neotest stop' },
+    g = { function () require'neogit'.open() end, 'neogit' },
+    n = { '<cmd>Neogen<CR>', 'neogen' },
+    s = { function () require('neotest').run.stop() end, 'neotest stop' },
     t = { function () require('neotest').run.run({ strategy = 'dap' }) end, 'neotest start' },
   },
   o = {

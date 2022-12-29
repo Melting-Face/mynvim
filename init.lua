@@ -25,4 +25,3 @@ require'others.nvim-cmp'
 require'others.nvim-notify'
 require'others.toggle-term'
 require'others.keymap'
-
