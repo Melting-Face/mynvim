@@ -3,6 +3,8 @@
 local gs = require('gitsigns')
 local wk = require('which-key')
 
+local hidden_file = false
+
 -- INFO: <leader> key (normal)
 wk.register({
   b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
@@ -41,8 +43,8 @@ wk.register({
     name = 'find',
     b = { function () require('telescope.builtin').buffers() end, 'find buffers' },
     c = { '<cmd>TodoTelescope<CR>', 'find todo comments' },
-    f = { function () require('telescope.builtin').find_files({ hidden=HIDDEN_FILE }) end, 'find files(telescope)' },
-    g = { function () require('telescope.builtin').live_grep({ hidden=HIDDEN_FILE }) end, 'grep files' },
+    f = { function () require('telescope.builtin').find_files({ hidden=hidden_file }) end, 'find files(telescope)' },
+    g = { function () require('telescope.builtin').live_grep({ hidden=hidden_file }) end, 'grep files' },
     h = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
     k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
     p = { '<cmd>Telescope projects<CR>', 'find projects' },
@@ -89,9 +91,9 @@ wk.register({
     name = 'options',
     h = {
       function ()
-        HIDDEN_FILE = not HIDDEN_FILE
+        hidden_file = not hidden_file
         vim.notify(
-          tostring(HIDDEN_FILE),
+          tostring(hidden_file),
           "info", {
             title = 'find hidden option',
             icon = "",
@@ -103,8 +105,10 @@ wk.register({
     },
   },
   r = {
-    name = 'rust_tools & rest-nvim',
+    name = 'rust_tools & rest-nvim & refactoring',
+    b = { function () require('refactoring').refactor('Extract Block') end, 'refactoring extract block' },
     d = { '<cmd>RustDebuggables<CR>', 'rust debug' },
+    f = { function () require('refactoring').refactor('Extract Block To File') end, 'refactoring extract block to file' },
     h = {
       function ()
         if vim.bo.filetype == 'rust' then
@@ -113,6 +117,7 @@ wk.register({
       end,
       'rust hover',
     },
+    i = { function () require('refactoring').refactor('Inline Variable') end, 'refactoring inline variable' },
     l = {
       function ()
         if vim.bo.filetype == 'http' then
@@ -165,6 +170,14 @@ wk.register({
   m = {
     name = 'jupyter with magma',
     l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
+  },
+  r = {
+    name = 'refactoring',
+    e = { function () require('refactoring').refactor('Extract Function') end, 'extract function' },
+    f = { function () require('refactoring').refactor('Extract Function To File') end, 'extract function to file' },
+    i = { function () require('refactoring').refactor('Inline Variable') end, 'inline variable'},
+    v = { function () require('refactoring').refactor('Extract Variable') end, 'extract variable' },
+
   }
 }, {
   mode = "v",

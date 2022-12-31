@@ -143,6 +143,9 @@ return {
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 		},
+    event = {
+			'BufRead package.json',
+		},
 		config = true,
 	},
 	-- neotest
@@ -156,15 +159,21 @@ return {
 			'nvim-neotest/neotest-python',
 			'haydenmeade/neotest-jest',
 		},
-		config = function()
-			require('neotest').setup({
-				adapters = {
-					require('neotest-python'),
-					require('neotest-plenary'),
-					require('neotest-jest'),
-				},
-			})
-		end,
+    ft = {
+      'lua',
+      'javascript',
+      'python',
+      'typescript',
+    },
+		config = function ()
+      require('neotest').setup ({
+        adapters = {
+          require('neotest-python'),
+          require('neotest-plenary'),
+          require('neotest-jest'),
+        },
+      })
+    end
 	},
 	-- outline
 	{
@@ -177,6 +186,40 @@ return {
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
+    ft = {
+      'javascript',
+      'typescript',
+    },
+    config = function ()
+      require('dap-vscode-js').setup({
+        debugger_path = os.getenv'HOME' .. '/.local/share/nvim/mason/packages/js-debug-adapter',
+        adapters = {
+          'pwa-node',
+          'pwa-chrome',
+          'pwa-msedge',
+          'node-terminal',
+          'pwa-extensionHost',
+        },
+      })
+      for _, language in ipairs { "typescript", "javascript" } do
+        require'dap'.configurations[language] = {
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach",
+            processId = require("dap.utils").pick_process,
+            cwd = "${workspaceFolder}",
+          },
+        }
+      end
+    end
 	},
 	-- neodev
 	{
@@ -232,15 +275,14 @@ return {
 	{
 		'SmiteshP/nvim-navic',
 		dependencies = 'neovim/nvim-lspconfig',
-		config = function()
-			require('nvim-navic').setup({
-				highlight = true,
-			})
-		end,
+		config = {
+      highlight = true,
+    },
 	},
 	-- magma
 	{
 		'dccsillag/magma-nvim',
+    ft = 'python',
 		build = ':UpdateRemotePlugins',
 	},
 	-- vim dadbod
@@ -313,7 +355,7 @@ return {
 			local null_ls = require('null-ls')
 			null_ls.setup({
 				diagnostics_format = '[#{c}] #{m} (#{s})',
-				debounce = 750,
+				debounce = 1500,
 				sources = {
 					null_ls.builtins.diagnostics.eslint_d,
 					null_ls.builtins.diagnostics.flake8,
@@ -349,23 +391,19 @@ return {
 	{
 		'folke/trouble.nvim',
 		dependencies = 'kyazdani42/nvim-web-devicons',
-		config = function()
-			require('trouble').setup({
-				mode = 'document_diagnostics',
-			})
-		end,
+		config = {
+      mode = 'document_diagnostics',
+    },
 	},
 	-- autopairs
 	{
 		'windwp/nvim-autopairs',
-		config = function()
-			require('nvim-autopairs').setup({
-				disable_filetype = {
-					'TelescopePrompt',
-					'vim',
-				},
-			})
-		end,
+		config = {
+      disable_filetype = {
+        'TelescopePrompt',
+        'vim',
+      },
+    },
 	},
 	-- markdown
 	{
@@ -389,45 +427,35 @@ return {
 	-- indent-blankline
 	{
 		'lukas-reineke/indent-blankline.nvim',
-		config = function()
-			require('indent_blankline').setup({
-				show_current_context = true,
-				show_current_context_start = true,
-				show_end_of_line = true,
-			})
-		end,
+		config = {
+      show_current_context = true,
+      show_current_context_start = true,
+      show_end_of_line = true,
+    }
 	},
 	-- bufferline
 	{
 		'akinsho/bufferline.nvim',
 		dependencies = 'kyazdani42/nvim-web-devicons',
-		config = function()
-			require('bufferline').setup({
-				options = {
-					separator_style = 'padded_slant',
-					numbers = function(opts)
-						return string.format('%s·%s', opts.raise(opts.id), opts.lower(opts.ordinal))
-					end,
-					diagnostics = 'nvim_lsp',
-				},
-			})
-		end,
+		config = {
+      options = {
+        separator_style = 'padded_slant',
+        numbers = function(opts)
+          return string.format('%s·%s', opts.raise(opts.id), opts.lower(opts.ordinal))
+        end,
+        diagnostics = 'nvim_lsp',
+      },
+    }
 	},
 	-- scope.nvim for tab
 	{
 		'tiagovla/scope.nvim',
 		config = true,
 	},
-	-- nvim-jdtls
-	{
-		'mfussenegger/nvim-jdtls',
-		ft = {
-			'java',
-		},
-	},
 	-- nvim-dap-go
 	{
 		'leoluz/nvim-dap-go',
+    ft = 'go',
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
@@ -439,6 +467,11 @@ return {
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
+    ft = 'python',
+    config = function ()
+      local python_path = io.popen('which python3'):read('l')
+      require('dap-python').setup(python_path)
+    end
 	},
 	-- rust-tools
 	{
@@ -448,21 +481,18 @@ return {
 			'nvim-lua/plenary.nvim',
 			'mfussenegger/nvim-dap',
 		},
-		config = function()
-			local opt = {
-				server = {
-					standalone = true,
-				},
-				dap = {
-					adapter = {
-						type = 'executable',
-						command = 'lldb-vscode',
-						name = 'rt_lldb',
-					},
-				},
-			}
-			require('rust-tools').setup(opt)
-		end,
+		config = {
+      server = {
+        standalone = true,
+      },
+      dap = {
+        adapter = {
+          type = 'executable',
+          command = 'lldb-vscode',
+          name = 'rt_lldb',
+        },
+      },
+    }
 	},
 	-- nvim-dap-lua
 	{
@@ -470,14 +500,63 @@ return {
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
+    after = 'dap',
+    ft = 'lua',
+    config = function ()
+      local dap = require('dap')
+      dap.adapters.nlua = function(callback, config)
+        if config.port ~= nil then
+          callback({
+            type = 'server',
+            host = config.host,
+            port = config.port
+          })
+        else
+          require'osv'.run_this()
+        end
+      end
+
+      dap.configurations.lua = {
+        {
+          type = 'nlua',
+          request = 'attach',
+          name = "Attach to running Neovim instance",
+          host = function()
+            local value = vim.fn.input('Host [127.0.0.1]: ')
+            if value ~= "" then
+              return value
+            end
+            return '127.0.0.1'
+          end,
+          port = function()
+            local val = tonumber(vim.fn.input('Port: '))
+            return val
+          end,
+        }
+      }
+    end
 	},
 	-- nvim-dap-ui
 	{
 		'rcarriga/nvim-dap-ui',
+    after = 'dap',
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
-		config = true,
+		config = function ()
+      local dap = require'dap'
+      local dapui = require'dapui'
+      dapui.setup {}
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+		end,
 	},
 	{
 		'theHamsta/nvim-dap-virtual-text',
@@ -515,6 +594,12 @@ return {
       },
       automatic_installation = true,
     }
+	},
+  -- nvim-jdtls
+	{
+		'mfussenegger/nvim-jdtls',
+		ft = 'java',
+    after = 'cmp',
 	},
   -- mason null-ls
   {
@@ -570,14 +655,14 @@ return {
 		dependencies = {
 			'kyazdani42/nvim-web-devicons',
 		},
-		config = true,
+		config = {},
 	},
 	-- project nvim
 	{
 		'ahmedkhalf/project.nvim',
 		config = function()
-			require('project_nvim').setup()
-		end,
+      require("project_nvim").setup {}
+    end
 	},
 	-- lualine
 	{
@@ -633,7 +718,29 @@ return {
 			'nvim-lua/plenary.nvim',
 			'nvim-treesitter/nvim-treesitter',
 		},
-		config = true,
+    ft = {
+      'go',
+      'java',
+      'javascript',
+      'python',
+      'typescript',
+    },
+		config = {
+      prompt_func_return_type = {
+        go = true,
+        java = true,
+        javascript = true,
+        python = true,
+        typescript = true,
+      },
+      prompt_func_param_type = {
+        go = true,
+        java = true,
+        javascript = true,
+        python = true,
+        typescript = true,
+      },
+    },
 	},
 	-- cmp
 	{
@@ -645,28 +752,151 @@ return {
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-path',
 			'hrsh7th/cmp-cmdline',
+      'neovim/nvim-lspconfig',
+      'SmiteshP/nvim-navic',
 		},
+    config = function ()
+      local cmp = require'cmp'
+      local navic = require'nvim-navic'
+      local lspconfig = require'lspconfig'
+      local on_attach = function(client, bufnr)
+        -- Enable completion triggered by <c-x><c-o>
+        vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+        if client.server_capabilities.documentSymbolProvider then
+          navic.attach(client, bufnr)
+        end
+      end
+
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+          end,
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = "neorg" },
+          { name = "crates" },
+        }, {
+          { name = 'buffer' },
+        })
+      })
+
+      -- Set configuration for specific filetype.
+      cmp.setup.filetype('gitcommit', {
+        sources = cmp.config.sources({
+          { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+        }, {
+          { name = 'buffer' },
+        })
+      })
+
+      -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline('/', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          { name = 'cmdline' }
+        })
+      })
+
+      -- Setup lspconfig.
+      local capabilities = require'cmp_nvim_lsp'.default_capabilities()
+      local languages = {
+        'bashls',
+        'dockerls',
+        'gopls',
+        'jdtls',
+        'jsonls',
+        'pyright',
+        'rust_analyzer',
+        'sumneko_lua',
+        'sqlls',
+        'tsserver',
+        'vimls',
+        'yamlls',
+      }
+
+      for _, language in ipairs(languages) do
+        if language == 'sumneko_lua' then
+          lspconfig[language].setup {
+            on_attach = on_attach,
+            capabilities = capabilities,
+            settings = {
+              Lua = {
+                completion = {
+                  callSnippet = "Replace"
+                },
+                diagnostics = {
+                  globals = {
+                    'vim'
+                  },
+                },
+              },
+            },
+          }
+        elseif language == 'pyright' then
+          lspconfig[language].setup {
+            on_attach = on_attach,
+            capabilities = capabilities,
+            settings = {
+              python = {
+                analysis = {
+                  diagnosticMode = 'openFilesOnly',
+                  useLibraryCodeForTypes = false,
+                },
+              },
+            },
+          }
+        else
+          lspconfig[language].setup {
+            on_attach = on_attach,
+            capabilities = capabilities
+          }
+        end
+      end
+    end
 	},
 	-- neorg
 	{
 		'nvim-neorg/neorg',
 		after = 'nvim-treesitter',
+    ft = 'norg',
 		build = ':Neorg sync-parsers',
-		config = function()
-			require('neorg').setup({
-				load = {
-					['core.defaults'] = {},
-					['core.norg.concealer'] = {},
-					['core.norg.completion'] = {
-						config = {
-							engine = 'nvim-cmp',
-						},
-					},
-					['core.export'] = {},
-					['core.integrations.telescope'] = {},
-				},
-			})
-		end,
+		config = {
+      load = {
+        ['core.defaults'] = {},
+        ['core.norg.concealer'] = {},
+        ['core.norg.completion'] = {
+          config = {
+            engine = 'nvim-cmp',
+          },
+        },
+        ['core.export'] = {},
+        ['core.integrations.telescope'] = {},
+      },
+    },
 		dependencies = {
 			'nvim-lua/plenary.nvim',
 			'nvim-neorg/neorg-telescope',
@@ -695,21 +925,18 @@ return {
 	-- gitsigns
 	{
 		'lewis6991/gitsigns.nvim',
-		config = function()
-			require('gitsigns').setup({
-				current_line_blame_opts = {
-					virt_text = true,
-					virt_text_pos = 'eol',
-					delay = 500,
-					ignore_whitespace = false,
-				},
-			})
-		end,
+		config = {
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol',
+        delay = 500,
+        ignore_whitespace = false,
+      },
+    },
 	},
 	-- toggleterm
 	{
 		'akinsho/toggleterm.nvim',
-		version = '*',
 		config = true,
 	},
 }

@@ -18,9 +18,6 @@ require'lazy'.setup('plugins', {
 })
 
 require'impatient'
-require'others.variables'
-require'others.nvim-dap'
-require'others.nvim-cmp'
 require'others.nvim-notify'
 require'others.toggle-term'
 require'others.keymap'
