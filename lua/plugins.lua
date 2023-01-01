@@ -7,10 +7,6 @@ return {
 	'nvim-lua/plenary.nvim',
 	-- vim-fugitive
 	'tpope/vim-fugitive',
-	-- emmet
-	'mattn/emmet-vim',
-	-- rainbow csv
-	'mechatroner/rainbow_csv',
 	-- starttime
 	'dstein64/vim-startuptime',
 	-- cache
@@ -21,6 +17,20 @@ return {
 	'ntpeters/vim-better-whitespace',
 	-- minimap
 	'wfxr/minimap.vim',
+  -- emmet
+  {
+	  'mattn/emmet-vim',
+    ft = {
+      'html',
+      'javascriptreact',
+      'typescriptreact',
+    }
+  },
+  -- rainbow csv
+  {
+	  'mechatroner/rainbow_csv',
+    ft = 'csv',
+  },
   -- notify
   {
     'rcarriga/nvim-notify',
@@ -143,6 +153,7 @@ return {
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 		},
+    ft = 'json',
     event = {
 			'BufRead package.json',
 		},
@@ -238,6 +249,7 @@ return {
 	-- luapad
 	{
 		'rafcamlet/nvim-luapad',
+    ft = 'lua',
 		config = true,
 	},
 	-- neogen
@@ -295,6 +307,7 @@ return {
 	-- crates
 	{
 		'saecki/crates.nvim',
+    ft = 'toml',
 		event = {
 			'BufRead Cargo.toml',
 		},
@@ -558,6 +571,7 @@ return {
       end
 		end,
 	},
+  -- dap-virtual-text
 	{
 		'theHamsta/nvim-dap-virtual-text',
 		dependencies = {
