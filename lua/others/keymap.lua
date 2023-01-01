@@ -2,8 +2,33 @@
 -----------------------------------
 local gs = require('gitsigns')
 local wk = require('which-key')
+local tt = require("toggleterm.terminal").Terminal
 
 local hidden_file = false
+
+local lazygit = tt:new({
+	cmd = "lazygit",
+	direction = "float",
+	float_opts = {
+		border = "single",
+	},
+})
+
+local lazydocker = tt:new({
+	cmd = "lazydocker",
+	direction = "float",
+	float_opts = {
+		border = "single",
+	},
+})
+
+local lazynpm = tt:new({
+	cmd = "lazynpm",
+	direction = "float",
+	float_opts = {
+		border = "single",
+	},
+})
 
 -- INFO: <leader> key (normal)
 wk.register({
@@ -62,9 +87,9 @@ wk.register({
   },
   l = {
     name = 'lazy',
-    d = { '<cmd>lua _lazydocker()<CR>', 'lazy docker' },
-    g = { '<cmd>lua _lazygit()<CR>', 'lazy git' },
-    n = { '<cmd>lua _lazynpm()<CR>', 'lazy npm' },
+    d = { function () lazydocker:toggle() end, 'lazy docker' },
+    g = { function () lazygit:toggle() end, 'lazy git' },
+    n = { function () lazynpm:toggle() end, 'lazy npm' },
     p = {
       function ()
         require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
