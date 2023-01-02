@@ -172,12 +172,14 @@ return {
 			'nvim-lua/plenary.nvim',
 			'nvim-treesitter/nvim-treesitter',
 			'antoinemadec/FixCursorHold.nvim',
+      'nvim-neotest/neotest-go',
 			'haydenmeade/neotest-jest',
       'nvim-neotest/neotest-plenary',
 			'nvim-neotest/neotest-python',
       'rouge8/neotest-rust',
 		},
     ft = {
+      'go',
       'lua',
       'javascript',
       'python',
@@ -187,6 +189,7 @@ return {
 		config = function ()
       require('neotest').setup ({
         adapters = {
+          require('neotest-go'),
           require('neotest-jest'),
           require('neotest-plenary'),
           require('neotest-python'),
