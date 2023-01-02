@@ -31,6 +31,11 @@ return {
 	  'mechatroner/rainbow_csv',
     ft = 'csv',
   },
+  -- csv.vim
+  {
+    'chrisbra/csv.vim',
+    ft = 'csv',
+  },
   -- notify
   {
     'rcarriga/nvim-notify',
@@ -60,6 +65,7 @@ return {
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'windwp/nvim-ts-autotag',
 		},
+    lazy = true,
 		build = ':TSUpdate',
 		config = function()
 			require('nvim-treesitter.install').compilers = { 'gcc-12' }
@@ -166,22 +172,25 @@ return {
 			'nvim-lua/plenary.nvim',
 			'nvim-treesitter/nvim-treesitter',
 			'antoinemadec/FixCursorHold.nvim',
-			'nvim-neotest/neotest-plenary',
-			'nvim-neotest/neotest-python',
 			'haydenmeade/neotest-jest',
+      'nvim-neotest/neotest-plenary',
+			'nvim-neotest/neotest-python',
+      'rouge8/neotest-rust',
 		},
     ft = {
       'lua',
       'javascript',
       'python',
+      'rust',
       'typescript',
     },
 		config = function ()
       require('neotest').setup ({
         adapters = {
-          require('neotest-python'),
-          require('neotest-plenary'),
           require('neotest-jest'),
+          require('neotest-plenary'),
+          require('neotest-python'),
+          require("neotest-rust"),
         },
       })
     end
@@ -364,11 +373,12 @@ return {
 	-- null_ls
 	{
 		'jose-elias-alvarez/null-ls.nvim',
+    lazy = true,
 		config = function()
 			local null_ls = require('null-ls')
 			null_ls.setup({
 				diagnostics_format = '[#{c}] #{m} (#{s})',
-				debounce = 1500,
+				debounce = 500,
 				sources = {
 					null_ls.builtins.diagnostics.eslint_d,
 					null_ls.builtins.diagnostics.flake8,
@@ -494,6 +504,7 @@ return {
 			'nvim-lua/plenary.nvim',
 			'mfussenegger/nvim-dap',
 		},
+    ft = 'rust',
 		config = {
       server = {
         standalone = true,
@@ -513,7 +524,6 @@ return {
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
-    after = 'dap',
     ft = 'lua',
     config = function ()
       local dap = require('dap')
@@ -552,7 +562,6 @@ return {
 	-- nvim-dap-ui
 	{
 		'rcarriga/nvim-dap-ui',
-    after = 'dap',
 		dependencies = {
 			'mfussenegger/nvim-dap',
 		},
@@ -568,7 +577,7 @@ return {
       end
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
-      end
+      end 
 		end,
 	},
   -- dap-virtual-text

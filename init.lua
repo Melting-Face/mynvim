@@ -18,5 +18,5 @@ require'lazy'.setup('plugins', {
 })
 
 require'impatient'
-require'others.nvim-notify'
+require'others.functions'
 require'others.keymap'
