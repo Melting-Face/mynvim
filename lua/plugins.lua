@@ -603,6 +603,7 @@ return {
 	{
 		'williamboman/mason-lspconfig.nvim',
 		dependencies = { 'neovim/nvim-lspconfig' },
+    lazy = true,
 		config = {
       ensure_installed = {
         'bashls',
