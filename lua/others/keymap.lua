@@ -223,7 +223,7 @@ wk.register({
     a = { vim.lsp.buf.code_action, 'Action' },
   },
   e = { vim.diagnostic.open_float, 'Open float' },
-  f = { vim.lsp.buf.formatting, 'Lsp formatting' },
+  f = { function () vim.lsp.buf.format { async = true } end, 'Lsp formatting' },
   q = { vim.diagnostic.setloclist, 'Set location list'},
   r = {
     name = 'Buffer',

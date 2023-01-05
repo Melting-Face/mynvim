@@ -29,11 +29,13 @@ return {
   -- rainbow csv
   {
 	  'mechatroner/rainbow_csv',
+    lazy = true,
     ft = 'csv',
   },
   -- csv.vim
   {
     'chrisbra/csv.vim',
+    lazy = true,
     ft = 'csv',
   },
   -- notify
@@ -376,7 +378,7 @@ return {
 	-- null_ls
 	{
 		'jose-elias-alvarez/null-ls.nvim',
-    lazy = true,
+    event = 'BufRead',
 		config = function()
 			local null_ls = require('null-ls')
 			null_ls.setup({
@@ -394,8 +396,6 @@ return {
 					null_ls.builtins.formatting.black,
 					null_ls.builtins.formatting.eslint_d,
 					null_ls.builtins.formatting.isort,
-					null_ls.builtins.formatting.jq,
-					null_ls.builtins.formatting.remark,
 					null_ls.builtins.formatting.rustfmt,
 					null_ls.builtins.formatting.shellharden,
 					null_ls.builtins.formatting.stylua,
@@ -597,14 +597,13 @@ return {
 		dependencies = {
 			'williamboman/mason-lspconfig.nvim',
 		},
-    lazy = true,
 		config = true,
 	},
   -- mason lsp
 	{
 		'williamboman/mason-lspconfig.nvim',
 		dependencies = { 'neovim/nvim-lspconfig' },
-    lazy = true,
+    event = 'BufRead',
 		config = {
       ensure_installed = {
         'bashls',
@@ -636,6 +635,7 @@ return {
 		  'williamboman/mason.nvim',
       'jose-elias-alvarez/null-ls.nvim'
     },
+    lazy = true,
     config = {
       ensure_installed = {
         'black',
@@ -947,8 +947,8 @@ return {
 		},
 		config = function()
 			local telescope = require('telescope')
-			telescope.setup()
-			telescope.load_extension('dap')
+			telescope.setup ()
+      telescope.load_extension('dap')
 			telescope.load_extension('noice')
 			telescope.load_extension('projects')
 			telescope.load_extension('refactoring')
