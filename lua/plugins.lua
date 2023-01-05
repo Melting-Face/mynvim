@@ -580,7 +580,7 @@ return {
       end
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
-      end 
+      end
 		end,
 	},
   -- dap-virtual-text
@@ -597,6 +597,7 @@ return {
 		dependencies = {
 			'williamboman/mason-lspconfig.nvim',
 		},
+    lazy = true,
 		config = true,
 	},
   -- mason lsp
@@ -682,7 +683,13 @@ return {
 		dependencies = {
 			'kyazdani42/nvim-web-devicons',
 		},
-		config = {},
+		config = {
+      actions = {
+        open_file = {
+          quit_on_open = true,
+        },
+      }
+    },
 	},
 	-- project nvim
 	{
