@@ -18,5 +18,4 @@ require'lazy'.setup('plugins', {
 })
 
 require'impatient'
-require'others.functions'
 require'others.keymap'

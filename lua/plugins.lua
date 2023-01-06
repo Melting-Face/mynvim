@@ -272,6 +272,17 @@ return {
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter',
 		},
+    ft = {
+      'go',
+      'lua',
+      'java',
+      'javascript',
+      'python',
+      'rust',
+      'sh',
+      'typescript',
+      'typescriptreact',
+    },
 		config = function()
 			local lang_doc_map = {
 				go = 'godoc',
@@ -301,6 +312,7 @@ return {
 	{
 		'SmiteshP/nvim-navic',
 		dependencies = 'neovim/nvim-lspconfig',
+    lazy = true,
 		config = {
       highlight = true,
     },
@@ -337,6 +349,7 @@ return {
 			'MunifTanjim/nui.nvim',
 			'rcarriga/nvim-notify',
 		},
+    lazy = true,
 		config = {},
 	},
 	-- restnvim
