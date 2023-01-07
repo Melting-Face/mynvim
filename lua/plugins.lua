@@ -17,6 +17,8 @@ return {
 	'ntpeters/vim-better-whitespace',
 	-- minimap
 	'wfxr/minimap.vim',
+  -- illuminate
+  'RRethy/vim-illuminate',
   -- hop
   {
     'phaazon/hop.nvim',
