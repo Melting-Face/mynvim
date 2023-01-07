@@ -209,7 +209,9 @@ return {
           require('neotest-go'),
           require('neotest-jest'),
           require('neotest-plenary'),
-          require('neotest-python'),
+          require('neotest-python')({
+            dap = { justMyCode = false },
+          }),
           require("neotest-rust"),
         },
       })
