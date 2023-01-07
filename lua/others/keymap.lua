@@ -3,6 +3,8 @@
 local gs = require('gitsigns')
 local wk = require('which-key')
 local tt = require("toggleterm.terminal").Terminal
+local hop = require('hop')
+local directions = require('hop.hint').HintDirection
 
 local hidden_file = false
 
@@ -28,6 +30,36 @@ local lazynpm = tt:new({
 	float_opts = {
 		border = "single",
 	},
+})
+
+-- INFO: hop keymap
+wk.register({
+  f = {
+    function()
+      hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
+    end,
+    'after cursor',
+  },
+  F = {
+    function()
+      hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
+    end,
+    'before cursor',
+  },
+  t = {
+    function()
+      hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })
+    end,
+    'after cursor',
+  },
+  {
+    function()
+      hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
+    end,
+    'after cursor',
+  }
+}, {
+  mode = '',
 })
 
 -- INFO: <leader> key (normal)
@@ -202,7 +234,6 @@ wk.register({
     f = { function () require('refactoring').refactor('Extract Function To File') end, 'extract function to file' },
     i = { function () require('refactoring').refactor('Inline Variable') end, 'inline variable'},
     v = { function () require('refactoring').refactor('Extract Variable') end, 'extract variable' },
-
   }
 }, {
   mode = "v",

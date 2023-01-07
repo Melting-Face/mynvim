@@ -17,6 +17,19 @@ return {
 	'ntpeters/vim-better-whitespace',
 	-- minimap
 	'wfxr/minimap.vim',
+  -- hop
+  {
+    'phaazon/hop.nvim',
+    config = true,
+  },
+  -- leap
+  {
+    'ggandor/leap.nvim',
+    dependencies = 'tpope/vim-repeat',
+    config = function ()
+      require('leap').add_default_mappings()
+    end
+  },
   -- emmet
   {
 	  'mattn/emmet-vim',
@@ -204,6 +217,7 @@ return {
 	{
 		'simrat39/symbols-outline.nvim',
 		config = true,
+    lazy = true,
 	},
 	-- java/typescript
 	{
