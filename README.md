@@ -1,6 +1,6 @@
 ## TIP
 
-- `<c-n>`: auto complete
+- `<c-n>`: nvim-cmp auto complete
 
 - visual mode => `:Tab /:` => Tabular arrangement `:`
 > [Tabular cheatsheet](https://devhints.io/tabular)
@@ -34,25 +34,3 @@ sh nvim.sh
 
 - [prefix highlight](https://github.com/tmux-plugins/tmux-prefix-highlight)
 
-<br>
-
-## Attempt to install
-
-### install kotlin debug
-```shell
-# gradle
-brew install gradle
-# sdk man
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install kotlin
-
-git clone https://github.com/fwcd/kotlin-debug-adapter
-./gradlew :adapter:installDist
-```
-
-### install c++ debug
-```shell
-# llvm
-brew install llvm
-```

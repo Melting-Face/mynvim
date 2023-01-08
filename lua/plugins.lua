@@ -19,6 +19,11 @@ return {
 	'wfxr/minimap.vim',
   -- illuminate
   'RRethy/vim-illuminate',
+  -- tmux
+  {
+    'aserowy/tmux.nvim',
+    config = true,
+  },
   -- hop
   {
     'phaazon/hop.nvim',
