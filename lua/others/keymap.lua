@@ -32,7 +32,7 @@ local lazynpm = tt:new({
 	},
 })
 
--- INFO: hop keymap
+-- INFO: no prefix hop keymap
 wk.register({
   f = {
     function()
@@ -60,10 +60,30 @@ wk.register({
   }
 }, {
   mode = '',
+  noremap = false,
+})
+
+-- INFO: no prefix
+wk.register({
+  K =  { vim.lsp.buf.hover, 'vim lsp hover' },
+  ['<C-k>'] = { vim.lsp.buf.signature_help, 'vim lsp signature help' },
+  ['<F5>'] = { function () require'dap'.continue() end, 'dap run(continue)' },
+  ['<F10>'] = { function () require'dap'.step_over() end, 'dap step over' },
+  ['<F11>'] = { function () require'dap'.step_into() end, 'dap step into' },
+  ['<F12>'] = { function () require'dap'.step_out() end, 'dap step out' },
 })
 
 -- INFO: <leader> key (normal)
 wk.register({
+  ['1'] = { function () require("bufferline").go_to_buffer(1, true) end, 'go to buffer index 1' },
+  ['2'] = { function () require("bufferline").go_to_buffer(2, true) end, 'go to buffer index 2' },
+  ['3'] = { function () require("bufferline").go_to_buffer(3, true) end, 'go to buffer index 3' },
+  ['4'] = { function () require("bufferline").go_to_buffer(4, true) end, 'go to buffer index 4' },
+  ['5'] = { function () require("bufferline").go_to_buffer(5, true) end, 'go to buffer index 5' },
+  ['6'] = { function () require("bufferline").go_to_buffer(6, true) end, 'go to buffer index 6' },
+  ['7'] = { function () require("bufferline").go_to_buffer(7, true) end, 'go to buffer index 7' },
+  ['8'] = { function () require("bufferline").go_to_buffer(8, true) end, 'go to buffer index 8' },
+  ['9'] = { function () require("bufferline").go_to_buffer(9, true) end, 'go to buffer index 9' },
   b = { function () require"dap".toggle_breakpoint() end, 'breakpoint' },
   c = {
     name = 'current',
@@ -356,30 +376,6 @@ wk.register({
 }, {
   prefix = ']'
 })
-
--- INFO: For lsp
-vim.keymap.set('n', 'K', vim.lsp.buf.hover, { silent = true })
-vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { silent = true })
-
--- INFO: For dap
-vim.keymap.set('n', '<F5>', function () require'dap'.continue() end, { silent = true })
-vim.keymap.set('n', '<F10>', function () require'dap'.step_over() end, { silent = true })
-vim.keymap.set('n', '<F11>', function () require'dap'.step_into() end, { silent = true })
-vim.keymap.set('n', '<F12>', function () require'dap'.step_out() end, { silent = true })
-
--- INFO: For dap-python
-vim.keymap.set('v', '<leader>ds <ESC>', function () require('dap-python').debug_selection() end, { silent = true })
-
--- INFO: For bufferlie
-vim.keymap.set('n', '<leader>1', function () require("bufferline").go_to_buffer(1, true) end, { silent = true })
-vim.keymap.set('n', '<leader>2', function () require("bufferline").go_to_buffer(2, true) end, { silent = true })
-vim.keymap.set('n', '<leader>3', function () require("bufferline").go_to_buffer(3, true) end, { silent = true })
-vim.keymap.set('n', '<leader>4', function () require("bufferline").go_to_buffer(4, true) end, { silent = true })
-vim.keymap.set('n', '<leader>5', function () require("bufferline").go_to_buffer(5, true) end, { silent = true })
-vim.keymap.set('n', '<leader>6', function () require("bufferline").go_to_buffer(6, true) end, { silent = true })
-vim.keymap.set('n', '<leader>7', function () require("bufferline").go_to_buffer(7, true) end, { silent = true })
-vim.keymap.set('n', '<leader>8', function () require("bufferline").go_to_buffer(8, true) end, { silent = true })
-vim.keymap.set('n', '<leader>9', function () require("bufferline").go_to_buffer(9, true) end, { silent = true })
 
 -- INFO: For wrap
 vim.keymap.set('n', 'j', '"gj"', { expr = true })
