@@ -17,8 +17,6 @@ return {
 	'ntpeters/vim-better-whitespace',
 	-- minimap
 	'wfxr/minimap.vim',
-  -- illuminate
-  'RRethy/vim-illuminate',
   -- tmux
   {
     'aserowy/tmux.nvim',
@@ -227,47 +225,6 @@ return {
 		'simrat39/symbols-outline.nvim',
 		config = true,
     lazy = true,
-	},
-	-- java/typescript
-	{
-		'mxsdev/nvim-dap-vscode-js',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
-    ft = {
-      'javascript',
-      'typescript',
-    },
-    config = function ()
-      require('dap-vscode-js').setup({
-        debugger_path = os.getenv'HOME' .. '/.local/share/nvim/mason/packages/js-debug-adapter',
-        adapters = {
-          'pwa-node',
-          'pwa-chrome',
-          'pwa-msedge',
-          'node-terminal',
-          'pwa-extensionHost',
-        },
-      })
-      for _, language in ipairs { "typescript", "javascript" } do
-        require'dap'.configurations[language] = {
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch file",
-            program = "${file}",
-            cwd = "${workspaceFolder}",
-          },
-          {
-            type = "pwa-node",
-            request = "attach",
-            name = "Attach",
-            processId = require("dap.utils").pick_process,
-            cwd = "${workspaceFolder}",
-          },
-        }
-      end
-    end
 	},
 	-- neodev
 	{
@@ -514,21 +471,100 @@ return {
 		'tiagovla/scope.nvim',
 		config = true,
 	},
+  -- dap
+  {
+    'mfussenegger/nvim-dap',
+    ft = {
+      'go',
+      'java',
+      'lua',
+      'javascript',
+      'python',
+      'rust',
+      'sh',
+      'typescript',
+    },
+    config = function ()
+      local dap = require'dap'
+      dap.adapters.bashdb = {
+        type = 'executable';
+        command = os.getenv('HOME') .. '/.local/share/nvim/mason/packages/bash-debug-adapter/bash-debug-adapter';
+        name = 'bashdb';
+      }
+
+      dap.configurations.sh = {
+        {
+          type = 'bashdb';
+          request = 'launch';
+          name = "Launch file";
+          showDebugOutput = true;
+          pathBashdb = os.getenv('HOME') .. '/.local/share/nvim/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb';
+          pathBashdbLib = os.getenv('HOME') .. '/.local/share/nvim/mason/packages/bash-debug-adapter/extension/bashdb_dir';
+          trace = true;
+          file = "${file}";
+          program = "${file}";
+          cwd = '${workspaceFolder}';
+          pathCat = "cat";
+          pathBash = "/bin/bash";
+          pathMkfifo = "mkfifo";
+          pathPkill = "pkill";
+          args = {};
+          env = {};
+          terminalKind = "integrated";
+        }
+      }
+    end
+  },
+  -- dap java/typescript
+	{
+		'mxsdev/nvim-dap-vscode-js',
+		after = 'mfussenegger/nvim-dap',
+    ft = {
+      'javascript',
+      'typescript',
+    },
+    config = function ()
+      require('dap-vscode-js').setup({
+        debugger_path = os.getenv'HOME' .. '/.local/share/nvim/mason/packages/js-debug-adapter',
+        adapters = {
+          'pwa-node',
+          'pwa-chrome',
+          'pwa-msedge',
+          'node-terminal',
+          'pwa-extensionHost',
+        },
+      })
+      for _, language in ipairs { "typescript", "javascript" } do
+        require'dap'.configurations[language] = {
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach",
+            processId = require("dap.utils").pick_process,
+            cwd = "${workspaceFolder}",
+          },
+        }
+      end
+    end
+	},
 	-- nvim-dap-go
 	{
 		'leoluz/nvim-dap-go',
     ft = 'go',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
+		after = 'mfussenegger/nvim-dap',
 		config = true,
 	},
 	-- nvim-dap-python
 	{
 		'mfussenegger/nvim-dap-python',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
+		after = 'mfussenegger/nvim-dap',
     ft = 'python',
     config = function ()
       local python_path = io.popen('which python3'):read('l')
@@ -538,10 +574,10 @@ return {
 	-- rust-tools
 	{
 		'simrat39/rust-tools.nvim',
+    after = 'mfussenegger/nvim-dap',
 		dependencies = {
 			'neovim/nvim-lspconfig',
 			'nvim-lua/plenary.nvim',
-			'mfussenegger/nvim-dap',
 		},
     ft = 'rust',
 		config = {
@@ -560,9 +596,7 @@ return {
 	-- nvim-dap-lua
 	{
 		'jbyuki/one-small-step-for-vimkind',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
+		after = 'mfussenegger/nvim-dap',
     ft = 'lua',
     config = function ()
       local dap = require('dap')
@@ -601,9 +635,7 @@ return {
 	-- nvim-dap-ui
 	{
 		'rcarriga/nvim-dap-ui',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
+		after = 'mfussenegger/nvim-dap',
 		config = function ()
       local dap = require'dap'
       local dapui = require'dapui'
@@ -622,23 +654,19 @@ return {
   -- dap-virtual-text
 	{
 		'theHamsta/nvim-dap-virtual-text',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
+		after = 'mfussenegger/nvim-dap',
 		config = true,
 	},
 	-- mason
 	{
 		'williamboman/mason.nvim',
-		dependencies = {
-			'williamboman/mason-lspconfig.nvim',
-		},
+		dependencies = 'williamboman/mason-lspconfig.nvim',
 		config = true,
 	},
   -- mason lsp
 	{
 		'williamboman/mason-lspconfig.nvim',
-		dependencies = { 'neovim/nvim-lspconfig' },
+		dependencies = 'neovim/nvim-lspconfig',
     event = 'BufRead',
 		config = {
       ensure_installed = {

@@ -60,13 +60,15 @@ wk.register({
   }
 }, {
   mode = '',
-  noremap = false,
 })
 
 -- INFO: no prefix
 wk.register({
   K =  { vim.lsp.buf.hover, 'vim lsp hover' },
-  ['<C-k>'] = { vim.lsp.buf.signature_help, 'vim lsp signature help' },
+  ['<C-H>'] = { function () require('tmux').resize_left() end, 'tmux resize left' },
+  ['<C-J>'] = { function () require('tmux').resize_bottom() end, 'tmux resize bottom' },
+  ['<C-K>'] = { function () require('tmux').resize_top() end, 'tmux resize top' },
+  ['<C-L>'] = { function () require('tmux').resize_right() end, 'tmux resize right' },
   ['<F5>'] = { function () require'dap'.continue() end, 'dap run(continue)' },
   ['<F10>'] = { function () require'dap'.step_over() end, 'dap step over' },
   ['<F11>'] = { function () require'dap'.step_into() end, 'dap step into' },
@@ -244,6 +246,9 @@ wk.register({
 
 -- INFO: <leader> key (visual)
 wk.register({
+  d = {
+    s = { '<ESC>:lua require("dap-python").debug_selection()<CR>', 'python debug select' },
+  },
   m = {
     name = 'jupyter with magma',
     l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
