@@ -13,10 +13,8 @@ return {
 	'lewis6991/impatient.nvim',
 	-- tabular
 	'godlygeek/tabular',
-	-- whitespace
+  -- whitespace
 	'ntpeters/vim-better-whitespace',
-	-- minimap
-	'wfxr/minimap.vim',
   -- tmux
   {
     'aserowy/tmux.nvim',
@@ -26,14 +24,6 @@ return {
   {
     'phaazon/hop.nvim',
     config = true,
-  },
-  -- leap
-  {
-    'ggandor/leap.nvim',
-    dependencies = 'tpope/vim-repeat',
-    config = function ()
-      require('leap').add_default_mappings()
-    end
   },
   -- emmet
   {
@@ -296,12 +286,6 @@ return {
 		config = {
       highlight = true,
     },
-	},
-	-- magma
-	{
-		'dccsillag/magma-nvim',
-    ft = 'python',
-		build = ':UpdateRemotePlugins',
 	},
 	-- vim dadbod
 	{

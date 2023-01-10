@@ -7,13 +7,13 @@ local hop = require('hop')
 local directions = require('hop.hint').HintDirection
 
 local hidden_file = false
+local hop_character = 1
 
 local lazygit = tt:new({
 	cmd = "lazygit",
 	direction = "float",
 	float_opts = {
-		border = "single",
-	},
+		border = "single", },
 })
 
 local lazydocker = tt:new({
@@ -38,26 +38,26 @@ wk.register({
     function()
       hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
     end,
-    'after cursor',
+    'after cursor(current line)',
   },
   F = {
     function()
       hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
     end,
-    'before cursor',
+    'before cursor(current line)',
   },
   t = {
     function()
-      hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })
+      hop.hint_char1({ direction = directions.AFTER_CURSOR })
     end,
     'after cursor',
   },
-  {
+  T = {
     function()
-      hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
+      hop.hint_char1({ direction = directions.BEFORE_CURSOR })
     end,
-    'after cursor',
-  }
+    'before cursor',
+  },
 }, {
   mode = '',
 })
@@ -65,10 +65,6 @@ wk.register({
 -- INFO: no prefix
 wk.register({
   K =  { vim.lsp.buf.hover, 'vim lsp hover' },
-  ['<C-H>'] = { function () require('tmux').resize_left() end, 'tmux resize left' },
-  ['<C-J>'] = { function () require('tmux').resize_bottom() end, 'tmux resize bottom' },
-  ['<C-K>'] = { function () require('tmux').resize_top() end, 'tmux resize top' },
-  ['<C-L>'] = { function () require('tmux').resize_right() end, 'tmux resize right' },
   ['<F5>'] = { function () require'dap'.continue() end, 'dap run(continue)' },
   ['<F10>'] = { function () require'dap'.step_over() end, 'dap step over' },
   ['<F11>'] = { function () require'dap'.step_into() end, 'dap step into' },
@@ -150,14 +146,6 @@ wk.register({
       end,
       'set breakpoint with log point message',
     },
-  },
-  m = {
-    name = 'Magma(jupyer)',
-    c = { '<cmd>MagmaReevaluateCell<CR>', 'reevaluate cell' },
-    d = { '<cmd>MagmaDelete<CR>', 'delete' },
-    l = { '<cmd>MagmaEvaluateLine<CR>', 'evaluate line' },
-    r = { '<cmd>MagmaEvaluateOperator<CR>', 'evaluate operator' },
-    s = { '<cmd>MagmaShowOutput<CR>', 'show output' },
   },
   n = {
     name = 'Neo',
@@ -259,7 +247,7 @@ wk.register({
     f = { function () require('refactoring').refactor('Extract Function To File') end, 'extract function to file' },
     i = { function () require('refactoring').refactor('Inline Variable') end, 'inline variable'},
     v = { function () require('refactoring').refactor('Extract Variable') end, 'extract variable' },
-  }
+  },
 }, {
   mode = "v",
   prefix = '<leader>',
@@ -270,8 +258,6 @@ wk.register({
   b = {
     name = 'buffer',
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
-    h = { '<cmd>sb<CR>', 'split horizontal' },
-    v = { '<cmd>vs<CR>', 'spit vertical' },
     x = { '<cmd>bdelete<CR>', 'buffer close' },
   },
   c = {

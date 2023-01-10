@@ -4,7 +4,7 @@ UNAME="$(uname -s)"
 
 function install_manager() {
   echo "check packer ..."
-  if [ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then 
+  if [ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then
     echo "git clone packer ..."
     git clone --depth 1 "https://github.com/wbthomason/packer.nvim" \
     "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
@@ -28,21 +28,21 @@ function install_package() {
     exit 9
   fi
 
-  $PREFIX install neovim
-  $PREFIX install tmux
-  $PREFIX install ripgrep
-  $PREFIX install go
-  $PREFIX install lua
-  $PREFIX install node
-  $PREFIX install python
-  $PREFIX install lazygit
-  $PREFIX install lazydocker
-  $PREFIX install jesseduffield/lazynpm/lazynpm
-  $PREFIX install delve
-  $PREFIX install llvm
-  $PREFIX install rust
-  $PREFIX install jq
-  $PREFIX install code-minimap
+  "$PREFIX" install neovim
+  "$PREFIX" install tmux
+  "$PREFIX" install ripgrep
+  "$PREFIX" install go
+  "$PREFIX" install lua
+  "$PREFIX" install node
+  "$PREFIX" install python
+  "$PREFIX" install lazygit
+  "$PREFIX" install lazydocker
+  "$PREFIX" install jesseduffield/lazynpm/lazynpm
+  "$PREFIX" install delve
+  "$PREFIX" install llvm
+  "$PREFIX" install rust
+  "$PREFIX" install jq
+  "$PREFIX" install code-minimap
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8
@@ -60,9 +60,9 @@ function install_package() {
 }
 
 function create_symlink() {
-  WORKDIR=$(pwd)
+  WORKDIR=$PWD
   if [ ! -f "$HOME/.tmux.conf" ]; then
-    ln -s "$WORKDIR/tmux.conf" "$HOME/.tmux.conf" 
+    ln -s "$WORKDIR/tmux.conf" "$HOME/.tmux.conf"
     tmux source-file "$HOME/.tmux.conf"
   fi
 

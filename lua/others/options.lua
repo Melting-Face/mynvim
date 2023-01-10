@@ -43,18 +43,5 @@ vim.g.mapleader = ','
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_database_icon = 1
 
--- magma
-vim.g.magma_automatically_open_output = false
-vim.g.magma_image_provider = 'kitty'
-
 -- vim-better-whitespace
 vim.g.better_whitespace_guicolor='#C0CAF5'
-
--- minimap
-vim.g.minimap_block_filetypes={
-  'alpha',
-  'dbui',
-  'dbout',
-  'NvimTree',
-  'packer',
-}
