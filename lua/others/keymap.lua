@@ -7,7 +7,6 @@ local hop = require('hop')
 local directions = require('hop.hint').HintDirection
 
 local hidden_file = false
-local hop_character = 1
 
 local lazygit = tt:new({
 	cmd = "lazygit",
