@@ -15,6 +15,19 @@ return {
 	'godlygeek/tabular',
   -- whitespace
 	'ntpeters/vim-better-whitespace',
+  -- SnipRun
+  {
+    'michaelb/sniprun',
+    build = 'sh install.sh',
+    config = {
+      display = {
+        'Terminal',
+      },
+      display_options = {
+          terminal_width = 45,
+      },
+    }
+  },
   -- tmux
   {
     'aserowy/tmux.nvim',

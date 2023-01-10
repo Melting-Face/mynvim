@@ -202,6 +202,13 @@ wk.register({
     },
     r = { '<cmd>RustRunnables<CR>', 'rust run' },
   },
+  s = {
+    name = 'SnipRun',
+    i = { '<cmd>SnipInfo<CR>', 'info' },
+    r = { '<cmd>SnipRun<CR>', 'run' },
+    s = { '<cmd>SnipReset<CR>', 'reset' },
+    x = { '<cmd>SnipClose<CR>', 'close' },
+  },
   t = {
     name = 'tab & toggle',
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
@@ -246,6 +253,13 @@ wk.register({
     f = { function () require('refactoring').refactor('Extract Function To File') end, 'extract function to file' },
     i = { function () require('refactoring').refactor('Inline Variable') end, 'inline variable'},
     v = { function () require('refactoring').refactor('Extract Variable') end, 'extract variable' },
+  },
+  s = {
+    name = 'SnipRun',
+    i = { '<cmd>SnipInfo<CR>', 'info' },
+    r = { '<cmd>SnipRun<CR>', 'run' },
+    s = { '<cmd>SnipReset<CR>', 'reset' },
+    x = { '<cmd>SnipClose<CR>', 'close' },
   },
 }, {
   mode = "v",
