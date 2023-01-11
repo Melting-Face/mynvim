@@ -150,6 +150,7 @@ wk.register({
     name = 'Neo',
     g = { function () require'neogit'.open() end, 'neogit' },
     n = { '<cmd>Neogen<CR>', 'neogen' },
+    o = { function () require("neotest").output_panel.toggle() end, 'neotest output' },
     s = { function () require('neotest').run.stop() end, 'neotest stop' },
     r = { function () require('neotest').run.run({ strategy = 'dap' }) end, 'neotest start' },
     t = { function () require("neotest").summary.toggle() end, 'neotest summary' },
