@@ -15,6 +15,8 @@ return {
 	'godlygeek/tabular',
   -- whitespace
 	'ntpeters/vim-better-whitespace',
+  -- jqx
+  'gennaro-tedesco/nvim-jqx',
   -- SnipRun
   {
     'michaelb/sniprun',
@@ -217,6 +219,7 @@ return {
           require('neotest-plenary'),
           require('neotest-python')({
             dap = { justMyCode = false },
+            args = {"--log-level", "DEBUG"},
           }),
           require("neotest-rust"),
         },
@@ -368,7 +371,11 @@ return {
 	-- null_ls
 	{
 		'jose-elias-alvarez/null-ls.nvim',
-    event = 'BufRead',
+    event = {
+      'BufRead',
+      'BufWrite',
+    },
+    lazy = true,
 		config = function()
 			local null_ls = require('null-ls')
 			null_ls.setup({
@@ -643,7 +650,6 @@ return {
 	{
 		'mfussenegger/nvim-jdtls',
 		ft = 'java',
-    after = 'cmp',
 	},
   -- mason null-ls
   {
@@ -671,7 +677,6 @@ return {
         'yamlfmt',
         'yamllint',
       },
-      automatic_installation = true,
     },
   },
 	-- alpha
@@ -720,9 +725,8 @@ return {
 		'nvim-lualine/lualine.nvim',
 		dependencies = {
 			'kyazdani42/nvim-web-devicons',
-			opt = true,
+      'SmiteshP/nvim-navic'
 		},
-		after = 'nvim-navic',
 		config = function()
 			local function navic_winbar()
 				local navic = require('nvim-navic')
@@ -806,6 +810,10 @@ return {
       'neovim/nvim-lspconfig',
       'SmiteshP/nvim-navic',
 		},
+    lazy = true,
+    event = {
+      'BufRead',
+    },
     config = function ()
       local cmp = require'cmp'
       local navic = require'nvim-navic'
@@ -915,10 +923,17 @@ return {
               python = {
                 analysis = {
                   diagnosticMode = 'openFilesOnly',
-                  useLibraryCodeForTypes = false,
+                  typeCheckingMode = 'off',
                 },
               },
             },
+            single_file_support = true,
+          }
+        elseif language == 'tsserver' then
+          lspconfig[language].setup {
+            on_attach = on_attach,
+            capabilities = capabilities,
+            single_file_support = true,
           }
         else
           lspconfig[language].setup {
