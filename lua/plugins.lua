@@ -68,12 +68,12 @@ return {
       vim.notify = require'notify'
     end
   },
-  -- theme tokyonight
-	{
-    'folke/tokyonight.nvim',
+  -- theme nordfox
+  {
+    'EdenEast/nightfox.nvim',
     config = function ()
-      vim.cmd[[colorscheme tokyonight]]
-    end
+      vim.cmd("colorscheme nordfox")
+    end,
   },
 	-- neogit
 	{
@@ -219,7 +219,6 @@ return {
           require('neotest-plenary'),
           require('neotest-python')({
             dap = { justMyCode = false },
-            args = {"--log-level", "DEBUG"},
           }),
           require("neotest-rust"),
         },
@@ -330,7 +329,14 @@ return {
 			'rcarriga/nvim-notify',
 		},
     lazy = true,
-		config = {},
+		config = {
+      messages = {
+        enabled = false,
+      },
+      notify = {
+        enabled = false,
+      },
+    },
 	},
 	-- restnvim
 	{
@@ -738,7 +744,7 @@ return {
 			end
 			require('lualine').setup({
 				options = {
-					theme = 'tokyonight',
+					theme = 'nordfox',
 					disabled_filetypes = {
 						winbar = {
 							'alpha',
@@ -819,7 +825,6 @@ return {
       local navic = require'nvim-navic'
       local lspconfig = require'lspconfig'
       local on_attach = function(client, bufnr)
-        -- Enable completion triggered by <c-x><c-o>
         vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
         if client.server_capabilities.documentSymbolProvider then
           navic.attach(client, bufnr)
@@ -927,13 +932,6 @@ return {
                 },
               },
             },
-            single_file_support = true,
-          }
-        elseif language == 'tsserver' then
-          lspconfig[language].setup {
-            on_attach = on_attach,
-            capabilities = capabilities,
-            single_file_support = true,
           }
         else
           lspconfig[language].setup {
