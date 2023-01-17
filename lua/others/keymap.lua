@@ -4,7 +4,6 @@ local gs = require('gitsigns')
 local wk = require('which-key')
 local tt = require("toggleterm.terminal").Terminal
 local hop = require('hop')
-local directions = require('hop.hint').HintDirection
 
 local hidden_file = false
 
@@ -35,27 +34,15 @@ local lazynpm = tt:new({
 wk.register({
   f = {
     function()
-      hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
+      hop.hint_char1()
     end,
-    'after cursor(current line)',
+    'hop 1',
   },
   F = {
     function()
-      hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
+      hop.hint_char2()
     end,
-    'before cursor(current line)',
-  },
-  t = {
-    function()
-      hop.hint_char1({ direction = directions.AFTER_CURSOR })
-    end,
-    'after cursor',
-  },
-  T = {
-    function()
-      hop.hint_char1({ direction = directions.BEFORE_CURSOR })
-    end,
-    'before cursor',
+    'hop 2',
   },
 }, {
   mode = '',
