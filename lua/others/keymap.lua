@@ -7,23 +7,8 @@ local hop = require('hop')
 
 local hidden_file = false
 
-local lazygit = tt:new({
-	cmd = "lazygit",
-	direction = "float",
-	float_opts = {
-		border = "single", },
-})
-
 local lazydocker = tt:new({
 	cmd = "lazydocker",
-	direction = "float",
-	float_opts = {
-		border = "single",
-	},
-})
-
-local lazynpm = tt:new({
-	cmd = "lazynpm",
 	direction = "float",
 	float_opts = {
 		border = "single",
@@ -102,16 +87,10 @@ wk.register({
     t = { function () require("dapui").toggle() end, 'open dap-ui' },
   },
   f = {
-    name = 'find',
-    b = { function () require('telescope.builtin').buffers() end, 'find buffers' },
-    c = { '<cmd>TodoTelescope<CR>', 'find todo comments' },
-    f = { function () require('telescope.builtin').find_files({ hidden=hidden_file }) end, 'find files(telescope)' },
-    g = { function () require('telescope.builtin').live_grep({ hidden=hidden_file }) end, 'grep files' },
-    h = { function () require('telescope.builtin').git_bcommits() end, 'find git commits' },
-    k = { function () require('telescope.builtin').keymaps() end, 'find keymap' },
-    p = { '<cmd>Telescope projects<CR>', 'find projects' },
-    r = { function () require('telescope.builtin').registers() end, 'find register' },
-    t = { function () require('telescope.builtin').git_commits() end, 'find total commits' },
+    name = 'fzf',
+    d = { '<cmd>FzfLua dap_configurations<CR>', 'dap configurations' },
+    f = { '<cmd>FzfLua files<CR>', 'find files' },
+    g = { '<cmd>FzfLua grep<CR>', 'grep' },
   },
   h = {
     name = 'hunk',
@@ -125,8 +104,6 @@ wk.register({
   l = {
     name = 'lazy',
     d = { function () lazydocker:toggle() end, 'lazy docker' },
-    g = { function () lazygit:toggle() end, 'lazy git' },
-    n = { function () lazynpm:toggle() end, 'lazy npm' },
     p = {
       function ()
         require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
@@ -142,23 +119,6 @@ wk.register({
     s = { function () require('neotest').run.stop() end, 'neotest stop' },
     r = { function () require('neotest').run.run({ strategy = 'dap' }) end, 'neotest start' },
     t = { function () require("neotest").summary.toggle() end, 'neotest summary' },
-  },
-  o = {
-    name = 'options',
-    h = {
-      function ()
-        hidden_file = not hidden_file
-        vim.notify(
-          tostring(hidden_file),
-          "info", {
-            title = 'find hidden option',
-            icon = "",
-            timeout = 1000,
-          }
-        )
-      end,
-      'hidden(find files & grep files)'
-    },
   },
   r = {
     name = 'rust_tools & rest-nvim & refactoring',
@@ -207,7 +167,7 @@ wk.register({
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
-    t = { '<cmd>SymbolsOutline<CR>', 'Tagbar' },
+    t = { '<cmd>TagbarToggle<CR>', 'Tagbar' },
     u = { '<cmd>DBUIToggle<CR>', 'db ui' },
     x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },

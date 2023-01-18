@@ -35,14 +35,13 @@ function install_package() {
   "$PREFIX" install lua
   "$PREFIX" install node
   "$PREFIX" install python
-  "$PREFIX" install lazygit
   "$PREFIX" install lazydocker
-  "$PREFIX" install jesseduffield/lazynpm/lazynpm
+  "$PREFIX" install universal-ctags
   "$PREFIX" install delve
   "$PREFIX" install llvm
   "$PREFIX" install rust
   "$PREFIX" install jq
-  "$PREFIX" install code-minimap
+  "$PREFIX" install fzf
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8

@@ -17,6 +17,10 @@ return {
 	'ntpeters/vim-better-whitespace',
   -- jqx
   'gennaro-tedesco/nvim-jqx',
+  -- fzf
+  'ibhagwan/fzf-lua',
+  -- ctags
+  'preservim/tagbar',
   -- SnipRun
   {
     'michaelb/sniprun',
@@ -957,33 +961,11 @@ return {
           },
         },
         ['core.export'] = {},
-        ['core.integrations.telescope'] = {},
       },
     },
 		dependencies = {
 			'nvim-lua/plenary.nvim',
-			'nvim-neorg/neorg-telescope',
 		},
-	},
-	-- telescope
-	{
-		'nvim-telescope/telescope.nvim',
-		dependencies = {
-			'nvim-lua/plenary.nvim',
-			'nvim-telescope/telescope-dap.nvim',
-			'cljoly/telescope-repo.nvim',
-			'danielpieper/telescope-tmuxinator.nvim',
-		},
-		config = function()
-			local telescope = require('telescope')
-			telescope.setup ()
-      telescope.load_extension('dap')
-      telescope.load_extension('noice')
-			telescope.load_extension('projects')
-			telescope.load_extension('refactoring')
-			telescope.load_extension('repo')
-			telescope.load_extension('tmuxinator')
-		end,
 	},
 	-- gitsigns
 	{
