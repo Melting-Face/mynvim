@@ -28,20 +28,21 @@ function install_package() {
     exit 9
   fi
 
-  "$PREFIX" install neovim
-  "$PREFIX" install tmux
-  "$PREFIX" install ripgrep
   "$PREFIX" install go
   "$PREFIX" install lua
+  "$PREFIX" install tmux
   "$PREFIX" install node
+  "$PREFIX" install neovim
   "$PREFIX" install python
+  "$PREFIX" install ripgrep
   "$PREFIX" install lazydocker
   "$PREFIX" install universal-ctags
+  "$PREFIX" install code-minimap
   "$PREFIX" install delve
   "$PREFIX" install llvm
   "$PREFIX" install rust
-  "$PREFIX" install jq
   "$PREFIX" install fzf
+  "$PREFIX" install jq
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8

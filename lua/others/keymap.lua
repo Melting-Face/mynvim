@@ -5,8 +5,6 @@ local wk = require('which-key')
 local tt = require("toggleterm.terminal").Terminal
 local hop = require('hop')
 
-local hidden_file = false
-
 local lazydocker = tt:new({
 	cmd = "lazydocker",
 	direction = "float",

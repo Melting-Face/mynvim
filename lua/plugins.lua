@@ -21,6 +21,16 @@ return {
   'ibhagwan/fzf-lua',
   -- ctags
   'preservim/tagbar',
+  -- minimap
+  'wfxr/minimap.vim',
+  -- bqf
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf',
+    config = function ()
+      require('bqf').setup {}
+    end
+  },
   -- SnipRun
   {
     'michaelb/sniprun',
