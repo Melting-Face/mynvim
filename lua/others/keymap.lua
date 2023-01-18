@@ -46,6 +46,7 @@ wk.register({
   },
 }, {
   mode = '',
+  noremap = false,
 })
 
 -- INFO: no prefix

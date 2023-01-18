@@ -1,3 +1,4 @@
+vim.g.mapleader = ','
 -- default shell: zsh
 vim.o.shell = 'zsh'
 vim.o.autoread = true
@@ -16,10 +17,10 @@ vim.o.shiftwidth = 2
 vim.o.smartcase = true
 vim.o.smarttab = true
 vim.o.smartindent = true
-vim.o.cursorline = true
+vim.o.cursorline = false
 vim.o.showmatch = true
 vim.o.ruler = true
-vim.o.clipboard = 'unnamed'
+vim.o.clipboard = 'unnamedplus'
 vim.o.fileencodings = 'utf8'
 vim.o.encoding = 'UTF-8'
 vim.o.updatetime=100
@@ -37,8 +38,6 @@ vim.opt.linebreak = true
 
 vim.opt.list = true
 vim.opt.listchars:append "eol:↴"
-
-vim.g.mapleader = ','
 
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_database_icon = 1
