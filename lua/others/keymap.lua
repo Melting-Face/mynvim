@@ -89,6 +89,7 @@ wk.register({
     d = { '<cmd>FzfLua dap_configurations<CR>', 'dap configurations' },
     f = { '<cmd>FzfLua files<CR>', 'find files' },
     g = { '<cmd>FzfLua grep<CR>', 'grep' },
+    q = { '<cmd>FzfLua quickfix<CR>', 'quickfix' },
   },
   h = {
     name = 'hunk',
@@ -111,7 +112,6 @@ wk.register({
   },
   n = {
     name = 'Neo',
-    g = { function () require'neogit'.open() end, 'neogit' },
     n = { '<cmd>Neogen<CR>', 'neogen' },
     o = { function () require("neotest").output_panel.toggle() end, 'neotest output' },
     s = { function () require('neotest').run.stop() end, 'neotest stop' },
