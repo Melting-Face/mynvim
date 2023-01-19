@@ -5,8 +5,22 @@ return {
   "mg979/vim-visual-multi",
   -- async
   "nvim-lua/plenary.nvim",
+  ---------- Git ----------
   -- vim-fugitive
   "tpope/vim-fugitive",
+  -- neogit
+  {
+    "TimUntersberger/neogit",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
+    },
+    config = {
+      integrations= {
+        diffview = true,
+      }
+    }
+  },
   -- starttime
   "dstein64/vim-startuptime",
   -- cache

@@ -112,6 +112,7 @@ wk.register({
   },
   n = {
     name = 'Neo',
+    g = { '<cmd>Neogit<CR>', 'neogit' },
     n = { '<cmd>Neogen<CR>', 'neogen' },
     o = { function () require("neotest").output_panel.toggle() end, 'neotest output' },
     s = { function () require('neotest').run.stop() end, 'neotest stop' },
