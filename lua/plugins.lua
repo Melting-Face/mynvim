@@ -98,9 +98,9 @@ return {
   },
   -- theme nordfox
   {
-    "EdenEast/nightfox.nvim",
+    'folke/tokyonight.nvim',
     config = function()
-      vim.cmd([[colorscheme nordfox]])
+      vim.cmd([[colorscheme tokyonight-night]])
     end,
   },
   -- nvim-treesitter
@@ -196,6 +196,17 @@ return {
         },
       })
     end,
+  },
+  -- regexplainer
+  {
+    'bennypowers/nvim-regexplainer',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'MunifTanjim/nui.nvim',
+    },
+    config = function ()
+      require'regexplainer'.setup()
+    end
   },
   -- package-info
   {
@@ -756,7 +767,7 @@ return {
 
       require("lualine").setup({
         options = {
-          theme = "nordfox",
+          theme = "tokyonight",
           disabled_filetypes = {
             winbar = {
               "alpha",
