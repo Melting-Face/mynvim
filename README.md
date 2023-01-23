@@ -13,6 +13,8 @@
 
    - cc: git commit
 
+   - G push: git push
+
 <br>
 
 ## Install

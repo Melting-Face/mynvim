@@ -85,10 +85,20 @@ wk.register({
     t = { function () require("dapui").toggle() end, 'open dap-ui' },
   },
   f = {
-    name = 'fzf',
+    name = 'Fzf',
     d = { '<cmd>FzfLua dap_configurations<CR>', 'dap configurations' },
     f = { '<cmd>FzfLua files<CR>', 'find files' },
-    g = { '<cmd>FzfLua grep<CR>', 'grep' },
+    g = {
+      name = 'Git',
+      {
+        b = { '<cmd>FzfLua git_branches<CR>', 'git branches' },
+        c = { '<cmd>FzfLua git_bcommits<CR>', 'git commit log (buffer)' },
+        f = { '<cmd>FzfLua git_files<CR>', 'git files' },
+        s = { '<cmd>FzfLua git_status<CR>', 'git status' },
+        t = { '<cmd>FzfLua git_commits<CR>', 'git commit log (project)' },
+      }
+    },
+    s = { '<cmd>FzfLua grep<CR>', 'search' },
     q = { '<cmd>FzfLua quickfix<CR>', 'quickfix' },
   },
   h = {
