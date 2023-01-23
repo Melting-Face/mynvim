@@ -5,6 +5,14 @@
 - visual mode => `:Tab /:` => Tabular arrangement `:`
 > [Tabular cheatsheet](https://devhints.io/tabular)
 
+- Fugitive Command
+   
+   - s: stage   (git add)
+
+   - u: unstage (git reset)
+
+   - cc: git commit
+
 <br>
 
 ## Install
