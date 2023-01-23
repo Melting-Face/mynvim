@@ -5,22 +5,8 @@ return {
   "mg979/vim-visual-multi",
   -- async
   "nvim-lua/plenary.nvim",
-  ---------- Git ----------
   -- vim-fugitive
   "tpope/vim-fugitive",
-  -- neogit
-  {
-    "TimUntersberger/neogit",
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'sindrets/diffview.nvim',
-    },
-    config = {
-      integrations= {
-        diffview = true,
-      }
-    }
-  },
   -- starttime
   "dstein64/vim-startuptime",
   -- cache
@@ -409,7 +395,7 @@ return {
       local null_ls = require("null-ls")
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
-        debounce = 500,
+        debounce = 250,
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.flake8,
@@ -705,6 +691,7 @@ return {
         "yamlfmt",
         "yamllint",
       },
+      automatic_installation = true,
     },
   },
   -- alpha
@@ -993,7 +980,7 @@ return {
       current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "eol",
-        delay = 500,
+        delay = 250,
         ignore_whitespace = false,
       },
     },
