@@ -499,8 +499,9 @@ return {
       "typescript",
     },
     config = function()
+      local package_path = os.getenv("HOME") .. "/.local/share/nvim/mason/packages"
       require("dap-vscode-js").setup({
-        debugger_path = os.getenv("HOME") .. "/.local/share/nvim/mason/packages/js-debug-adapter",
+        debugger_path = package_path .. "/js-debug-adapter",
         adapters = {
           "pwa-node",
           "pwa-chrome",
@@ -509,12 +510,19 @@ return {
           "pwa-extensionHost",
         },
       })
+      local dap = require('dap')
+      local node_path = package_path .. "/node-debug2-adapter/out/src/nodeDebug.js"
+      dap.adapters.node2 = {
+        type = 'executable',
+        command = 'node',
+        args = { node_path },
+      }
       for _, language in ipairs({ "typescript", "javascript" }) do
-        require("dap").configurations[language] = {
+        dap.configurations[language] = {
           {
             type = "pwa-node",
             request = "launch",
-            name = "Launch file",
+            name = "Launch - node",
             program = "${file}",
             cwd = "${workspaceFolder}",
           },
@@ -526,6 +534,18 @@ return {
             cwd = "${workspaceFolder}",
           },
         }
+        if language == 'javascript' then
+          table.insert(dap.configurations[language], {
+            name = 'Launch - node2',
+            type = 'node2',
+            request = 'launch',
+            program = '${file}',
+            cwd = '${workspaceFolder}',
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal',
+          })
+        end
       end
     end,
   },
