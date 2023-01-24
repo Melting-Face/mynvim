@@ -5,10 +5,47 @@ return {
   "mg979/vim-visual-multi",
   -- async
   "nvim-lua/plenary.nvim",
+  -- CSV
+  -- rainbow csv
+  {
+    "mechatroner/rainbow_csv",
+    lazy = true,
+    ft = "csv",
+  },
+  -- csv.vim
+  {
+    "chrisbra/csv.vim",
+    lazy = true,
+    ft = "csv",
+  },
+  -- GIT
   -- vim-fugitive
   "tpope/vim-fugitive",
-  -- starttime
-  "dstein64/vim-startuptime",
+  -- neogit
+  {
+    'TimUntersberger/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
+    },
+    config = {
+      integrations = {
+        diffview = true
+      },
+    }
+  },
+  -- gitsigns
+  {
+    "lewis6991/gitsigns.nvim",
+    config = {
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = "eol",
+        delay = 250,
+        ignore_whitespace = false,
+      },
+    },
+  },
   -- cache
   "lewis6991/impatient.nvim",
   -- tabular
@@ -62,18 +99,6 @@ return {
       "javascriptreact",
       "typescriptreact",
     },
-  },
-  -- rainbow csv
-  {
-    "mechatroner/rainbow_csv",
-    lazy = true,
-    ft = "csv",
-  },
-  -- csv.vim
-  {
-    "chrisbra/csv.vim",
-    lazy = true,
-    ft = "csv",
   },
   -- notify
   {
@@ -244,16 +269,14 @@ return {
   -- neodev
   {
     "folke/neodev.nvim",
-    config = function()
-      require("neodev").setup({
-        library = {
-          plugins = {
-            "neotest",
-          },
-          types = true,
+    config = {
+      library = {
+        plugins = {
+          "neotest",
         },
-      })
-    end,
+        types = true,
+      },
+    },
   },
   -- luapad
   {
@@ -466,8 +489,6 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     config = {
-      show_current_context = true,
-      show_current_context_start = true,
       show_end_of_line = true,
     },
   },
@@ -748,13 +769,6 @@ return {
       },
     },
   },
-  -- project nvim
-  {
-    "ahmedkhalf/project.nvim",
-    config = function()
-      require("project_nvim").setup({})
-    end,
-  },
   -- lualine
   {
     "nvim-lualine/lualine.nvim",
@@ -872,10 +886,6 @@ return {
           documentation = cmp.config.window.bordered(),
         },
         mapping = cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
         }),
         sources = cmp.config.sources({
@@ -991,18 +1001,6 @@ return {
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
-    },
-  },
-  -- gitsigns
-  {
-    "lewis6991/gitsigns.nvim",
-    config = {
-      current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = "eol",
-        delay = 250,
-        ignore_whitespace = false,
-      },
     },
   },
   -- toggleterm

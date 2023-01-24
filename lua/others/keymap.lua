@@ -98,6 +98,8 @@ wk.register({
         t = { '<cmd>FzfLua git_commits<CR>', 'git commit log (project)' },
       }
     },
+    k = { '<cmd>FzfLua keymaps<CR>', 'keymaps' },
+    r = { '<cmd>FzfLua registers<CR>', 'registers' },
     s = { '<cmd>FzfLua grep<CR>', 'search' },
     q = { '<cmd>FzfLua quickfix<CR>', 'quickfix' },
   },
@@ -122,6 +124,7 @@ wk.register({
   },
   n = {
     name = 'Neo',
+    g = { '<cmd>Neogit<CR>', 'neogit' },
     n = { '<cmd>Neogen<CR>', 'neogen' },
     o = { function () require("neotest").output_panel.toggle() end, 'neotest output' },
     s = { function () require('neotest').run.stop() end, 'neotest stop' },

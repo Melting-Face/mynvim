@@ -20,9 +20,9 @@ vim.o.smartindent = true
 vim.o.cursorline = false
 vim.o.showmatch = true
 vim.o.ruler = true
-vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard='unnamedplus'
 vim.o.fileencodings = 'utf8'
-vim.o.encoding = 'UTF-8'
+vim.o.encoding='UTF-8'
 vim.o.updatetime=100
 vim.o.timeoutlen=800
 -- mouse option is 'all'
