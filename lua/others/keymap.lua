@@ -131,11 +131,18 @@ wk.register({
     r = { function () require('neotest').run.run({ strategy = 'dap' }) end, 'neotest start' },
     t = { function () require("neotest").summary.toggle() end, 'neotest summary' },
   },
+  q = {
+    name = 'quickfix',
+    p = { "<cmd>cexpr system('refurb --quiet ' . shellescape(expand('%'))) | copen<cr>", "Inspect python" },
+  },
   r = {
     name = 'rust_tools & rest-nvim & refactoring',
     b = { function () require('refactoring').refactor('Extract Block') end, 'refactoring extract block' },
     d = { '<cmd>RustDebuggables<CR>', 'rust debug' },
-    f = { function () require('refactoring').refactor('Extract Block To File') end, 'refactoring extract block to file' },
+    f = {
+      function () require('refactoring').refactor('Extract Block To File') end,
+      'refactoring extract block to file',
+    },
     h = {
       function ()
         if vim.bo.filetype == 'rust' then
