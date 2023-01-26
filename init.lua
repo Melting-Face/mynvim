@@ -1,4 +1,6 @@
 require'others.options'
+require'others.funcs'
+require'others.auto_cmds'
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -18,4 +20,4 @@ require'lazy'.setup('plugins', {
 })
 
 require'impatient'
-require'others.keymap'
+require'others.keymaps'

@@ -4,7 +4,6 @@ vim.o.shell = 'zsh'
 vim.o.autoread = true
 vim.o.hlsearch = true
 vim.o.ignorecase = true
-vim.o.colorcolumn = "89"
 vim.o.nu = true
 vim.o.autoindent = true
 vim.o.cindent = true
