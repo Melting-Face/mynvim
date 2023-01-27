@@ -133,7 +133,23 @@ wk.register({
   },
   q = {
     name = 'quickfix',
-    p = { "<cmd>cexpr system('refurb --quiet ' . shellescape(expand('%'))) | copen<cr>", "Inspect python" },
+    p = {
+      name = 'python',
+      b = {
+        function ()
+          local query = "cexpr system('refurb --quiet " .. vim.fn.expand('%:p') .. "') | copen"
+          vim.cmd(query)
+        end,
+        "Inspect current directory(refurb)"
+      },
+      d = {
+        function ()
+          local query = "cexpr system('refurb --quiet .') | copen"
+          vim.cmd(query)
+        end,
+        "Inspect current directory(refurb)"
+      },
+    }
   },
   r = {
     name = 'rust_tools & rest-nvim & refactoring',
