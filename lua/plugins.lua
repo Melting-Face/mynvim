@@ -32,7 +32,12 @@ return {
       integrations = {
         diffview = true
       },
-    }
+      signs = {
+        section = { "*", "=" },
+        item = { "*", "=" },
+        hunk = { "", "" },
+      },
+    },
   },
   -- gitsigns
   {
