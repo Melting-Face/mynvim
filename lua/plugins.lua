@@ -262,7 +262,6 @@ return {
           require("neotest-jest"),
           require("neotest-plenary"),
           require("neotest-python")({
-            runner = 'unittest',
             dap = { justMyCode = false },
           }),
         },
