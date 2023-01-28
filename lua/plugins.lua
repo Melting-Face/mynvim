@@ -244,21 +244,25 @@ return {
       "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
       "haydenmeade/neotest-jest",
+      "nvim-neotest/neotest-vim-test",
       "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-python",
-    },
-    ft = {
-      "lua",
-      "javascript",
-      "python",
-      "typescript",
     },
     config = function()
       require("neotest").setup({
         adapters = {
+          require('neotest-vim-test')({
+            ignore_filetypes = {
+              "lua",
+              "javascript",
+              "python",
+              "typescript",
+            }
+          }),
           require("neotest-jest"),
           require("neotest-plenary"),
           require("neotest-python")({
+            runner = 'unittest',
             dap = { justMyCode = false },
           }),
         },
@@ -294,6 +298,7 @@ return {
       "lua",
       "java",
       "javascript",
+      "javascriptreact",
       "python",
       "rust",
       "sh",
@@ -306,6 +311,7 @@ return {
         lua = "ldoc",
         java = "javadoc",
         javascript = "jsdoc",
+        javacriptreact = "jsdoc",
         python = "google_docstrings",
         rust = "rustdoc",
         sh = "google_bash",
