@@ -5,18 +5,6 @@ return {
   "mg979/vim-visual-multi",
   -- async
   "nvim-lua/plenary.nvim",
-  -- gpt
-  {
-    'jackMort/ChatGPT.nvim',
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
-    },
-    config = function()
-      require("chatgpt").setup {}
-    end,
-  },
   -- CSV
   -- rainbow csv
   {
