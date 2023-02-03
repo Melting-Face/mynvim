@@ -1,6 +1,8 @@
 return {
   -- devicons
   "kyazdani42/nvim-web-devicons",
+  -- undotree
+  "mbbill/undotree",
   -- multi cursor
   "mg979/vim-visual-multi",
   -- async
@@ -65,31 +67,15 @@ return {
   "preservim/tagbar",
   -- minimap
   "wfxr/minimap.vim",
-  -- bqf
-  {
-    "kevinhwang91/nvim-bqf",
-    ft = "qf",
-    config = function()
-      require("bqf").setup({})
-    end,
-  },
-  -- SnipRun
-  {
-    "michaelb/sniprun",
-    build = "sh install.sh",
-    config = {
-      display = {
-        "Terminal",
-      },
-      display_options = {
-        terminal_width = 45,
-      },
-    },
-  },
   -- tmux
   {
     "aserowy/tmux.nvim",
     config = true,
+  },
+  -- lsp progress
+  {
+    'j-hui/fidget.nvim',
+    config = {},
   },
   -- hop
   {
@@ -357,22 +343,6 @@ return {
       "nvim-lua/plenary.nvim",
     },
     config = true,
-  },
-  -- noice
-  {
-    "folke/noice.nvim",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
-    },
-    config = {
-      messages = {
-        enabled = false,
-      },
-      notify = {
-        enabled = false,
-      },
-    },
   },
   -- restnvim
   {

@@ -195,14 +195,18 @@ wk.register({
   },
   t = {
     name = 'tab & toggle',
-    b = { gs.toggle_current_line_blame, 'gitsigns blame' },
     c = { '<cmd>tabclose<CR>', 'tab close' },
-    d = { gs.toggle_deleted, 'gitsigns deleted' },
+    d = { '<cmd>DBUIToggle<CR>', 'db ui' },
+    g = {
+      name = 'gitsigns',
+      b = { gs.toggle_current_line_blame, 'gitsigns blame' },
+      d = { gs.toggle_deleted, 'gitsigns deleted' },
+    },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>TagbarToggle<CR>', 'Tagbar' },
-    u = { '<cmd>DBUIToggle<CR>', 'db ui' },
+    u = { '<cmd>UndotreeToggle<CR>', 'UndotreeToggle' },
     x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },
   u = {
