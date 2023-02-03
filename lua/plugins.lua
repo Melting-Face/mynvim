@@ -53,6 +53,14 @@ return {
       },
     },
   },
+  -- quick fix
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf',
+    config = function ()
+      require('bqf').setup {}
+    end
+  },
   -- cache
   "lewis6991/impatient.nvim",
   -- tabular
