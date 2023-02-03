@@ -416,6 +416,7 @@ return {
           null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.shellharden,
           null_ls.builtins.formatting.stylua,
+          null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.yamlfmt,
         },
       })
@@ -677,6 +678,7 @@ return {
         "rust_analyzer",
         "sumneko_lua",
         "sqlls",
+        "taplo",
         "tsserver",
         "yamlls",
       },
@@ -919,6 +921,7 @@ return {
         "rust_analyzer",
         "sumneko_lua",
         "sqlls",
+        "taplo",
         "tsserver",
         "yamlls",
       }
