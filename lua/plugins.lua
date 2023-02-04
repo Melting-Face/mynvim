@@ -1,12 +1,45 @@
 return {
   -- devicons
   "kyazdani42/nvim-web-devicons",
-  -- undotree
-  "mbbill/undotree",
   -- multi cursor
   "mg979/vim-visual-multi",
   -- async
   "nvim-lua/plenary.nvim",
+  -- cache
+  "lewis6991/impatient.nvim",
+  -- tabular
+  "godlygeek/tabular",
+  -- whitespace
+  "ntpeters/vim-better-whitespace",
+  -- ctags
+  "preservim/tagbar",
+  -- minimap
+  "wfxr/minimap.vim",
+
+  --telescope(fzf)
+  {
+    'nvim-telescope/telescope.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-dap.nvim',
+      'debugloop/telescope-undo.nvim',
+    },
+    config = function ()
+      local telescope = require('telescope')
+      telescope.setup {
+        defaults = {
+          layout_config = {
+            vertical = {
+              width = 0.5
+            },
+          },
+        }
+      }
+      telescope.load_extension("undo")
+      telescope.load_extension('dap')
+    end
+  },
+
   -- CSV
   -- rainbow csv
   {
@@ -20,6 +53,7 @@ return {
     lazy = true,
     ft = "csv",
   },
+
   -- GIT
   -- vim-fugitive
   "tpope/vim-fugitive",
@@ -53,6 +87,7 @@ return {
       },
     },
   },
+
   -- quick fix
   {
     'kevinhwang91/nvim-bqf',
@@ -61,20 +96,6 @@ return {
       require('bqf').setup {}
     end
   },
-  -- cache
-  "lewis6991/impatient.nvim",
-  -- tabular
-  "godlygeek/tabular",
-  -- whitespace
-  "ntpeters/vim-better-whitespace",
-  -- jqx
-  "gennaro-tedesco/nvim-jqx",
-  -- fzf
-  "ibhagwan/fzf-lua",
-  -- ctags
-  "preservim/tagbar",
-  -- minimap
-  "wfxr/minimap.vim",
   -- tmux
   {
     "aserowy/tmux.nvim",
@@ -106,7 +127,7 @@ return {
       vim.notify = require("notify")
     end,
   },
-  -- theme nordfox
+  -- theme
   {
     'folke/tokyonight.nvim',
     config = function()
@@ -969,7 +990,11 @@ return {
   -- neorg
   {
     "nvim-neorg/neorg",
-    after = "nvim-treesitter",
+    dependencies = {
+      "nvim-treesitter",
+      "nvim-lua/plenary.nvim",
+      "nvim-neorg/neorg-telescope",
+    },
     ft = "norg",
     build = ":Neorg sync-parsers",
     config = {
@@ -982,10 +1007,8 @@ return {
           },
         },
         ["core.export"] = {},
+        ["core.integrations.telescope"] = {},
       },
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
     },
   },
   -- toggleterm

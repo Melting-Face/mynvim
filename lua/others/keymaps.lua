@@ -1,9 +1,9 @@
 -- keymap can use string | function
 -----------------------------------
-local gs = require('gitsigns')
-local wk = require('which-key')
-local tt = require("toggleterm.terminal").Terminal
+local gs  = require('gitsigns')
 local hop = require('hop')
+local tt  = require("toggleterm.terminal").Terminal
+local wk  = require('which-key')
 
 local lazydocker = tt:new({
 	cmd = "lazydocker",
@@ -85,23 +85,20 @@ wk.register({
     t = { function () require("dapui").toggle() end, 'open dap-ui' },
   },
   f = {
-    name = 'Fzf',
-    d = { '<cmd>FzfLua dap_configurations<CR>', 'dap configurations' },
-    f = { '<cmd>FzfLua files<CR>', 'find files' },
+    name = 'Telescope',
+    f = { function () require('telescope.builtin').find_files() end, 'find files' },
     g = {
       name = 'Git',
       {
-        b = { '<cmd>FzfLua git_branches<CR>', 'git branches' },
-        c = { '<cmd>FzfLua git_bcommits<CR>', 'git commit log (buffer)' },
-        f = { '<cmd>FzfLua git_files<CR>', 'git files' },
-        s = { '<cmd>FzfLua git_status<CR>', 'git status' },
-        t = { '<cmd>FzfLua git_commits<CR>', 'git commit log (project)' },
+        c = { function () require('telescope.builtin').git_bcommits() end, 'git commit log (buffer)' },
+        t = { function () require('telescope.builtin').git_commits() end, 'git commit log (project)' },
       }
     },
-    k = { '<cmd>FzfLua keymaps<CR>', 'keymaps' },
-    r = { '<cmd>FzfLua registers<CR>', 'registers' },
-    s = { '<cmd>FzfLua grep<CR>', 'search' },
-    q = { '<cmd>FzfLua quickfix<CR>', 'quickfix' },
+    k = { function () require('telescope.builtin').keymaps() end, 'keymaps' },
+    q = { function () require('telescope.builtin').quick() end, 'quickfix' },
+    r = { function () require('telescope.builtin').registers() end, 'registers' },
+    s = { function () require('telescope.builtin').live_grep() end, 'search' },
+    u = { function () require("telescope").extensions.undo.undo() end, 'undo tree' },
   },
   h = {
     name = 'hunk',
