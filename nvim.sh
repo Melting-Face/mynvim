@@ -41,7 +41,6 @@ function install_package() {
   "$PREFIX" install delve
   "$PREFIX" install llvm
   "$PREFIX" install rust
-  "$PREFIX" install fzf
   "$PREFIX" install jq
   pip3 install neovim
   pip3 install debugpy
@@ -80,7 +79,7 @@ function create_symlink() {
 
 function install_plugins() {
   nvim --headless "+Lazy! sync" +qa
-} 
+}
 
 if [ "$1" == "all" ]; then
   install_package;

@@ -228,10 +228,6 @@ wk.register({
   d = {
     s = { '<ESC>:lua require("dap-python").debug_selection()<CR>', 'python debug select' },
   },
-  m = {
-    name = 'jupyter with magma',
-    l = { ':<C-u>MagmaEvaluateVisual<CR>', 'evaluate visual' }
-  },
   r = {
     name = 'refactoring',
     e = { function () require('refactoring').refactor('Extract Function') end, 'extract function' },
