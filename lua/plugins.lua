@@ -15,6 +15,8 @@ return {
   "preservim/tagbar",
   -- minimap
   "wfxr/minimap.vim",
+  -- startify
+  'mhinz/vim-startify',
 
   --telescope(fzf)
   {
@@ -740,16 +742,6 @@ return {
       automatic_installation = true,
     },
   },
-  -- alpha
-  {
-    "goolord/alpha-nvim",
-    dependencies = {
-      "kyazdani42/nvim-web-devicons",
-    },
-    config = function()
-      require("alpha").setup(require("alpha.themes.dashboard").config)
-    end,
-  },
   -- comment
   {
     "numToStr/Comment.nvim",
@@ -796,12 +788,12 @@ return {
           theme = "tokyonight",
           disabled_filetypes = {
             winbar = {
-              "alpha",
-              "dbui",
-              "dbout",
-              "notify",
               "NvimTree",
+              "dbout",
+              "dbui",
+              "notify",
               "packer",
+              "startify",
             },
           },
         },
