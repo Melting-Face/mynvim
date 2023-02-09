@@ -28,15 +28,7 @@ return {
     },
     config = function ()
       local telescope = require('telescope')
-      telescope.setup {
-        defaults = {
-          layout_config = {
-            vertical = {
-              width = 0.5
-            },
-          },
-        }
-      }
+      telescope.setup {}
       telescope.load_extension("undo")
       telescope.load_extension('dap')
     end
