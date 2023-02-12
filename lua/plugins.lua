@@ -143,6 +143,9 @@ return {
         sync_install = true,
         ensure_installed = {
           "bash",
+          "c",
+          "cmake",
+          "cpp",
           "dockerfile",
           "go",
           "html",
@@ -151,6 +154,7 @@ return {
           "javascript",
           "json",
           "lua",
+          "make",
           "markdown",
           "norg",
           "python",
@@ -509,6 +513,8 @@ return {
     "tiagovla/scope.nvim",
     config = true,
   },
+
+  -- DAP
   -- dap java/typescript
   {
     "mxsdev/nvim-dap-vscode-js",
@@ -685,6 +691,7 @@ return {
     config = {
       ensure_installed = {
         "bashls",
+        "clangd",
         "dockerls",
         "gopls",
         "jdtls",
@@ -918,6 +925,7 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
       local languages = {
         "bashls",
+        "clangd",
         "dockerls",
         "gopls",
         "jdtls",

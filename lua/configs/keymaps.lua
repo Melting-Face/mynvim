@@ -203,7 +203,7 @@ wk.register({
     n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
     t = { '<cmd>TagbarToggle<CR>', 'Tagbar' },
-    u = { '<cmd>UndotreeToggle<CR>', 'UndotreeToggle' },
+    a = { '<Plug>VimspectorContinue' },
     x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },
   u = {
