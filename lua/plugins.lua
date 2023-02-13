@@ -81,13 +81,23 @@ return {
       },
     },
   },
+  {
+    'akinsho/git-conflict.nvim',
+    config = true,
+  },
+  {
+    'yorickpeterse/nvim-pqf',
+    config = function ()
+      require('pqf').setup()
+    end
+  },
 
   -- quick fix
   {
     'kevinhwang91/nvim-bqf',
     ft = 'qf',
     config = function ()
-      require('bqf').setup {}
+      require('bqf').setup{}
     end
   },
   -- tmux
@@ -95,17 +105,12 @@ return {
     "aserowy/tmux.nvim",
     config = true,
   },
-  -- lsp progress
-  {
-    'j-hui/fidget.nvim',
-    config = {},
-  },
-  -- hop
+  -- HOP
   {
     "phaazon/hop.nvim",
     config = true,
   },
-  -- emmet
+  -- EMMET
   {
     "mattn/emmet-vim",
     ft = {
@@ -226,29 +231,6 @@ return {
       })
     end,
   },
-  -- regexplainer
-  {
-    'bennypowers/nvim-regexplainer',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'MunifTanjim/nui.nvim',
-    },
-    config = function ()
-      require'regexplainer'.setup()
-    end
-  },
-  -- package-info
-  {
-    "vuki656/package-info.nvim",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-    },
-    ft = "json",
-    event = {
-      "BufRead package.json",
-    },
-    config = true,
-  },
   -- neotest
   {
     "nvim-neotest/neotest",
@@ -359,6 +341,20 @@ return {
       "tpope/vim-dadbod",
     },
   },
+
+  -- PACKAGE
+  -- package-info
+  {
+    "vuki656/package-info.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    ft = "json",
+    event = {
+      "BufRead package.json",
+    },
+    config = true,
+  },
   -- crates
   {
     "saecki/crates.nvim",
@@ -430,6 +426,7 @@ return {
           null_ls.builtins.diagnostics.yamllint,
 
           null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.dart_format,
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.rustfmt,
@@ -613,6 +610,14 @@ return {
       },
     },
   },
+  -- flutter-tools
+  {
+    'akinsho/flutter-tools.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    config = {}
+  },
   -- nvim-dap-lua
   {
     "jbyuki/one-small-step-for-vimkind",
@@ -724,6 +729,7 @@ return {
       ensure_installed = {
         "black",
         "eslint_d",
+        "dart_format",
         "flake8",
         "golangci_lint",
         "hadolint",
