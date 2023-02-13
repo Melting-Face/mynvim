@@ -533,12 +533,6 @@ return {
         },
       })
       local dap = require('dap')
-      local node_path = package_path .. "/node-debug2-adapter/out/src/nodeDebug.js"
-      dap.adapters.node2 = {
-        type = 'executable',
-        command = 'node',
-        args = { node_path },
-      }
       for _, language in ipairs({ "typescript", "javascript" }) do
         dap.configurations[language] = {
           {
@@ -547,6 +541,7 @@ return {
             name = "Launch - node",
             program = "${file}",
             cwd = "${workspaceFolder}",
+            port = 9229,
           },
           {
             type = "pwa-node",
@@ -554,20 +549,9 @@ return {
             name = "Attach",
             processId = require("dap.utils").pick_process,
             cwd = "${workspaceFolder}",
+            port = 9229,
           },
         }
-        if language == 'javascript' then
-          table.insert(dap.configurations[language], {
-            name = 'Launch - node2',
-            type = 'node2',
-            request = 'launch',
-            program = '${file}',
-            cwd = '${workspaceFolder}',
-            sourceMaps = true,
-            protocol = 'inspector',
-            console = 'integratedTerminal',
-          })
-        end
       end
     end,
   },
@@ -701,9 +685,9 @@ return {
         "gopls",
         "jdtls",
         "jsonls",
+        "lua_ls",
         "pyright",
         "rust_analyzer",
-        "sumneko_lua",
         "sqlls",
         "taplo",
         "tsserver",
@@ -936,9 +920,9 @@ return {
         "gopls",
         "jdtls",
         "jsonls",
+        "lua_ls",
         "pyright",
         "rust_analyzer",
-        "sumneko_lua",
         "sqlls",
         "taplo",
         "tsserver",
