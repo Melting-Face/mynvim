@@ -86,7 +86,7 @@ return {
     config = true,
   },
   {
-    'yorickpeterse/nvim-pqf',
+    'https://gitlab.com/yorickpeterse/nvim-pqf.git',
     config = function ()
       require('pqf').setup()
     end
