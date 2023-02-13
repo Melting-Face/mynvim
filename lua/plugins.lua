@@ -514,6 +514,12 @@ return {
   -- DAP
   -- dap java/typescript
   {
+    "microsoft/vscode-js-debug",
+    lazy = true,
+    build = "npm install --legacy-peer-deps && npm run compile",
+    version = 'v1.74.1'
+  },
+  {
     "mxsdev/nvim-dap-vscode-js",
     dependencies = "mfussenegger/nvim-dap",
     ft = {
@@ -521,9 +527,9 @@ return {
       "typescript",
     },
     config = function()
-      local package_path = os.getenv("HOME") .. "/.local/share/nvim/mason/packages"
+      local lazy_path = os.getenv("HOME") .. "/.local/share/nvim/lazy"
       require("dap-vscode-js").setup({
-        debugger_path = package_path .. "/js-debug-adapter",
+        debugger_path = lazy_path .. "/vscode-js-debug",
         adapters = {
           "pwa-node",
           "pwa-chrome",
