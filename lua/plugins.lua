@@ -153,6 +153,7 @@ return {
           "cpp",
           "dockerfile",
           "go",
+          "haskell",
           "html",
           "http",
           "java",
@@ -270,6 +271,7 @@ return {
       library = {
         plugins = {
           "neotest",
+          "nvim-dap-ui",
         },
         types = true,
       },
@@ -511,39 +513,39 @@ return {
     config = true,
   },
 
-  -- DAP
-  -- dap java/typescript
+  -- INFO: DAP
+  -- nvim-dap-ui
   {
     "mfussenegger/nvim-dap",
     config = function ()
-      local dap = require('dap')
-      local mason_path = os.getenv('HOME') .. '/.local/share/nvim/mason/packages'
-      dap.adapters.codelldb = {
-        type = 'server',
-        port = "${port}",
-        executable = {
-          command = mason_path .. '/codelldb/extension/adapter/codelldb',
-          args = {"--port", "${port}"},
-        }
-      }
-
-      dap.configurations.cpp = {
-        {
-          name = "Launch file",
-          type = "codelldb",
-          request = "launch",
-          program = function()
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-          end,
-          cwd = '${workspaceFolder}',
-          stopOnEntry = false,
-        },
-      }
-
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = dap.configurations.cpp
+      
     end
   },
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies =  "mfussenegger/nvim-dap",
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      dapui.setup()
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end,
+  },
+  -- dap-virtual-text
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    dependencies = "mfussenegger/nvim-dap",
+    config = true,
+  },
+  -- dap java/typescript
   {
     "microsoft/vscode-js-debug",
     lazy = true,
@@ -609,36 +611,6 @@ return {
       require("dap-python").setup(python_path)
     end,
   },
-  -- rust-tools
-  {
-    "simrat39/rust-tools.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-lua/plenary.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    ft = "rust",
-    config = {
-      server = {
-        standalone = true,
-      },
-      dap = {
-        adapter = {
-          type = "executable",
-          command = "lldb-vscode",
-          name = "rt_lldb",
-        },
-      },
-    },
-  },
-  -- flutter-tools
-  {
-    'akinsho/flutter-tools.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = {}
-  },
   -- nvim-dap-lua
   {
     "jbyuki/one-small-step-for-vimkind",
@@ -678,30 +650,52 @@ return {
       }
     end,
   },
-  -- nvim-dap-ui
+  -- nvim-jdtls
   {
-    "rcarriga/nvim-dap-ui",
-    dependencies = "mfussenegger/nvim-dap",
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-      dapui.setup({})
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
-      end
-    end,
+    "mfussenegger/nvim-jdtls",
+    ft = "java",
   },
-  -- dap-virtual-text
+
+  -- INFO: TOOL
+  -- rust-tools
   {
-    "theHamsta/nvim-dap-virtual-text",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
+    "simrat39/rust-tools.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-lua/plenary.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    ft = "rust",
+    config = {
+      server = {
+        standalone = true,
+      },
+      dap = {
+        adapter = {
+          type = "executable",
+          command = "lldb-vscode",
+          name = "rt_lldb",
+        },
+      },
+    },
+  },
+  -- flutter-tools
+  {
+    'akinsho/flutter-tools.nvim',
+    ft = "dart",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    config = {}
+  },
+  -- haskell-tool
+  {
+    'mrcjkb/haskell-tools.nvim',
+    ft = 'haskell',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    config = {},
   },
   -- mason
   {
@@ -720,6 +714,7 @@ return {
         "clangd",
         "dockerls",
         "gopls",
+        "hls",
         "jdtls",
         "jsonls",
         "lua_ls",
@@ -732,11 +727,6 @@ return {
       },
       automatic_installation = true,
     },
-  },
-  -- nvim-jdtls
-  {
-    "mfussenegger/nvim-jdtls",
-    ft = "java",
   },
   -- mason null-ls
   {
@@ -955,6 +945,7 @@ return {
         "clangd",
         "dockerls",
         "gopls",
+        "hls",
         "jdtls",
         "jsonls",
         "lua_ls",
