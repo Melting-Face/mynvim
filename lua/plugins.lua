@@ -516,12 +516,6 @@ return {
   -- INFO: DAP
   -- nvim-dap-ui
   {
-    "mfussenegger/nvim-dap",
-    config = function ()
-      
-    end
-  },
-  {
     "rcarriga/nvim-dap-ui",
     dependencies =  "mfussenegger/nvim-dap",
     config = function()
@@ -688,14 +682,14 @@ return {
     },
     config = {}
   },
-  -- haskell-tool
+  -- haskell-tools
   {
     'mrcjkb/haskell-tools.nvim',
     ft = 'haskell',
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
-    config = {},
+    config = {}
   },
   -- mason
   {
