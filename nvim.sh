@@ -42,9 +42,6 @@ function install_package() {
   "$PREFIX" install llvm
   "$PREFIX" install rust
   "$PREFIX" install jq
-  "$PREFIX" install ghc
-  "$PREFIX" install ghcup
-  "$PREFIX" install haskell-stack
   pip3 install neovim
   pip3 install debugpy
   pip3 install flake8
@@ -54,7 +51,6 @@ function install_package() {
   pip3 install pynvim
   pip3 install refurb
   sudo gem install tmuxinator
-  stack install haskell-dap ghci-dap haskell-debug-adapter
 }
 
 function create_symlink() {

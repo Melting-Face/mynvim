@@ -673,24 +673,6 @@ return {
       },
     },
   },
-  -- flutter-tools
-  {
-    'akinsho/flutter-tools.nvim',
-    ft = "dart",
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = {}
-  },
-  -- haskell-tools
-  {
-    'mrcjkb/haskell-tools.nvim',
-    ft = 'haskell',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = {}
-  },
   -- mason
   {
     "williamboman/mason.nvim",
@@ -939,7 +921,6 @@ return {
         "clangd",
         "dockerls",
         "gopls",
-        "hls",
         "jdtls",
         "jsonls",
         "lua_ls",
