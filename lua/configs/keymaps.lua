@@ -95,7 +95,7 @@ wk.register({
       }
     },
     k = { function () require('telescope.builtin').keymaps() end, 'keymaps' },
-    q = { function () require('telescope.builtin').quick() end, 'quickfix' },
+    q = { function () require('telescope.builtin').quickfix() end, 'quickfix' },
     r = { function () require('telescope.builtin').registers() end, 'registers' },
     s = { function () require('telescope.builtin').live_grep() end, 'search' },
     u = { function () require("telescope").extensions.undo.undo() end, 'undo tree' },

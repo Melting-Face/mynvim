@@ -81,6 +81,7 @@ return {
       },
     },
   },
+  -- git congflict
   {
     'akinsho/git-conflict.nvim',
     config = true,
@@ -153,7 +154,6 @@ return {
           "cpp",
           "dockerfile",
           "go",
-          "haskell",
           "html",
           "http",
           "java",
@@ -690,7 +690,6 @@ return {
         "clangd",
         "dockerls",
         "gopls",
-        "hls",
         "jdtls",
         "jsonls",
         "lua_ls",
