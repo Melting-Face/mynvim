@@ -17,6 +17,12 @@ return {
   "wfxr/minimap.vim",
   -- startify
   'mhinz/vim-startify',
+  -- harpoon
+  {
+    'ThePrimeagen/harpoon',
+    dependencies = "nvim-lua/plenary.nvim",
+    config = true,
+  },
 
   --telescope(fzf)
   {
@@ -31,6 +37,7 @@ return {
       telescope.setup {}
       telescope.load_extension("undo")
       telescope.load_extension('dap')
+      telescope.load_extension('harpoon')
     end
   },
 
