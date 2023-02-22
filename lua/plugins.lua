@@ -1,8 +1,6 @@
 return {
   -- devicons
   "kyazdani42/nvim-web-devicons",
-  -- multi cursor
-  "mg979/vim-visual-multi",
   -- async
   "nvim-lua/plenary.nvim",
   -- cache
@@ -17,12 +15,10 @@ return {
   "wfxr/minimap.vim",
   -- startify
   'mhinz/vim-startify',
-  -- harpoon
-  {
-    'ThePrimeagen/harpoon',
-    dependencies = "nvim-lua/plenary.nvim",
-    config = true,
-  },
+
+  -- INFO: CURSOR
+  -- multi cursor
+  "mg979/vim-visual-multi",
 
   --telescope(fzf)
   {
@@ -32,16 +28,15 @@ return {
       'nvim-telescope/telescope-dap.nvim',
       'debugloop/telescope-undo.nvim',
     },
-    config = function ()
+    config = function()
       local telescope = require('telescope')
       telescope.setup {}
       telescope.load_extension("undo")
       telescope.load_extension('dap')
-      telescope.load_extension('harpoon')
     end
   },
 
-  -- CSV
+  -- INFO: CSV
   -- rainbow csv
   {
     "mechatroner/rainbow_csv",
@@ -95,7 +90,7 @@ return {
   },
   {
     'https://gitlab.com/yorickpeterse/nvim-pqf.git',
-    config = function ()
+    config = function()
       require('pqf').setup()
     end
   },
@@ -104,8 +99,8 @@ return {
   {
     'kevinhwang91/nvim-bqf',
     ft = 'qf',
-    config = function ()
-      require('bqf').setup{}
+    config = function()
+      require('bqf').setup {}
     end
   },
   -- tmux
@@ -464,16 +459,6 @@ return {
       mode = "document_diagnostics",
     },
   },
-  -- autopairs
-  {
-    "windwp/nvim-autopairs",
-    config = {
-      disable_filetype = {
-        "TelescopePrompt",
-        "vim",
-      },
-    },
-  },
   -- markdown
   {
     "iamcco/markdown-preview.nvim",
@@ -524,7 +509,7 @@ return {
   -- nvim-dap-ui
   {
     "rcarriga/nvim-dap-ui",
-    dependencies =  "mfussenegger/nvim-dap",
+    dependencies = "mfussenegger/nvim-dap",
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
@@ -683,7 +668,6 @@ return {
   -- mason
   {
     "williamboman/mason.nvim",
-    dependencies = "williamboman/mason-lspconfig.nvim",
     config = true,
   },
   -- mason lsp
@@ -696,6 +680,7 @@ return {
         "bashls",
         "clangd",
         "dockerls",
+        "docker_compose_language_service",
         "gopls",
         "jdtls",
         "jsonls",
@@ -842,6 +827,11 @@ return {
       },
     },
   },
+  -- auto pair
+  {
+    'windwp/nvim-autopairs',
+    config = {},
+  },
   -- cmp
   {
     "hrsh7th/nvim-cmp",
@@ -854,6 +844,7 @@ return {
       "hrsh7th/cmp-cmdline",
       "neovim/nvim-lspconfig",
       "SmiteshP/nvim-navic",
+      'windwp/nvim-autopairs',
     },
     lazy = true,
     event = {
@@ -863,6 +854,7 @@ return {
       local cmp = require("cmp")
       local navic = require("nvim-navic")
       local lspconfig = require("lspconfig")
+      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
       local on_attach = function(client, bufnr)
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
         if client.server_capabilities.documentSymbolProvider then
@@ -893,7 +885,11 @@ return {
         }),
       })
 
-      -- Set configuration for specific filetype.
+      cmp.event:on(
+        'confirm_done',
+        cmp_autopairs.on_confirm_done()
+      )
+
       cmp.setup.filetype("gitcommit", {
         sources = cmp.config.sources({
           { name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
@@ -902,7 +898,6 @@ return {
         }),
       })
 
-      -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
@@ -910,7 +905,6 @@ return {
         },
       })
 
-      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
@@ -926,6 +920,7 @@ return {
         "bashls",
         "clangd",
         "dockerls",
+        "docker_compose_language_service",
         "gopls",
         "jdtls",
         "jsonls",
