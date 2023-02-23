@@ -19,6 +19,24 @@ return {
   -- INFO: CURSOR
   -- multi cursor
   "mg979/vim-visual-multi",
+  {
+    'kevinhwang91/nvim-hlslens',
+    config = function ()
+      require('hlslens').setup()
+      vim.cmd([[
+        aug VMlens
+          au!
+          au User visual_multi_start lua require('hlslens').start()
+          au User visual_multi_exit lua require('hlslens').stop()
+        aug END
+      ]])
+    end,
+  },
+  -- HOP
+  {
+    "phaazon/hop.nvim",
+    config = true,
+  },
 
   --telescope(fzf)
   {
@@ -50,7 +68,7 @@ return {
     ft = "csv",
   },
 
-  -- GIT
+  -- INFO: GIT
   -- vim-fugitive
   "tpope/vim-fugitive",
   -- neogit
@@ -106,11 +124,6 @@ return {
   -- tmux
   {
     "aserowy/tmux.nvim",
-    config = true,
-  },
-  -- HOP
-  {
-    "phaazon/hop.nvim",
     config = true,
   },
   -- EMMET
@@ -475,7 +488,6 @@ return {
   -- whici keys
   {
     "folke/which-key.nvim",
-    lazy = true,
     config = true,
   },
   -- indent-blankline
