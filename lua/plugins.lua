@@ -16,6 +16,23 @@ return {
   -- startify
   'mhinz/vim-startify',
 
+  -- INFO: TERMINAL/TMUX
+  -- tmux
+  {
+    "aserowy/tmux.nvim",
+    config = true,
+  },
+  -- toggleterm
+  {
+    "akinsho/toggleterm.nvim",
+    config = true,
+  },
+  -- harpoon
+  {
+    "ThePrimeagen/harpoon",
+    config = {},
+  },
+
   -- INFO: CURSOR
   -- multi cursor
   "mg979/vim-visual-multi",
@@ -51,6 +68,7 @@ return {
       telescope.setup {}
       telescope.load_extension("undo")
       telescope.load_extension('dap')
+      telescope.load_extension('harpoon')
     end
   },
 
@@ -120,11 +138,6 @@ return {
     config = function()
       require('bqf').setup {}
     end
-  },
-  -- tmux
-  {
-    "aserowy/tmux.nvim",
-    config = true,
   },
   -- EMMET
   {
@@ -726,6 +739,7 @@ return {
         "isort",
         "jq",
         "luacheck",
+        "mypy",
         "remark",
         "rustfmt",
         "shellcheck",
@@ -1008,10 +1022,5 @@ return {
         ["core.integrations.telescope"] = {},
       },
     },
-  },
-  -- toggleterm
-  {
-    "akinsho/toggleterm.nvim",
-    config = true,
   },
 }
