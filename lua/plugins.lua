@@ -32,6 +32,16 @@ return {
     "ThePrimeagen/harpoon",
     config = {},
   },
+  -- mark
+  {
+    'chentoast/marks.nvim',
+    config = {},
+  },
+  -- jqx
+  {
+    'gennaro-tedesco/nvim-jqx',
+    ft = { "json", "yaml" },
+  },
 
   -- INFO: CURSOR
   -- multi cursor
