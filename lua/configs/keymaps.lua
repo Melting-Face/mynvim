@@ -184,11 +184,9 @@ wk.register({
     r = { '<cmd>RustRunnables<CR>', 'rust run' },
   },
   s = {
-    name = 'SnipRun',
-    i = { '<cmd>SnipInfo<CR>', 'info' },
-    r = { '<cmd>SnipRun<CR>', 'run' },
-    s = { '<cmd>SnipReset<CR>', 'reset' },
-    x = { '<cmd>SnipClose<CR>', 'close' },
+    name = 'spectre',
+    w = { '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', 'select word' },
+    p = { '<cmd>lua require("spectre").open_file_search()<cr>', 'open file' },
   },
   t = {
     name = 'tab & toggle',
@@ -219,6 +217,7 @@ wk.register({
     end,
     'set breakpoint with condition',
   },
+  S = { '<cmd>lua require("spectre").open()<CR>', 'open spectre' },
 }, {
   prefix = '<leader>'
 })
@@ -306,7 +305,8 @@ wk.register({
     r = { gs.reset_buffer, 'reset buffer' },
     s = { gs.stage_buffer, 'stage buffer' },
     u = { gs.undo_stage_hunk, 'undo stage' },
-  }
+  },
+  s = { '<esc>:lua require("spectre").open_visual()<CR>', 'spectre' },
 }, {
   mode = 'v',
   prefix = '<leader>',
