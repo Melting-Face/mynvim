@@ -14,7 +14,9 @@ return {
   -- minimap
   "wfxr/minimap.vim",
   -- startify
-  'mhinz/vim-startify',
+  "mhinz/vim-startify",
+  -- dap
+  "mfussenegger/nvim-dap",
 
   -- INFO: TERMINAL/TMUX
   -- tmux
