@@ -179,10 +179,11 @@ return {
   },
   -- theme
   {
-    'folke/tokyonight.nvim',
-    config = function()
-      vim.cmd([[colorscheme tokyonight-night]])
-    end,
+    "catppuccin/nvim",
+    name = "catppuccin",
+    config = function ()
+      vim.cmd.colorscheme "catppuccin"
+    end
   },
   -- nvim-treesitter
   {
@@ -199,9 +200,6 @@ return {
         sync_install = true,
         ensure_installed = {
           "bash",
-          "c",
-          "cmake",
-          "cpp",
           "dockerfile",
           "graphql",
           "go",
@@ -282,57 +280,6 @@ return {
         },
       })
     end,
-  },
-  -- neotest
-  {
-    "nvim-neotest/neotest",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "antoinemadec/FixCursorHold.nvim",
-      "haydenmeade/neotest-jest",
-      "nvim-neotest/neotest-vim-test",
-      "nvim-neotest/neotest-plenary",
-      "nvim-neotest/neotest-python",
-    },
-    config = function()
-      require("neotest").setup({
-        adapters = {
-          require('neotest-vim-test')({
-            ignore_filetypes = {
-              "lua",
-              "javascript",
-              "python",
-              "typescript",
-            }
-          }),
-          require("neotest-jest"),
-          require("neotest-plenary"),
-          require("neotest-python")({
-            dap = { justMyCode = false },
-          }),
-        },
-      })
-    end,
-  },
-  -- neodev
-  {
-    "folke/neodev.nvim",
-    config = {
-      library = {
-        plugins = {
-          "neotest",
-          "nvim-dap-ui",
-        },
-        types = true,
-      },
-    },
-  },
-  -- luapad
-  {
-    "rafcamlet/nvim-luapad",
-    ft = "lua",
-    config = true,
   },
   -- neogen
   {
@@ -726,7 +673,6 @@ return {
     config = {
       ensure_installed = {
         "bashls",
-        "clangd",
         "dockerls",
         "docker_compose_language_service",
         "eslint",
@@ -817,7 +763,7 @@ return {
 
       require("lualine").setup({
         options = {
-          theme = "tokyonight",
+          theme = "catppuccin",
           disabled_filetypes = {
             winbar = {
               "NvimTree",
@@ -967,7 +913,6 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
       local languages = {
         "bashls",
-        "clangd",
         "dockerls",
         "docker_compose_language_service",
         "eslint",
@@ -985,15 +930,12 @@ return {
       }
 
       for _, language in ipairs(languages) do
-        if language == "sumneko_lua" then
+        if language == "lua_ls" then
           lspconfig[language].setup({
             on_attach = on_attach,
             capabilities = capabilities,
             settings = {
               Lua = {
-                completion = {
-                  callSnippet = "Replace",
-                },
                 diagnostics = {
                   globals = {
                     "vim",
