@@ -10,7 +10,19 @@ return {
   -- whitespace
   "ntpeters/vim-better-whitespace",
   -- ctags
-  "preservim/tagbar",
+  {
+    "preservim/tagbar",
+    ft = {
+      'go',
+      'java',
+      'javascript',
+      'javascriptreact',
+      'python',
+      'rust',
+      'typescript',
+      'typescriptreact',
+    }
+  },
   -- minimap
   "wfxr/minimap.vim",
   -- startify
@@ -304,7 +316,7 @@ return {
         lua = "ldoc",
         java = "javadoc",
         javascript = "jsdoc",
-        javacriptreact = "jsdoc",
+        javascriptreact = "jsdoc",
         python = "google_docstrings",
         rust = "rustdoc",
         sh = "google_bash",
@@ -471,6 +483,7 @@ return {
   {
     "folke/which-key.nvim",
     config = true,
+    lazy = true,
   },
   -- indent-blankline
   {
