@@ -13,6 +13,14 @@ local lazydocker = tt:new({
 	},
 })
 
+local htop = tt:new({
+  cmd = "htop",
+  direction = "float",
+	float_opts = {
+		border = "single",
+	},
+})
+
 -- INFO: no prefix hop keymap
 wk.register({
   f = {
@@ -107,6 +115,7 @@ wk.register({
     p = { gs.preview_hunk, 'preview huck' },
     r = { gs.reset_buffer, 'reset buffer' },
     s = { gs.stage_buffer, 'stage buffer' },
+    t = { function () htop:toggle() end, 'htop'},
     u = { gs.undo_stage_hunk, 'undo stage' },
   },
   l = {

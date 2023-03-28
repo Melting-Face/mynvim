@@ -211,7 +211,6 @@ return {
           "lua",
           "make",
           "markdown",
-          "norg",
           "python",
           "regex",
           "rust",
@@ -683,7 +682,6 @@ return {
         "lua_ls",
         "pyright",
         "rust_analyzer",
-        "sqlls",
         "taplo",
         "tsserver",
         "yamlls",
@@ -923,7 +921,6 @@ return {
         "lua_ls",
         "pyright",
         "rust_analyzer",
-        "sqlls",
         "taplo",
         "tsserver",
         "yamlls",
@@ -965,29 +962,5 @@ return {
         end
       end
     end,
-  },
-  -- neorg
-  {
-    "nvim-neorg/neorg",
-    dependencies = {
-      "nvim-treesitter",
-      "nvim-lua/plenary.nvim",
-      "nvim-neorg/neorg-telescope",
-    },
-    ft = "norg",
-    build = ":Neorg sync-parsers",
-    config = {
-      load = {
-        ["core.defaults"] = {},
-        ["core.norg.concealer"] = {},
-        ["core.norg.completion"] = {
-          config = {
-            engine = "nvim-cmp",
-          },
-        },
-        ["core.export"] = {},
-        ["core.integrations.telescope"] = {},
-      },
-    },
   },
 }
