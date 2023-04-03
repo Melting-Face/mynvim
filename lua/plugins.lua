@@ -96,13 +96,14 @@ return {
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope-dap.nvim',
       'debugloop/telescope-undo.nvim',
+      'nvim-telescope/telescope-file-browser.nvim',
     },
     config = function()
       local telescope = require('telescope')
       telescope.setup {}
       telescope.load_extension("undo")
-      telescope.load_extension('dap')
-      telescope.load_extension('harpoon')
+      telescope.load_extension("file_browser")
+      telescope.load_extension("dap")
     end
   },
 

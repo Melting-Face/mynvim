@@ -94,6 +94,7 @@ wk.register({
   },
   f = {
     name = 'Telescope',
+    b = { "<cmd>Telescope file_browser<CR>", 'file browser' },
     f = { function () require('telescope.builtin').find_files() end, 'find files' },
     g = {
       name = 'Git',
