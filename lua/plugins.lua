@@ -13,8 +13,6 @@ return {
   "wfxr/minimap.vim",
   -- startify
   "mhinz/vim-startify",
-  -- dap
-  "mfussenegger/nvim-dap",
 
   -- INFO: TERMINAL/TMUX
   -- tmux
@@ -35,7 +33,10 @@ return {
   -- jqx
   {
     'gennaro-tedesco/nvim-jqx',
-    ft = { "json", "yaml" },
+    ft = {
+      "json",
+      "yaml",
+    },
   },
   -- spectre
   {
@@ -74,6 +75,10 @@ return {
   {
     "phaazon/hop.nvim",
     config = true,
+    keys = {
+      {'f', function() require('hop').hint_char1() end, desc='hop 1', mode=''},
+      {'F', function() require('hop').hint_char2() end, desc='hop 2', mode=''},
+    }
   },
 
   --telescope(fzf)
@@ -91,7 +96,18 @@ return {
       telescope.load_extension("undo")
       telescope.load_extension("file_browser")
       telescope.load_extension("dap")
-    end
+    end,
+    keys = {
+      {'<leader>fb', "<cmd>Telescope file_browser<CR>", desc='file browser'},
+      {'<leader>ff', function () require('telescope.builtin').find_files() end, desc='find files'},
+      {'<leader>fgc', function () require('telescope.builtin').git_bcommits() end, desc='git commit log (buffer)'},
+      {'<leader>fgt', function () require('telescope.builtin').git_commits() end, desc='git commit log (project)'},
+      {'<leader>fk', function () require('telescope.builtin').keymaps() end, desc='keymaps' },
+      {'<leader>fq', function () require('telescope.builtin').quickfix() end, desc='quickfix' },
+      {'<leader>fr', function () require('telescope.builtin').registers() end, desc='registers' },
+      {'<leader>fs', function () require('telescope.builtin').live_grep() end, desc='search' },
+      {'<leader>fu', function () require("telescope").extensions.undo.undo() end, desc='undo tree' },
+    }
   },
 
   -- INFO: CSV
@@ -142,6 +158,8 @@ return {
         delay = 250,
         ignore_whitespace = false,
       },
+    },
+    keys = {  
     },
   },
   -- git congflict
@@ -241,15 +259,6 @@ return {
               ["@class.outer"] = "<c-v>",
             },
             include_surrounding_whitespace = true,
-          },
-          lsp_interop = {
-            enable = true,
-            border = "none",
-            floating_preview_opts = {},
-            peek_definition_code = {
-              ["<leader>df"] = "@function.outer",
-              ["<leader>dF"] = "@class.outer",
-            },
           },
           move = {
             enable = true,
@@ -408,6 +417,10 @@ return {
         yank_dry_run = true,
       })
     end,
+    keys = {
+      {'<leader>rl', function () require('rest-nvim').last() end, desc='rest last'},
+      {'<leader>rr', function () require('rest-nvim').run() end, desc='rest run'},
+    }
   },
   -- null_ls
   {
@@ -466,7 +479,7 @@ return {
     "iamcco/markdown-preview.nvim",
     build = "cd app && npm install",
     setup = function()
-      vim.g.mkdp_filetypes = {
+      vim.g.mkdp_filetypes = { -- luacheck: ignore 112
         "markdown",
       }
     end,
@@ -490,7 +503,9 @@ return {
   -- bufferline
   {
     "akinsho/bufferline.nvim",
-    dependencies = "kyazdani42/nvim-web-devicons",
+    dependencies = {
+      "kyazdani42/nvim-web-devicons"
+    },
     config = {
       options = {
         separator_style = "padded_slant",
@@ -514,8 +529,16 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     keys = {
-
-    }
+      {'<leader>1', function () require("bufferline").go_to_buffer(1, true) end, desc='go to buffer index 1'},
+      {'<leader>2', function () require("bufferline").go_to_buffer(2, true) end, desc='go to buffer index 2'},
+      {'<leader>3', function () require("bufferline").go_to_buffer(3, true) end, desc='go to buffer index 3'},
+      {'<leader>4', function () require("bufferline").go_to_buffer(4, true) end, desc='go to buffer index 4'},
+      {'<leader>5', function () require("bufferline").go_to_buffer(5, true) end, desc='go to buffer index 5'},
+      {'<leader>6', function () require("bufferline").go_to_buffer(6, true) end, desc='go to buffer index 6'},
+      {'<leader>7', function () require("bufferline").go_to_buffer(7, true) end, desc='go to buffer index 7'},
+      {'<leader>8', function () require("bufferline").go_to_buffer(8, true) end, desc='go to buffer index 8'},
+      {'<leader>9', function () require("bufferline").go_to_buffer(9, true) end, desc='go to buffer index 9'},
+    },
   },
   -- scope.nvim for tab
   {
@@ -542,6 +565,42 @@ return {
         dapui.close()
       end
     end,
+    keys = {
+      {'<leader>b', function () require"dap".toggle_breakpoint() end, desc='toggle breakpoint'},
+      {'<leader>B', function() require('dap').set_breakpoint() end, desc='set breakpoint'},
+      {
+        '<Leader>lp',
+        function()
+          require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+        end,
+        desc='set breakpoint with message',
+      },
+      {'<F5>', function () require'dap'.continue() end, desc='dap run(continue)'},
+      {'<F10>', function () require'dap'.step_over() end, desc='dap step over'},
+      {'<F11>', function () require'dap'.step_into() end, desc='dap step into'},
+      {'<F12>', function () require'dap'.step_out() end, desc='dap step out'},
+      {'<Leader>dr', function() require('dap').repl.open() end, desc='open repl'},
+      {'<Leader>dl', function() require('dap').run_last() end, desc='run last'},
+      {'<Leader>dh', function() require('dap.ui.widgets').hover() end, desc='dap ui widgets', mode={'n', 'v'}},
+      {'<Leader>dp', function() require('dap.ui.widgets').preview() end, desc='dap ui preview', mode={'n', 'v'}},
+      {
+        '<Leader>df',
+        function()
+          local widgets = require('dap.ui.widgets')
+          widgets.centered_float(widgets.frames)
+        end,
+        desc='dap ui widgets float center(frame)',
+      },
+      {
+        '<Leader>ds',
+        function()
+          local widgets = require('dap.ui.widgets')
+          widgets.centered_float(widgets.scopes)
+        end,
+        desc='dap ui widgets float center(scope)',
+      },
+      {'<Leader>dt', function () require("dapui").toggle() end, desc='dap ui toggle'},
+    },
   },
   -- dap-virtual-text
   {
@@ -604,6 +663,9 @@ return {
     ft = "go",
     dependencies = "mfussenegger/nvim-dap",
     config = true,
+    keys = {
+      {'<leader>dg', function () require'dap-go'.debug_test() end, desc='test debug(go)'}
+    },
   },
   -- nvim-dap-python
   {
@@ -614,6 +676,11 @@ return {
       local python_path = io.popen("which python3"):read("l")
       require("dap-python").setup(python_path)
     end,
+    keys = {
+      {'<leader>dc', function () require'dap-python'.test_class() end, desc='test class'},
+      {'<leader>dd', '<ESC>:lua require("dap-python").debug_selection()<CR>', desc='python debug select'},
+      {'<leader>dm', function () require'dap-python'.test_method() end, desc='test method'},
+    }
   },
   -- nvim-dap-lua
   {
@@ -658,6 +725,10 @@ return {
   {
     "mfussenegger/nvim-jdtls",
     ft = "java",
+    keys = {
+      {'<leader>dc', function () require'jdtls'.test_class() end, desc='test class'},
+      {'<leader>dm', function () require'jdtls'.test_nearest_method() end, desc='test nearest method'},
+    }
   },
 
   -- INFO: TOOL
@@ -682,6 +753,17 @@ return {
         },
       },
     },
+    keys = {
+      {'<leader>rd', '<cmd>RustDebuggables<CR>', desc='rust debug'},
+      {
+        '<leader>rh',
+        function ()
+          require("rust-tools").hover_actions.hover_actions()
+        end,
+        desc='rust hover',
+      },
+      {'<leader>rr', '<cmd>RustRunnables<CR>', desc='rust run'},
+    }
   },
   -- mason
   {
@@ -864,7 +946,6 @@ return {
       "SmiteshP/nvim-navic",
       'windwp/nvim-autopairs',
     },
-    lazy = true,
     event = {
       "BufRead",
     },
