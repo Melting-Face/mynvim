@@ -129,31 +129,6 @@ wk.register({
       'set breakpoint with log point message',
     },
   },
-  n = {
-    name = 'Neo',
-    g = { '<cmd>Neogit<CR>', 'neogit' },
-    n = { '<cmd>Neogen<CR>', 'neogen' },
-  },
-  q = {
-    name = 'quickfix',
-    p = {
-      name = 'python',
-      b = {
-        function ()
-          local query = "cexpr system('refurb --quiet " .. vim.fn.expand('%:p') .. "') | copen"
-          vim.cmd(query)
-        end,
-        "Inspect current directory(refurb)"
-      },
-      d = {
-        function ()
-          local query = "cexpr system('refurb --quiet .') | copen"
-          vim.cmd(query)
-        end,
-        "Inspect current directory(refurb)"
-      },
-    }
-  },
   r = {
     name = 'rust_tools & rest-nvim & refactoring',
     b = { function () require('refactoring').refactor('Extract Block') end, 'refactoring extract block' },
@@ -189,11 +164,6 @@ wk.register({
     },
     r = { '<cmd>RustRunnables<CR>', 'rust run' },
   },
-  s = {
-    name = 'spectre',
-    w = { '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', 'select word' },
-    p = { '<cmd>lua require("spectre").open_file_search()<cr>', 'open file' },
-  },
   t = {
     name = 'tab & toggle',
     c = { '<cmd>tabclose<CR>', 'tab close' },
@@ -206,8 +176,6 @@ wk.register({
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
-    t = { '<cmd>TagbarToggle<CR>', 'Tagbar' },
-    a = { '<Plug>VimspectorContinue' },
     x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },
   u = {
@@ -223,7 +191,6 @@ wk.register({
     end,
     'set breakpoint with condition',
   },
-  S = { '<cmd>lua require("spectre").open()<CR>', 'open spectre' },
 }, {
   prefix = '<leader>'
 })
@@ -312,7 +279,6 @@ wk.register({
     s = { gs.stage_buffer, 'stage buffer' },
     u = { gs.undo_stage_hunk, 'undo stage' },
   },
-  s = { '<esc>:lua require("spectre").open_visual()<CR>', 'spectre' },
 }, {
   mode = 'v',
   prefix = '<leader>',

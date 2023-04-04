@@ -37,7 +37,6 @@ function install_package() {
   "$PREFIX" install python
   "$PREFIX" install ripgrep
   "$PREFIX" install lazydocker
-  "$PREFIX" install universal-ctags
   "$PREFIX" install code-minimap
   "$PREFIX" install delve
   "$PREFIX" install llvm

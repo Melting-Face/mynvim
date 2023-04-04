@@ -9,20 +9,6 @@ return {
   "godlygeek/tabular",
   -- whitespace
   "ntpeters/vim-better-whitespace",
-  -- ctags
-  {
-    "preservim/tagbar",
-    ft = {
-      'go',
-      'java',
-      'javascript',
-      'javascriptreact',
-      'python',
-      'rust',
-      'typescript',
-      'typescriptreact',
-    }
-  },
   -- minimap
   "wfxr/minimap.vim",
   -- startify
@@ -41,11 +27,6 @@ return {
     "akinsho/toggleterm.nvim",
     config = true,
   },
-  -- harpoon
-  {
-    "ThePrimeagen/harpoon",
-    config = {},
-  },
   -- mark
   {
     'chentoast/marks.nvim',
@@ -61,6 +42,12 @@ return {
     'windwp/nvim-spectre',
     dependencies = {
       'nvim-lua/plenary.nvim',
+    },
+    keys = {
+      {'<leader>S', '<cmd>lua require("spectre").open()<CR>', desc="Open Spectre"},
+      {'<leader>sw', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', desc="Search current word"},
+      {'<leader>sw', '<esc>:lua require("spectre").open_visual()<CR>', desc="Search current word", mode='v'},
+      {'<leader>sp', '<cmd>lua require("spectre").open_file_search()<cr>', desc = 'Search on current file'},
     },
     config = function ()
       require('spectre').setup()
@@ -141,6 +128,9 @@ return {
         hunk = { "", "" },
       },
     },
+    keys = {
+      {'<leader>ng', '<cmd>Neogit<CR>', desc='neogit'},
+    }
   },
   -- gitsigns
   {
@@ -337,6 +327,9 @@ return {
         languages = languages,
       })
     end,
+    keys = {
+      {'<leader>nn', '<cmd>Neogen<CR>', desc='Neogen'}
+    }
   },
   -- for winbar
   {
@@ -507,6 +500,22 @@ return {
         diagnostics = "nvim_lsp",
       },
     },
+  },
+  {
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
+    config = {
+      lightbulb = {
+        enable = false,
+      }
+    },
+    dependencies = {
+      "kyazdani42/nvim-web-devicons",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    keys = {
+
+    }
   },
   -- scope.nvim for tab
   {
