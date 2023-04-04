@@ -54,7 +54,6 @@ wk.register({
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
     n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
-    x = { '<cmd>TroubleToggle<CR>', 'trouble' },
   },
   u = {
     name = 'db ui',

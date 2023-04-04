@@ -464,14 +464,6 @@ return {
     dependencies = "nvim-lua/plenary.nvim",
     config = true,
   },
-  -- trouble
-  {
-    "folke/trouble.nvim",
-    dependencies = "kyazdani42/nvim-web-devicons",
-    config = {
-      mode = "document_diagnostics",
-    },
-  },
   -- markdown
   {
     "iamcco/markdown-preview.nvim",
