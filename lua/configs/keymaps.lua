@@ -20,11 +20,6 @@ local htop = tt:new({
 	},
 })
 
--- INFO: no prefix
-wk.register({
-  K =  { vim.lsp.buf.hover, 'vim lsp hover' },
-})
-
 -- INFO: <leader> key (normal)
 wk.register({
   c = {
@@ -93,46 +88,13 @@ wk.register({
     a = { '<cmd>bufdo bd<CR>', 'buffer delete all' },
     x = { '<cmd>bdelete<CR>', 'buffer close' },
   },
-  c = {
-    name = 'Code',
-    a = { vim.lsp.buf.code_action, 'Action' },
-  },
-  e = { vim.diagnostic.open_float, 'Open float' },
-  f = { function () vim.lsp.buf.format { async = true } end, 'Lsp formatting' },
-  q = { vim.diagnostic.setloclist, 'Set location list'},
-  r = {
-    name = 'Buffer',
-    n = { vim.lsp.buf.rename, 'Lsp Rename' },
-  },
   t = {
     name = 'tab',
     n = { '<cmd>tabnew<CR>', 'new tab' },
     x = { '<cmd>tabclose<CR>', 'tab close' },
   },
-  w = {
-    name = 'Workspace',
-    a = { vim.lsp.buf.add_workspace_folder, 'Add' },
-    l = {
-      function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      end,
-      'List'
-    },
-    r = { vim.lsp.buf.remove_workspace_folder, 'Remove' }
-  },
-  D = { vim.lsp.buf.type_definition, 'Type definition' },
 }, {
   prefix = '<space>'
-})
-
--- INFO: 'g' key
-wk.register({
-  d = { vim.lsp.buf.definition, 'Go to definition' },
-  i = { vim.lsp.buf.implementation, 'Go to implementation' },
-  r = { vim.lsp.buf.references, 'Go to references' },
-  D = { vim.lsp.buf.declaration, 'Go to declaration' },
-}, {
-  prefix = 'g'
 })
 
 -- INFO: '[' key
