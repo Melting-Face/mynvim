@@ -537,6 +537,39 @@ return {
       "kyazdani42/nvim-web-devicons",
       "nvim-treesitter/nvim-treesitter",
     },
+    keys = {
+      {"gd", "<cmd>Lspsaga goto_definition<CR>", desc="goto definition"},
+      {"gt", "<cmd>Lspsaga goto_type_definition<CR>", desc="goto type definition"},
+      {"gh", "<cmd>Lspsaga lsp_finder<CR>", desc='lsp finder'},
+      {"gr", "<cmd>Lspsaga rename<CR>", desc="rename"},
+
+      {"<leader>ca", "<cmd>Lspsaga code_action<CR>", desc="code action", mode={'n', 'v'}},
+      {"<leader>o", "<cmd>Lspsaga outline<CR>", desc="outline"},
+
+      {"<leader>sl", "<cmd>Lspsaga show_line_diagnostics<CR>", desc="show line"},
+      {"<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>", desc="show buf"},
+      {"<leader>sw", "<cmd>Lspsaga show_workspace_diagnostics<CR>", desc="show workspace"},
+      {"<leader>sc", "<cmd>Lspsaga show_cursor_diagnostics<CR>", desc="show cursor"},
+
+      {"K", "<cmd>Lspsaga hover_doc<CR>", desc="hover doc"},
+
+      {"[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", desc="jump prev"},
+      {"]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", desc="jump next"},
+      {
+        "[E",
+        function()
+          require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+        end,
+        desc="jump prev error"
+      },
+      {
+        "]E",
+        function()
+          require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+        end,
+        desc="jump next error"
+      }
+    }
   },
   -- scope.nvim for tab
   {
