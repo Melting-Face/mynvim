@@ -22,6 +22,15 @@ local htop = tt:new({
 
 -- INFO: <leader> key (normal)
 wk.register({
+  ['1'] = { function () require("bufferline").go_to_buffer(1, true) end, 'go to buffer index 1'},
+  ['2'] = { function () require("bufferline").go_to_buffer(2, true) end, 'go to buffer index 2'},
+  ['3'] = { function () require("bufferline").go_to_buffer(3, true) end, 'go to buffer index 3'},
+  ['4'] = { function () require("bufferline").go_to_buffer(4, true) end, 'go to buffer index 4'},
+  ['5'] = { function () require("bufferline").go_to_buffer(5, true) end, 'go to buffer index 5'},
+  ['6'] = { function () require("bufferline").go_to_buffer(6, true) end, 'go to buffer index 6'},
+  ['7'] = { function () require("bufferline").go_to_buffer(7, true) end, 'go to buffer index 7'},
+  ['8'] = { function () require("bufferline").go_to_buffer(8, true) end, 'go to buffer index 8'},
+  ['9'] = { function () require("bufferline").go_to_buffer(9, true) end, 'go to buffer index 9'},
   c = {
     name = 'current',
     n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
