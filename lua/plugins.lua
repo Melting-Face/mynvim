@@ -359,6 +359,13 @@ return {
     dependencies = {
       "tpope/vim-dadbod",
     },
+    keys = {
+      {'<localleader>u', '<cmd>DBUIToggle<CR>', desc='db ui'},
+      {'<leader>ua', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
+      {'<leader>uf', '<cmd>DBUIFindBuffer<CR>', desc='find buffer'},
+      {'<leader>ul', '<cmd>DBUILastQueryInfo<CR>', desc='last query info'},
+      {'<leader>ur', '<cmd>DBUIRenameBuffer<CR>', desc='rename buffer'},
+    }
   },
 
   -- PACKAGE

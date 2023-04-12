@@ -36,12 +36,9 @@ wk.register({
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
     d = { gs.toggle_deleted, 'gitsigns deleted' },
     f = { function () gs.blame_line{ full=true } end, 'git blame all'},
+    l = { function () lazydocker:toggle() end, 'lazy docker' },
     t = { gs.diffthis, 'diff this'},
     p = { gs.preview_hunk, 'preview huck'},
-  },
-  l = {
-    name = 'lazy',
-    d = { function () lazydocker:toggle() end, 'lazy docker' },
   },
   r = {
     name = 'rust_tools & rest-nvim & refactoring',
@@ -55,14 +52,6 @@ wk.register({
   t = {
     name = 'tab & toggle',
     c = { '<cmd>tabclose<CR>', 'tab close' },
-    d = { '<cmd>DBUIToggle<CR>', 'db ui' },
-  },
-  u = {
-    name = 'db ui',
-    a = { '<cmd>DBUIAddConnection<CR>', 'add connection' },
-    f = { '<cmd>DBUIFindBuffer<CR>', 'find buffer' },
-    l = { '<cmd>DBUILastQueryInfo<CR>', 'last query info' },
-    r = { '<cmd>DBUIRenameBuffer<CR>', 'rename buffer' },
   },
 }, {
   prefix = '<leader>'
