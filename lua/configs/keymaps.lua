@@ -56,8 +56,6 @@ wk.register({
     name = 'tab & toggle',
     c = { '<cmd>tabclose<CR>', 'tab close' },
     d = { '<cmd>DBUIToggle<CR>', 'db ui' },
-    m = { '<cmd>MinimapToggle<CR>', 'minimap' },
-    p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
   },
   u = {
     name = 'db ui',
@@ -103,13 +101,6 @@ wk.register({
 -- INFO: '[' key
 wk.register({
   b = { '<cmd>bp<cr>', 'buffer previous' },
-  c = {
-    function()
-      require("todo-comments").jump_prev()
-    end,
-    'Previous todo comment',
-  },
-  d = { vim.diagnostic.goto_prev, 'diagnostic previous' },
   t = { '<cmd>tabprev<CR>', 'tab previous' },
 }, {
   prefix = '['
@@ -118,13 +109,6 @@ wk.register({
 -- INFO: ']' key
 wk.register({
   b = { '<cmd>bn<cr>', 'buffer next' },
-  c = {
-    function()
-      require("todo-comments").jump_next()
-    end,
-    'Next todo comment',
-  },
-  d = { vim.diagnostic.goto_next, 'diagnostic next' },
   t = { '<cmd>tabnext<CR>', 'tab next' },
 }, {
   prefix = ']'

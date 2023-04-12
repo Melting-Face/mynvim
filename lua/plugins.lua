@@ -10,7 +10,12 @@ return {
   -- whitespace
   "ntpeters/vim-better-whitespace",
   -- minimap
-  "wfxr/minimap.vim",
+  {
+    "wfxr/minimap.vim",
+    keys = {
+      {'<localleader>m', '<cmd>MinimapToggle<CR>', desc='minimap'},
+    }
+  },
   -- startify
   "mhinz/vim-startify",
 
@@ -230,6 +235,7 @@ return {
           "lua",
           "make",
           "markdown",
+          "markdown_inline",
           "python",
           "regex",
           "rust",
@@ -477,6 +483,9 @@ return {
     ft = {
       "markdown",
     },
+    keys = {
+      {'<localleader>p', '<cmd>MarkdownPreviewToggle<CR>', desc='markdown preview' },
+    }
   },
   -- whici keys
   {
