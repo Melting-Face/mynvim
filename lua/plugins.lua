@@ -449,6 +449,7 @@ return {
           null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.shfmt,
           null_ls.builtins.formatting.stylua,
+          null_ls.builtins.formatting.sqlfmt,
           null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.yamlfmt,
         },
@@ -786,7 +787,6 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = "neovim/nvim-lspconfig",
-    event = "BufRead",
     config = {
       ensure_installed = {
         "bashls",
@@ -829,6 +829,7 @@ return {
         "rustfmt",
         "shellcheck",
         "shfmt",
+        "sqlfmt",
         "stylua",
         "yamlfmt",
         "yamllint",
@@ -956,10 +957,8 @@ return {
       "hrsh7th/cmp-cmdline",
       "neovim/nvim-lspconfig",
       "SmiteshP/nvim-navic",
-      'windwp/nvim-autopairs',
-    },
-    event = {
-      "BufRead",
+      "windwp/nvim-autopairs",
+      "kristijanhusak/vim-dadbod-completion",
     },
     config = function()
       local cmp = require("cmp")
@@ -991,6 +990,7 @@ return {
           { name = "luasnip" },
           { name = "neorg" },
           { name = "crates" },
+          { name = 'vim-dadbod-completion' },
         }, {
           { name = "buffer" },
         }),
