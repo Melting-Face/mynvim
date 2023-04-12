@@ -861,6 +861,10 @@ return {
         },
       },
     },
+    keys = {
+      { '<localleader>l', '<cmd>NvimTreeToggle<CR>', desc='nvim tree' },
+      { '<localleader>f', '<cmd>NvimTreeFindFile<CR>', desc='find files(nvim-tree)'},
+    }
   },
   -- lualine
   {

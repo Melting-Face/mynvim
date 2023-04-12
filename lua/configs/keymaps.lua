@@ -31,10 +31,6 @@ wk.register({
   ['7'] = { function () require("bufferline").go_to_buffer(7, true) end, 'go to buffer index 7'},
   ['8'] = { function () require("bufferline").go_to_buffer(8, true) end, 'go to buffer index 8'},
   ['9'] = { function () require("bufferline").go_to_buffer(9, true) end, 'go to buffer index 9'},
-  c = {
-    name = 'current',
-    n = { '<cmd>NvimTreeFindFile<CR>', 'find files(nvim-tree)' },
-  },
   h = {
     h = { function () htop:toggle() end, 'htop'},
     b = { gs.toggle_current_line_blame, 'gitsigns blame' },
@@ -61,7 +57,6 @@ wk.register({
     c = { '<cmd>tabclose<CR>', 'tab close' },
     d = { '<cmd>DBUIToggle<CR>', 'db ui' },
     m = { '<cmd>MinimapToggle<CR>', 'minimap' },
-    n = { '<cmd>NvimTreeToggle<CR>', 'nvim tree' },
     p = { '<cmd>MarkdownPreviewToggle<CR>', 'markdown preview' },
   },
   u = {

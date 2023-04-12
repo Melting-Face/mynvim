@@ -1,4 +1,5 @@
 vim.g.mapleader = ','
+vim.g.maplocalleader = ';'
 -- default shell: zsh
 vim.o.shell = 'zsh'
 vim.o.autoread = true
