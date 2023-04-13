@@ -336,6 +336,7 @@ return {
       end
 
       require("neogen").setup({
+        enabled = true,
         snippet_engine = "luasnip",
         languages = languages,
       })
@@ -433,14 +434,14 @@ return {
       {'<leader>rr', function () require('rest-nvim').run() end, desc='rest run'},
     }
   },
+  -- mason
+  {
+    "williamboman/mason.nvim",
+    config = true,
+  },
   -- null_ls
   {
     "jose-elias-alvarez/null-ls.nvim",
-    event = {
-      "BufRead",
-      "BufWrite",
-    },
-    lazy = true,
     config = function()
       local null_ls = require("null-ls")
       null_ls.setup({
@@ -471,12 +472,38 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
+    keys = {
+      {'<space>f', function() vim.lsp.buf.format { async = true } end, desc='LSP format'},
+    }
   },
-  -- todo comment
+  -- mason null-ls
   {
-    "folke/todo-comments.nvim",
-    dependencies = "nvim-lua/plenary.nvim",
-    config = true,
+    "jayp0521/mason-null-ls.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+    config = {
+      ensure_installed = {
+        "black",
+        "flake8",
+        "golangci_lint",
+        "hadolint",
+        "isort",
+        "jq",
+        "luacheck",
+        "prettier",
+        "remark",
+        "rustfmt",
+        "shellcheck",
+        "shfmt",
+        "sqlfmt",
+        "stylua",
+        "yamlfmt",
+        "yamllint",
+      },
+      automatic_installation = true,
+    },
   },
   -- markdown
   {
@@ -794,11 +821,6 @@ return {
       {'<leader>rr', '<cmd>RustRunnables<CR>', desc='rust run'},
     }
   },
-  -- mason
-  {
-    "williamboman/mason.nvim",
-    config = true,
-  },
   -- mason lsp
   {
     "williamboman/mason-lspconfig.nvim",
@@ -820,35 +842,6 @@ return {
         "taplo",
         "tsserver",
         "yamlls",
-      },
-      automatic_installation = true,
-    },
-  },
-  -- mason null-ls
-  {
-    "jayp0521/mason-null-ls.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
-    },
-    config = {
-      ensure_installed = {
-        "black",
-        "flake8",
-        "golangci_lint",
-        "hadolint",
-        "isort",
-        "jq",
-        "luacheck",
-        "prettier",
-        "remark",
-        "rustfmt",
-        "shellcheck",
-        "shfmt",
-        "sqlfmt",
-        "stylua",
-        "yamlfmt",
-        "yamllint",
       },
       automatic_installation = true,
     },
@@ -1101,5 +1094,11 @@ return {
         end
       end
     end,
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    dependencies = {"nvim-lua/plenary.nvim"},
+    config = {}
   },
 }
