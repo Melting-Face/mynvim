@@ -17,13 +17,22 @@ return {
     }
   },
   -- startify
-  "mhinz/vim-startify",
+  'mhinz/vim-startify',
 
   -- INFO: TERMINAL/TMUX
   -- tmux
   {
     "aserowy/tmux.nvim",
     config = true,
+  },
+  {
+    'ThePrimeagen/harpoon',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    config = {
+      enter_on_sendcmd = true,
+    },
   },
   -- toggleterm
   {
@@ -93,14 +102,17 @@ return {
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope-dap.nvim',
       'debugloop/telescope-undo.nvim',
+      'ThePrimeagen/harpoon',
       'nvim-telescope/telescope-file-browser.nvim',
     },
+    event = 'VimEnter',
     config = function()
       local telescope = require('telescope')
       telescope.setup {}
       telescope.load_extension("undo")
       telescope.load_extension("file_browser")
       telescope.load_extension("dap")
+      telescope.load_extension("harpoon")
     end,
     keys = {
       {'<leader>fb', "<cmd>Telescope file_browser<CR>", desc='file browser'},
@@ -448,8 +460,8 @@ return {
         diagnostics_format = "[#{c}] #{m} (#{s})",
         debounce = 250,
         sources = {
-          null_ls.builtins.diagnostics.eslint,
-          null_ls.builtins.diagnostics.flake8,
+          null_ls.builtins.diagnostics.eslint_d,
+          null_ls.builtins.diagnostics.ruff,
           null_ls.builtins.diagnostics.golangci_lint,
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
@@ -459,7 +471,7 @@ return {
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.prettier,
-          null_ls.builtins.formatting.eslint,
+          null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.shfmt,
           null_ls.builtins.formatting.stylua,
@@ -486,7 +498,8 @@ return {
     config = {
       ensure_installed = {
         "black",
-        "flake8",
+        "ruff",
+        "eslint_d",
         "golangci_lint",
         "hadolint",
         "isort",
@@ -830,7 +843,6 @@ return {
         "bashls",
         "dockerls",
         "docker_compose_language_service",
-        "eslint",
         "gradle_ls",
         "graphql",
         "gopls",
@@ -1044,7 +1056,6 @@ return {
         "bashls",
         "dockerls",
         "docker_compose_language_service",
-        "eslint",
         "gradle_ls",
         "graphql",
         "gopls",
