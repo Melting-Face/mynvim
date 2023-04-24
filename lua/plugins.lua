@@ -9,6 +9,13 @@ return {
   "godlygeek/tabular",
   -- whitespace
   "ntpeters/vim-better-whitespace",
+  --undotree
+  {
+    'mbbill/undotree',
+    keys = {
+      {'<localleader>u', '<cmd>UndotreeToggle<CR>', 'undo tree'},
+    }
+  },
   -- minimap
   {
     "wfxr/minimap.vim",
@@ -25,24 +32,10 @@ return {
     "aserowy/tmux.nvim",
     config = true,
   },
-  {
-    'ThePrimeagen/harpoon',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = {
-      enter_on_sendcmd = true,
-    },
-  },
   -- toggleterm
   {
     "akinsho/toggleterm.nvim",
     config = true,
-  },
-  -- mark
-  {
-    'chentoast/marks.nvim',
-    config = {},
   },
   -- jqx
   {
@@ -97,33 +90,16 @@ return {
 
   --telescope(fzf)
   {
-    'nvim-telescope/telescope.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope-dap.nvim',
-      'debugloop/telescope-undo.nvim',
-      'ThePrimeagen/harpoon',
-      'nvim-telescope/telescope-file-browser.nvim',
-    },
+    'ibhagwan/fzf-lua',
     event = 'VimEnter',
-    config = function()
-      local telescope = require('telescope')
-      telescope.setup {}
-      telescope.load_extension("undo")
-      telescope.load_extension("file_browser")
-      telescope.load_extension("dap")
-      telescope.load_extension("harpoon")
-    end,
     keys = {
-      {'<leader>fb', "<cmd>Telescope file_browser<CR>", desc='file browser'},
-      {'<leader>ff', function () require('telescope.builtin').find_files() end, desc='find files'},
-      {'<leader>fgc', function () require('telescope.builtin').git_bcommits() end, desc='git commit log (buffer)'},
-      {'<leader>fgt', function () require('telescope.builtin').git_commits() end, desc='git commit log (project)'},
-      {'<leader>fk', function () require('telescope.builtin').keymaps() end, desc='keymaps' },
-      {'<leader>fq', function () require('telescope.builtin').quickfix() end, desc='quickfix' },
-      {'<leader>fr', function () require('telescope.builtin').registers() end, desc='registers' },
-      {'<leader>fs', function () require('telescope.builtin').live_grep() end, desc='search' },
-      {'<leader>fu', function () require("telescope").extensions.undo.undo() end, desc='undo tree' },
+      {'<leader>ff', '<cmd>FzfLua files<cr>', desc='find files'},
+      {'<leader>fgc', '<cmd>FzfLua git_bcommits<cr>', desc='git commit log (buffer)'},
+      {'<leader>fgt', '<cmd>FzfLua git_commits<cr>', desc='git commit log (project)'},
+      {'<leader>fk', '<cmd>FzfLua keymaps<cr>', desc='keymaps' },
+      {'<leader>fq', '<cmd>FzfLua quickfix<cr>', desc='quickfix' },
+      {'<leader>fr', '<cmd>FzfLua registers<cr>', desc='registers' },
+      {'<leader>fs', '<cmd>FzfLua grep_visual<cr>', desc='search' },
     }
   },
 
@@ -176,6 +152,13 @@ return {
         ignore_whitespace = false,
       },
     },
+    keys = {
+      {'<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<cr>', desc='curret line blame'},
+      {'<leader>hd', '<cmd>Gitsigns toggle_deleted<cr>', desc='deleted'},
+      {'<leader>ht', '<cmd>Gitsigns diffthis<cr>', desc='diff this'},
+      {'[h', '<cmd>Gitsigns prev_hunk<cr>', desc='prev hunk'},
+      {']h', '<cmd>Gitsigns next_hunk<cr>', desc='next hunk'},
+    }
   },
   -- git congflict
   {
@@ -373,11 +356,8 @@ return {
       "tpope/vim-dadbod",
     },
     keys = {
-      {'<localleader>u', '<cmd>DBUIToggle<CR>', desc='db ui'},
-      {'<leader>ua', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
-      {'<leader>uf', '<cmd>DBUIFindBuffer<CR>', desc='find buffer'},
-      {'<leader>ul', '<cmd>DBUILastQueryInfo<CR>', desc='last query info'},
-      {'<leader>ur', '<cmd>DBUIRenameBuffer<CR>', desc='rename buffer'},
+      {'<localleader>d', '<cmd>DBUIToggle<CR>', desc='db ui'},
+      {'<leader>da', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
     }
   },
 
@@ -560,6 +540,7 @@ return {
           return string.format("%s·%s", opts.raise(opts.id), opts.lower(opts.ordinal))
         end,
         diagnostics = "nvim_lsp",
+        buffer_close_icon = '',
       },
     },
   },
@@ -964,6 +945,42 @@ return {
         typescript = true,
       },
     },
+    keys = {
+      {
+        '<leader>re',
+        function () require('refactoring').refactor('Extract Function') end,
+        desc='extract function',
+        mode='v',
+      },
+      {
+        '<leader>rf',
+        function () require('refactoring').refactor('Extract Function To File') end,
+        desc='extract function to file',
+        mode='v',
+      },
+      {
+        '<leader>ri',
+        function () require('refactoring').refactor('Inline Variable') end,
+        desc='inline variable',
+        mode={'n','v'}
+      },
+      {
+        '<leader>rv',
+        function () require('refactoring').refactor('Extract Variable') end,
+        desc='extract variable',
+        mode='v',
+      },
+      {
+        '<leader>rb',
+        function () require('refactoring').refactor('Extract Block') end,
+        desc='refactoring extract block',
+      },
+      {
+        '<leader>rf',
+        function () require('refactoring').refactor('Extract Block To File') end,
+        desc= 'refactoring extract block to file',
+      }
+    }
   },
   -- auto pair
   {

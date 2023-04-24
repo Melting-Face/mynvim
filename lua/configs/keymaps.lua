@@ -2,7 +2,6 @@
 -----------------------------------
 local tt  = require("toggleterm.terminal").Terminal
 local wk  = require('which-key')
-local gs  = require('gitsigns')
 
 local lazydocker = tt:new({
 	cmd = "lazydocker",
@@ -33,21 +32,8 @@ wk.register({
   ['9'] = { function () require("bufferline").go_to_buffer(9, true) end, 'go to buffer index 9'},
   h = {
     h = { function () htop:toggle() end, 'htop'},
-    b = { gs.toggle_current_line_blame, 'gitsigns blame' },
-    d = { gs.toggle_deleted, 'gitsigns deleted' },
-    f = { function () gs.blame_line{ full=true } end, 'git blame all'},
     l = { function () lazydocker:toggle() end, 'lazy docker' },
-    t = { gs.diffthis, 'diff this'},
-    p = { gs.preview_hunk, 'preview huck'},
-  },
-  r = {
-    name = 'rust_tools & rest-nvim & refactoring',
-    b = { function () require('refactoring').refactor('Extract Block') end, 'refactoring extract block' },
-    f = {
-      function () require('refactoring').refactor('Extract Block To File') end,
-      'refactoring extract block to file',
-    },
-    i = { function () require('refactoring').refactor('Inline Variable') end, 'refactoring inline variable' },
+    p = { "<cmd>cexpr system('refurb --quiet ' . shellescape(expand('%'))) | copen<cr>", 'refurb' },
   },
   t = {
     name = 'tab & toggle',
@@ -55,20 +41,6 @@ wk.register({
   },
 }, {
   prefix = '<leader>'
-})
-
--- INFO: <leader> key (visual)
-wk.register({
-  r = {
-    name = 'refactoring',
-    e = { function () require('refactoring').refactor('Extract Function') end, 'extract function' },
-    f = { function () require('refactoring').refactor('Extract Function To File') end, 'extract function to file' },
-    i = { function () require('refactoring').refactor('Inline Variable') end, 'inline variable'},
-    v = { function () require('refactoring').refactor('Extract Variable') end, 'extract variable' },
-  },
-}, {
-  mode = "v",
-  prefix = '<leader>',
 })
 
 -- INFO: <space> key

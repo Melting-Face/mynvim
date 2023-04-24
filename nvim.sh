@@ -31,6 +31,7 @@ function install_package() {
   "$PREFIX" install go
   "$PREFIX" install lua
   "$PREFIX" install sed
+  "$PREFIX" install fzf
   "$PREFIX" install tmux
   "$PREFIX" install node
   "$PREFIX" install neovim
