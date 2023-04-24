@@ -533,6 +533,7 @@ return {
     dependencies = {
       "kyazdani42/nvim-web-devicons"
     },
+    event = 'VimEnter',
     config = {
       options = {
         separator_style = "padded_slant",
