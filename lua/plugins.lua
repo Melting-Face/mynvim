@@ -152,6 +152,7 @@ return {
         ignore_whitespace = false,
       },
     },
+    event = 'BufRead',
     keys = {
       {'<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<cr>', desc='curret line blame'},
       {'<leader>hd', '<cmd>Gitsigns toggle_deleted<cr>', desc='deleted'},
