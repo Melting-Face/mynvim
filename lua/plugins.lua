@@ -452,9 +452,8 @@ return {
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.yamllint,
 
-          null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.isort,
-          null_ls.builtins.formatting.prettier,
+          null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.shfmt,
@@ -489,7 +488,6 @@ return {
         "isort",
         "jq",
         "luacheck",
-        "prettier",
         "remark",
         "rustfmt",
         "shellcheck",
@@ -846,7 +844,7 @@ return {
         "jdtls",
         "jsonls",
         "lua_ls",
-        "pyright",
+        "pylsp",
         "rust_analyzer",
         "taplo",
         "tsserver",
@@ -1095,7 +1093,7 @@ return {
         "jdtls",
         "jsonls",
         "lua_ls",
-        "pyright",
+        "pylsp",
         "rust_analyzer",
         "taplo",
         "tsserver",
@@ -1117,17 +1115,24 @@ return {
               },
             },
           })
-        elseif language == "pyright" then
+        elseif language == "pylsp" then
           lspconfig[language].setup({
             on_attach = on_attach,
             capabilities = capabilities,
             settings = {
-              python = {
-                analysis = {
-                  diagnosticMode = "openFilesOnly",
-                  typeCheckingMode = "off",
-                },
-              },
+              pylsp = {
+                plugins = {
+                  autopep8 = {
+                    enabled = false
+                  },
+                  yapf = {
+                    enabled = false
+                  },
+                  pycodestyle = {
+                    enabled = false
+                  },
+                }
+              }
             },
           })
         else
