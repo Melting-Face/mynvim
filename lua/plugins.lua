@@ -69,13 +69,6 @@ return {
     'kevinhwang91/nvim-hlslens',
     config = function ()
       require('hlslens').setup()
-      vim.cmd([[
-        aug VMlens
-          au!
-          au User visual_multi_start lua require('hlslens').start()
-          au User visual_multi_exit lua require('hlslens').stop()
-        aug END
-      ]])
     end,
   },
   -- HOP
@@ -83,8 +76,8 @@ return {
     "phaazon/hop.nvim",
     config = true,
     keys = {
-      {'f', function() require('hop').hint_char1() end, desc='hop 1', mode=''},
-      {'F', function() require('hop').hint_char2() end, desc='hop 2', mode=''},
+      {'f', function() require('hop').hint_char1() end, desc='hop 1', mode={'n', 'v'}},
+      {'F', function() require('hop').hint_char2() end, desc='hop 2', mode={'n', 'v'}},
     }
   },
 
