@@ -3,8 +3,6 @@ return {
   "kyazdani42/nvim-web-devicons",
   -- async
   "nvim-lua/plenary.nvim",
-  -- cache
-  "lewis6991/impatient.nvim",
   -- tabular
   "godlygeek/tabular",
   -- whitespace

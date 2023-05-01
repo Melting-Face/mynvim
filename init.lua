@@ -19,5 +19,4 @@ require'lazy'.setup('plugins', {
   concurrency = 50,
 })
 
-require'impatient'
 require'configs.keymaps'
