@@ -11,7 +11,7 @@ return {
   {
     'mbbill/undotree',
     keys = {
-      {'<localleader>u', '<cmd>UndotreeToggle<CR>', 'undo tree'},
+      {'<localleader>u', '<cmd>UndotreeToggle<CR>', desc='undo tree'},
     }
   },
   -- minimap
@@ -28,11 +28,6 @@ return {
   -- tmux
   {
     "aserowy/tmux.nvim",
-    config = true,
-  },
-  -- toggleterm
-  {
-    "akinsho/toggleterm.nvim",
     config = true,
   },
   -- jqx
@@ -206,7 +201,6 @@ return {
     lazy = true,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.install").compilers = { "gcc-12" }
       require("nvim-treesitter.configs").setup({
         sync_install = true,
         indent = {
@@ -668,7 +662,7 @@ return {
     "microsoft/vscode-js-debug",
     lazy = true,
     build = "npm install --legacy-peer-deps && npm run compile",
-    version = 'v1.74.1'
+    version = 'v1.76.0',
   },
   {
     "mxsdev/nvim-dap-vscode-js",

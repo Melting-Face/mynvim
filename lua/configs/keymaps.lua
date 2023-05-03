@@ -1,30 +1,11 @@
 -- keymap can use string | function
 -----------------------------------
-local tt  = require("toggleterm.terminal").Terminal
 local wk  = require('which-key')
-
-local lazydocker = tt:new({
-	cmd = "lazydocker",
-	direction = "float",
-	float_opts = {
-		border = "single",
-	},
-})
-
-local htop = tt:new({
-  cmd = "htop",
-  direction = "float",
-	float_opts = {
-		border = "single",
-	},
-})
 
 -- INFO: <leader> key (normal)
 wk.register({
   h = {
-    h = { function () htop:toggle() end, 'htop'},
-    l = { function () lazydocker:toggle() end, 'lazy docker' },
-    p = { "<cmd>cexpr system('refurb --quiet ' . shellescape(expand('%'))) | copen<cr>", 'refurb' },
+    p = { "<cmd>cexpr system('refurb --quiet .') | copen<cr>", 'refurb dir' },
   },
   t = {
     name = 'tab & toggle',
