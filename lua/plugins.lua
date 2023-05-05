@@ -208,6 +208,8 @@ return {
         },
         ensure_installed = {
           "bash",
+          "c",
+          "cpp",
           "dockerfile",
           "graphql",
           "go",
@@ -613,6 +615,58 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
+
+      local llvm_path = io.popen('echo $(brew --prefix llvm)/bin'):read('l')
+      local lldb_vscode = llvm_path .. '/lldb-vscode'
+
+      dap.adapters.lldb = {
+        type = 'executable',
+        command = lldb_vscode,
+        name = 'lldb'
+      }
+
+      -- NOTE: pre task: g++ -g {filename}
+      dap.configurations.cpp = {
+        {
+          name = 'Launch',
+          type = 'lldb',
+          request = 'launch',
+          program = vim.fn.getcwd() .. '/a.out',
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
+        },
+      }
+      dap.configurations.c = dap.configurations.cpp
+      dap.configurations.rust = {
+        {
+          name = 'Launch',
+          type = 'lldb',
+          request = 'launch',
+          program = vim.fn.getcwd() .. '/a.out',
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
+          initCommands = function()
+            local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
+
+            local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
+            local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
+
+            local commands = {}
+            local file = io.open(commands_file, 'r')
+            if file then
+              for line in file:lines() do
+                table.insert(commands, line)
+              end
+              file:close()
+            end
+            table.insert(commands, 1, script_import)
+
+            return commands
+          end,
+        },
+      }
     end,
     keys = {
       {'<leader>b', function () require"dap".toggle_breakpoint() end, desc='toggle breakpoint'},
@@ -715,6 +769,13 @@ return {
     keys = {
       {'<leader>dg', function () require'dap-go'.debug_test() end, desc='test debug(go)'}
     },
+  },
+  -- nvim-dap-ruby
+  {
+    'suketa/nvim-dap-ruby',
+    ft = "ruby",
+    dependencies = "mfussenegger/nvim-dap",
+    config = true,
   },
   -- nvim-dap-python
   {
@@ -821,6 +882,7 @@ return {
     config = {
       ensure_installed = {
         "bashls",
+        "clangd",
         "dockerls",
         "docker_compose_language_service",
         "gradle_ls",
@@ -1070,6 +1132,7 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
       local languages = {
         "bashls",
+        "clangd",
         "dockerls",
         "docker_compose_language_service",
         "gradle_ls",

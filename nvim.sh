@@ -34,7 +34,6 @@ function install_package() {
   "$PREFIX" install fzf
   "$PREFIX" install tmux
   "$PREFIX" install node
-  "$PREFIX" install neovim
   "$PREFIX" install python
   "$PREFIX" install ripgrep
   "$PREFIX" install lazydocker
@@ -50,9 +49,9 @@ function install_package() {
   pip3 install pytest
   pip3 install ipython
   pip3 install jupyter
-  pip3 install pynvim
   pip3 install refurb
   sudo gem install tmuxinator
+  sudo gem install colorls
 }
 
 function create_symlink() {
