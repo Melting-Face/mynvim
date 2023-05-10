@@ -42,6 +42,7 @@ function install_package() {
   "$PREFIX" install llvm
   "$PREFIX" install rust
   "$PREFIX" install htop
+  "$PREFIX" install lsd
   "$PREFIX" install jq
   pip3 install neovim
   pip3 install debugpy
@@ -51,7 +52,6 @@ function install_package() {
   pip3 install jupyter
   pip3 install refurb
   sudo gem install tmuxinator
-  sudo gem install colorls
 }
 
 function create_symlink() {
