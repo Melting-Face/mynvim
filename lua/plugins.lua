@@ -26,9 +26,7 @@ return {
 
   {
     'edluffy/hologram.nvim',
-    config = {
-      auto_display = true,
-    },
+    config = {},
   },
   -- magam
   {
