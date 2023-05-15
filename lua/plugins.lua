@@ -24,28 +24,6 @@ return {
   -- startify
   'mhinz/vim-startify',
 
-  {
-    'edluffy/hologram.nvim',
-    ft = 'python',
-    config = {
-      auto_display = true
-    },
-  },
-  -- magam
-  {
-    'dccsillag/magma-nvim',
-    build = ':UpdateRemotePlugins',
-    ft = { 'python' },
-    keys = {
-      { '<LocalLeader>re', ':MagmaEvaluateOperator<CR>', desc='magma evaluate' },
-      { '<LocalLeader>rr', ':MagmaEvaluateLine<CR>', desc='magma evaluate line' },
-      { '<LocalLeader>re', ':<C-u>MagmaEvaluateVisual<CR>', desc='magma visual evaluate', mode='x'},
-      { '<LocalLeader>rc', ':MagmaReevaluateCell<CR>', desc='magma cell evaluate' },
-      { '<LocalLeader>rd', ':MagmaDelete<CR>', desc='magma delete' },
-      { '<LocalLeader>ro', ':MagmaShowOutput<CR>', desc='show output' },
-    }
-  },
-
   -- INFO: TERMINAL/TMUX
   -- tmux
   {
