@@ -15,12 +15,12 @@ return {
     }
   },
   -- minimap
-  {
-    "wfxr/minimap.vim",
-    keys = {
-      {'<localleader>m', '<cmd>MinimapToggle<CR>', desc='minimap'},
-    }
-  },
+  -- {
+  --   "wfxr/minimap.vim",
+  --   keys = {
+  --     {'<localleader>m', '<cmd>MinimapToggle<CR>', desc='minimap'},
+  --   }
+  -- },
   -- startify
   'mhinz/vim-startify',
 
@@ -90,17 +90,17 @@ return {
 
   -- INFO: CSV
   -- rainbow csv
-  {
-    "mechatroner/rainbow_csv",
-    lazy = true,
-    ft = "csv",
-  },
-  -- csv.vim
-  {
-    "chrisbra/csv.vim",
-    lazy = true,
-    ft = "csv",
-  },
+  -- {
+  --   "mechatroner/rainbow_csv",
+  --   lazy = true,
+  --   ft = "csv",
+  -- },
+  -- -- csv.vim
+  -- {
+  --   "chrisbra/csv.vim",
+  --   lazy = true,
+  --   ft = "csv",
+  -- },
 
   -- INFO: GIT
   -- vim-fugitive
@@ -339,17 +339,17 @@ return {
       highlight = true,
     },
   },
-  -- vim dadbod
-  {
-    "kristijanhusak/vim-dadbod-ui",
-    dependencies = {
-      "tpope/vim-dadbod",
-    },
-    keys = {
-      {'<localleader>d', '<cmd>DBUIToggle<CR>', desc='db ui'},
-      {'<leader>da', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
-    }
-  },
+  -- NOTE: vim dadbod
+  -- {
+  --   "kristijanhusak/vim-dadbod-ui",
+  --   dependencies = {
+  --     "tpope/vim-dadbod",
+  --   },
+  --   keys = {
+  --     {'<localleader>d', '<cmd>DBUIToggle<CR>', desc='db ui'},
+  --     {'<leader>da', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
+  --   }
+  -- },
 
   -- PACKAGE
   -- package-info
@@ -376,46 +376,46 @@ return {
     },
     config = true,
   },
-  -- restnvim
-  {
-    "rest-nvim/rest.nvim",
-    ft = "http",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    config = function()
-      require("rest-nvim").setup({
-        result_split_horizontal = false,
-        result_split_in_place = false,
-        skip_ssl_verification = false,
-        encode_url = true,
-        highlight = {
-          enabled = true,
-          timeout = 150,
-        },
-        result = {
-          show_url = true,
-          show_http_info = true,
-          show_headers = true,
-          formatters = {
-            json = "jq",
-            html = function(body)
-              return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
-            end,
-          },
-        },
-        -- Jump to request line on run
-        jump_to_request = false,
-        env_file = ".env",
-        custom_dynamic_variables = {},
-        yank_dry_run = true,
-      })
-    end,
-    keys = {
-      {'<leader>rl', function () require('rest-nvim').last() end, desc='rest last'},
-      {'<leader>rr', function () require('rest-nvim').run() end, desc='rest run'},
-    }
-  },
+  -- NOTE: restnvim
+  -- {
+  --   "rest-nvim/rest.nvim",
+  --   ft = "http",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --   },
+  --   config = function()
+  --     require("rest-nvim").setup({
+  --       result_split_horizontal = false,
+  --       result_split_in_place = false,
+  --       skip_ssl_verification = false,
+  --       encode_url = true,
+  --       highlight = {
+  --         enabled = true,
+  --         timeout = 150,
+  --       },
+  --       result = {
+  --         show_url = true,
+  --         show_http_info = true,
+  --         show_headers = true,
+  --         formatters = {
+  --           json = "jq",
+  --           html = function(body)
+  --             return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
+  --           end,
+  --         },
+  --       },
+  --       -- Jump to request line on run
+  --       jump_to_request = false,
+  --       env_file = ".env",
+  --       custom_dynamic_variables = {},
+  --       yank_dry_run = true,
+  --     })
+  --   end,
+  --   keys = {
+  --     {'<leader>rl', function () require('rest-nvim').last() end, desc='rest last'},
+  --     {'<leader>rr', function () require('rest-nvim').run() end, desc='rest run'},
+  --   }
+  -- },
   -- mason
   {
     "williamboman/mason.nvim",
@@ -598,282 +598,282 @@ return {
 
   -- INFO: DAP
   -- nvim-dap-ui
-  {
-    "rcarriga/nvim-dap-ui",
-    dependencies = "mfussenegger/nvim-dap",
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-      dapui.setup()
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
-      end
-
-      local llvm_path = io.popen('echo $(brew --prefix llvm)/bin'):read('l')
-      local lldb_vscode = llvm_path .. '/lldb-vscode'
-
-      dap.adapters.lldb = {
-        type = 'executable',
-        command = lldb_vscode,
-        name = 'lldb'
-      }
-
-      -- NOTE: pre task: g++ -g {filename}
-      dap.configurations.cpp = {
-        {
-          name = 'Launch',
-          type = 'lldb',
-          request = 'launch',
-          program = vim.fn.getcwd() .. '/a.out',
-          cwd = '${workspaceFolder}',
-          stopOnEntry = false,
-          args = {},
-        },
-      }
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = {
-        {
-          name = 'Launch',
-          type = 'lldb',
-          request = 'launch',
-          program = vim.fn.getcwd() .. '/a.out',
-          cwd = '${workspaceFolder}',
-          stopOnEntry = false,
-          args = {},
-          initCommands = function()
-            local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
-
-            local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
-            local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
-
-            local commands = {}
-            local file = io.open(commands_file, 'r')
-            if file then
-              for line in file:lines() do
-                table.insert(commands, line)
-              end
-              file:close()
-            end
-            table.insert(commands, 1, script_import)
-
-            return commands
-          end,
-        },
-      }
-    end,
-    keys = {
-      {'<leader>b', function () require"dap".toggle_breakpoint() end, desc='toggle breakpoint'},
-      {'<leader>B', function() require('dap').set_breakpoint() end, desc='set breakpoint'},
-      {
-        '<Leader>lp',
-        function()
-          require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
-        end,
-        desc='set breakpoint with message',
-      },
-      {'<F5>', function () require'dap'.continue() end, desc='dap run(continue)'},
-      {'<F10>', function () require'dap'.step_over() end, desc='dap step over'},
-      {'<F11>', function () require'dap'.step_into() end, desc='dap step into'},
-      {'<F12>', function () require'dap'.step_out() end, desc='dap step out'},
-      {'<Leader>dr', function() require('dap').repl.open() end, desc='open repl'},
-      {'<Leader>dl', function() require('dap').run_last() end, desc='run last'},
-      {'<Leader>dh', function() require('dap.ui.widgets').hover() end, desc='dap ui widgets', mode={'n', 'v'}},
-      {'<Leader>dp', function() require('dap.ui.widgets').preview() end, desc='dap ui preview', mode={'n', 'v'}},
-      {
-        '<Leader>df',
-        function()
-          local widgets = require('dap.ui.widgets')
-          widgets.centered_float(widgets.frames)
-        end,
-        desc='dap ui widgets float center(frame)',
-      },
-      {
-        '<Leader>ds',
-        function()
-          local widgets = require('dap.ui.widgets')
-          widgets.centered_float(widgets.scopes)
-        end,
-        desc='dap ui widgets float center(scope)',
-      },
-      {'<Leader>dt', function () require("dapui").toggle() end, desc='dap ui toggle'},
-    },
-  },
-  -- dap-virtual-text
-  {
-    "theHamsta/nvim-dap-virtual-text",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
-  },
-  -- dap java/typescript
-  {
-    "microsoft/vscode-js-debug",
-    lazy = true,
-    build = "npm install --legacy-peer-deps && npm run compile",
-    version = 'v1.76.0',
-  },
-  {
-    "mxsdev/nvim-dap-vscode-js",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = {
-      "javascript",
-      "typescript",
-    },
-    config = function()
-      local lazy_path = os.getenv("HOME") .. "/.local/share/nvim/lazy"
-      require("dap-vscode-js").setup({
-        debugger_path = lazy_path .. "/vscode-js-debug",
-        adapters = {
-          "pwa-node",
-          "pwa-chrome",
-          "pwa-msedge",
-          "node-terminal",
-          "pwa-extensionHost",
-        },
-      })
-      local dap = require('dap')
-      for _, language in ipairs({ "typescript", "javascript" }) do
-        dap.configurations[language] = {
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch - node",
-            program = "${file}",
-            cwd = "${workspaceFolder}",
-            port = 9229,
-          },
-          {
-            type = "pwa-node",
-            request = "attach",
-            name = "Attach",
-            processId = require("dap.utils").pick_process,
-            cwd = "${workspaceFolder}",
-            port = 9229,
-          },
-        }
-      end
-    end,
-  },
-  -- nvim-dap-go
-  {
-    "leoluz/nvim-dap-go",
-    ft = "go",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
-    keys = {
-      {'<leader>dg', function () require'dap-go'.debug_test() end, desc='test debug(go)'}
-    },
-  },
-  -- nvim-dap-ruby
-  {
-    'suketa/nvim-dap-ruby',
-    ft = "ruby",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
-  },
-  -- nvim-dap-python
-  {
-    "mfussenegger/nvim-dap-python",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = "python",
-    config = function()
-      local python_path = io.popen("which python3"):read("l")
-      require("dap-python").setup(python_path)
-    end,
-    keys = {
-      {'<leader>dc', function () require'dap-python'.test_class() end, desc='test class'},
-      {'<leader>dd', '<ESC>:lua require("dap-python").debug_selection()<CR>', desc='python debug select'},
-      {'<leader>dm', function () require'dap-python'.test_method() end, desc='test method'},
-    }
-  },
-  -- nvim-dap-lua
-  {
-    "jbyuki/one-small-step-for-vimkind",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = "lua",
-    config = function()
-      local dap = require("dap")
-      dap.adapters.nlua = function(callback, config)
-        if config.port ~= nil then
-          callback({
-            type = "server",
-            host = config.host,
-            port = config.port,
-          })
-        else
-          require("osv").run_this()
-        end
-      end
-
-      dap.configurations.lua = {
-        {
-          type = "nlua",
-          request = "attach",
-          name = "Attach to running Neovim instance",
-          host = function()
-            local value = vim.fn.input("Host [127.0.0.1]: ")
-            if value ~= "" then
-              return value
-            end
-            return "127.0.0.1"
-          end,
-          port = function()
-            local val = tonumber(vim.fn.input("Port: "))
-            return val
-          end,
-        },
-      }
-    end,
-  },
-  -- nvim-jdtls
-  {
-    "mfussenegger/nvim-jdtls",
-    ft = "java",
-    keys = {
-      {'<leader>dc', function () require'jdtls'.test_class() end, desc='test class'},
-      {'<leader>dm', function () require'jdtls'.test_nearest_method() end, desc='test nearest method'},
-    }
-  },
-
-  -- INFO: TOOL
-  -- rust-tools
-  {
-    "simrat39/rust-tools.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-lua/plenary.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    ft = "rust",
-    config = {
-      server = {
-        standalone = true,
-      },
-      dap = {
-        adapter = {
-          type = "executable",
-          command = "lldb-vscode",
-          name = "rt_lldb",
-        },
-      },
-    },
-    keys = {
-      {'<leader>rd', '<cmd>RustDebuggables<CR>', desc='rust debug'},
-      {
-        '<leader>rh',
-        function ()
-          require("rust-tools").hover_actions.hover_actions()
-        end,
-        desc='rust hover',
-      },
-      {'<leader>rr', '<cmd>RustRunnables<CR>', desc='rust run'},
-    }
-  },
+  -- {
+  --   "rcarriga/nvim-dap-ui",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   config = function()
+  --     local dap = require("dap")
+  --     local dapui = require("dapui")
+  --     dapui.setup()
+  --     dap.listeners.after.event_initialized["dapui_config"] = function()
+  --       dapui.open()
+  --     end
+  --     dap.listeners.before.event_terminated["dapui_config"] = function()
+  --       dapui.close()
+  --     end
+  --     dap.listeners.before.event_exited["dapui_config"] = function()
+  --       dapui.close()
+  --     end
+  --
+  --     local llvm_path = io.popen('echo $(brew --prefix llvm)/bin'):read('l')
+  --     local lldb_vscode = llvm_path .. '/lldb-vscode'
+  --
+  --     dap.adapters.lldb = {
+  --       type = 'executable',
+  --       command = lldb_vscode,
+  --       name = 'lldb'
+  --     }
+  --
+  --     -- NOTE: pre task: g++ -g {filename}
+  --     dap.configurations.cpp = {
+  --       {
+  --         name = 'Launch',
+  --         type = 'lldb',
+  --         request = 'launch',
+  --         program = vim.fn.getcwd() .. '/a.out',
+  --         cwd = '${workspaceFolder}',
+  --         stopOnEntry = false,
+  --         args = {},
+  --       },
+  --     }
+  --     dap.configurations.c = dap.configurations.cpp
+  --     dap.configurations.rust = {
+  --       {
+  --         name = 'Launch',
+  --         type = 'lldb',
+  --         request = 'launch',
+  --         program = vim.fn.getcwd() .. '/a.out',
+  --         cwd = '${workspaceFolder}',
+  --         stopOnEntry = false,
+  --         args = {},
+  --         initCommands = function()
+  --           local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
+  --
+  --           local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
+  --           local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
+  --
+  --           local commands = {}
+  --           local file = io.open(commands_file, 'r')
+  --           if file then
+  --             for line in file:lines() do
+  --               table.insert(commands, line)
+  --             end
+  --             file:close()
+  --           end
+  --           table.insert(commands, 1, script_import)
+  --
+  --           return commands
+  --         end,
+  --       },
+  --     }
+  --   end,
+  --   keys = {
+  --     {'<leader>b', function () require"dap".toggle_breakpoint() end, desc='toggle breakpoint'},
+  --     {'<leader>B', function() require('dap').set_breakpoint() end, desc='set breakpoint'},
+  --     {
+  --       '<Leader>lp',
+  --       function()
+  --         require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+  --       end,
+  --       desc='set breakpoint with message',
+  --     },
+  --     {'<F5>', function () require'dap'.continue() end, desc='dap run(continue)'},
+  --     {'<F10>', function () require'dap'.step_over() end, desc='dap step over'},
+  --     {'<F11>', function () require'dap'.step_into() end, desc='dap step into'},
+  --     {'<F12>', function () require'dap'.step_out() end, desc='dap step out'},
+  --     {'<Leader>dr', function() require('dap').repl.open() end, desc='open repl'},
+  --     {'<Leader>dl', function() require('dap').run_last() end, desc='run last'},
+  --     {'<Leader>dh', function() require('dap.ui.widgets').hover() end, desc='dap ui widgets', mode={'n', 'v'}},
+  --     {'<Leader>dp', function() require('dap.ui.widgets').preview() end, desc='dap ui preview', mode={'n', 'v'}},
+  --     {
+  --       '<Leader>df',
+  --       function()
+  --         local widgets = require('dap.ui.widgets')
+  --         widgets.centered_float(widgets.frames)
+  --       end,
+  --       desc='dap ui widgets float center(frame)',
+  --     },
+  --     {
+  --       '<Leader>ds',
+  --       function()
+  --         local widgets = require('dap.ui.widgets')
+  --         widgets.centered_float(widgets.scopes)
+  --       end,
+  --       desc='dap ui widgets float center(scope)',
+  --     },
+  --     {'<Leader>dt', function () require("dapui").toggle() end, desc='dap ui toggle'},
+  --   },
+  -- },
+  -- -- dap-virtual-text
+  -- {
+  --   "theHamsta/nvim-dap-virtual-text",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   config = true,
+  -- },
+  -- -- dap java/typescript
+  -- {
+  --   "microsoft/vscode-js-debug",
+  --   lazy = true,
+  --   build = "npm install --legacy-peer-deps && npm run compile",
+  --   version = 'v1.76.0',
+  -- },
+  -- {
+  --   "mxsdev/nvim-dap-vscode-js",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   ft = {
+  --     "javascript",
+  --     "typescript",
+  --   },
+  --   config = function()
+  --     local lazy_path = os.getenv("HOME") .. "/.local/share/nvim/lazy"
+  --     require("dap-vscode-js").setup({
+  --       debugger_path = lazy_path .. "/vscode-js-debug",
+  --       adapters = {
+  --         "pwa-node",
+  --         "pwa-chrome",
+  --         "pwa-msedge",
+  --         "node-terminal",
+  --         "pwa-extensionHost",
+  --       },
+  --     })
+  --     local dap = require('dap')
+  --     for _, language in ipairs({ "typescript", "javascript" }) do
+  --       dap.configurations[language] = {
+  --         {
+  --           type = "pwa-node",
+  --           request = "launch",
+  --           name = "Launch - node",
+  --           program = "${file}",
+  --           cwd = "${workspaceFolder}",
+  --           port = 9229,
+  --         },
+  --         {
+  --           type = "pwa-node",
+  --           request = "attach",
+  --           name = "Attach",
+  --           processId = require("dap.utils").pick_process,
+  --           cwd = "${workspaceFolder}",
+  --           port = 9229,
+  --         },
+  --       }
+  --     end
+  --   end,
+  -- },
+  -- -- nvim-dap-go
+  -- {
+  --   "leoluz/nvim-dap-go",
+  --   ft = "go",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   config = true,
+  --   keys = {
+  --     {'<leader>dg', function () require'dap-go'.debug_test() end, desc='test debug(go)'}
+  --   },
+  -- },
+  -- -- nvim-dap-ruby
+  -- {
+  --   'suketa/nvim-dap-ruby',
+  --   ft = "ruby",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   config = true,
+  -- },
+  -- -- nvim-dap-python
+  -- {
+  --   "mfussenegger/nvim-dap-python",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   ft = "python",
+  --   config = function()
+  --     local python_path = io.popen("which python3"):read("l")
+  --     require("dap-python").setup(python_path)
+  --   end,
+  --   keys = {
+  --     {'<leader>dc', function () require'dap-python'.test_class() end, desc='test class'},
+  --     {'<leader>dd', '<ESC>:lua require("dap-python").debug_selection()<CR>', desc='python debug select'},
+  --     {'<leader>dm', function () require'dap-python'.test_method() end, desc='test method'},
+  --   }
+  -- },
+  -- -- nvim-dap-lua
+  -- {
+  --   "jbyuki/one-small-step-for-vimkind",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   ft = "lua",
+  --   config = function()
+  --     local dap = require("dap")
+  --     dap.adapters.nlua = function(callback, config)
+  --       if config.port ~= nil then
+  --         callback({
+  --           type = "server",
+  --           host = config.host,
+  --           port = config.port,
+  --         })
+  --       else
+  --         require("osv").run_this()
+  --       end
+  --     end
+  --
+  --     dap.configurations.lua = {
+  --       {
+  --         type = "nlua",
+  --         request = "attach",
+  --         name = "Attach to running Neovim instance",
+  --         host = function()
+  --           local value = vim.fn.input("Host [127.0.0.1]: ")
+  --           if value ~= "" then
+  --             return value
+  --           end
+  --           return "127.0.0.1"
+  --         end,
+  --         port = function()
+  --           local val = tonumber(vim.fn.input("Port: "))
+  --           return val
+  --         end,
+  --       },
+  --     }
+  --   end,
+  -- },
+  -- -- nvim-jdtls
+  -- {
+  --   "mfussenegger/nvim-jdtls",
+  --   ft = "java",
+  --   keys = {
+  --     {'<leader>dc', function () require'jdtls'.test_class() end, desc='test class'},
+  --     {'<leader>dm', function () require'jdtls'.test_nearest_method() end, desc='test nearest method'},
+  --   }
+  -- },
+  --
+  -- -- INFO: TOOL
+  -- -- rust-tools
+  -- {
+  --   "simrat39/rust-tools.nvim",
+  --   dependencies = {
+  --     "neovim/nvim-lspconfig",
+  --     "nvim-lua/plenary.nvim",
+  --     "mfussenegger/nvim-dap",
+  --   },
+  --   ft = "rust",
+  --   config = {
+  --     server = {
+  --       standalone = true,
+  --     },
+  --     dap = {
+  --       adapter = {
+  --         type = "executable",
+  --         command = "lldb-vscode",
+  --         name = "rt_lldb",
+  --       },
+  --     },
+  --   },
+  --   keys = {
+  --     {'<leader>rd', '<cmd>RustDebuggables<CR>', desc='rust debug'},
+  --     {
+  --       '<leader>rh',
+  --       function ()
+  --         require("rust-tools").hover_actions.hover_actions()
+  --       end,
+  --       desc='rust hover',
+  --     },
+  --     {'<leader>rr', '<cmd>RustRunnables<CR>', desc='rust run'},
+  --   }
+  -- },
   -- mason lsp
   {
     "williamboman/mason-lspconfig.nvim",
@@ -1191,7 +1191,7 @@ return {
       end
     end,
   },
-
+  -- NOTE: todo comment
   {
     "folke/todo-comments.nvim",
     dependencies = {"nvim-lua/plenary.nvim"},
