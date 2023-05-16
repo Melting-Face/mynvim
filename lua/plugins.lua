@@ -24,7 +24,6 @@ return {
   -- startify
   'mhinz/vim-startify',
 
-  -- INFO: TERMINAL/TMUX
   -- tmux
   {
     "aserowy/tmux.nvim",

@@ -44,6 +44,3 @@ vim.g.db_ui_show_database_icon = 1
 
 -- vim-better-whitespace
 vim.g.better_whitespace_guicolor='#C0CAF5'
-
-vim.g.magma_automatically_open_output = false
-vim.g.magma_image_provider = "kitty"
