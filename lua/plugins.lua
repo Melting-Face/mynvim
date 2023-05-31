@@ -350,16 +350,16 @@ return {
     },
   },
   -- NOTE: vim dadbod
-  -- {
-  --   "kristijanhusak/vim-dadbod-ui",
-  --   dependencies = {
-  --     "tpope/vim-dadbod",
-  --   },
-  --   keys = {
-  --     {'<localleader>d', '<cmd>DBUIToggle<CR>', desc='db ui'},
-  --     {'<leader>da', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
-  --   }
-  -- },
+  {
+    "kristijanhusak/vim-dadbod-ui",
+    dependencies = {
+      "tpope/vim-dadbod",
+    },
+    keys = {
+      {'<localleader>d', '<cmd>DBUIToggle<CR>', desc='db ui'},
+      {'<leader>da', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
+    }
+  },
 
   -- PACKAGE
   -- package-info
@@ -609,6 +609,16 @@ return {
   {
     "rcarriga/nvim-dap-ui",
     dependencies = "mfussenegger/nvim-dap",
+    ft = {
+      'go',
+      'lua',
+      'python',
+      'java',
+      'javascript',
+      'typescript',
+      'rust',
+      'ruby',
+    },
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
@@ -717,6 +727,16 @@ return {
     "theHamsta/nvim-dap-virtual-text",
     dependencies = "mfussenegger/nvim-dap",
     config = true,
+    ft = {
+      'go',
+      'lua',
+      'python',
+      'java',
+      'javascript',
+      'typescript',
+      'rust',
+      'ruby',
+    },
   },
   -- dap java/typescript
   {
@@ -724,6 +744,10 @@ return {
     lazy = true,
     build = "npm install --legacy-peer-deps && npm run compile",
     version = 'v1.76.0',
+    ft = {
+      "javascript",
+      "typescript",
+    },
   },
   {
     "mxsdev/nvim-dap-vscode-js",
