@@ -110,13 +110,11 @@ return {
   },
 
   -- INFO: CSV
-  -- rainbow csv
   {
     "mechatroner/rainbow_csv",
     lazy = true,
     ft = "csv",
   },
-  -- csv.vim
   {
     "chrisbra/csv.vim",
     lazy = true,
@@ -440,6 +438,7 @@ return {
         diagnostics_format = "[#{c}] #{m} (#{s})",
         debounce = 250,
         sources = {
+          null_ls.builtins.diagnostics.sqlfluff,
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.ruff,
           null_ls.builtins.diagnostics.flake8,
@@ -448,6 +447,7 @@ return {
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.yamllint,
 
+          null_ls.builtins.formatting.sqlfluff,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.eslint_d,
@@ -482,11 +482,9 @@ return {
         "isort",
         "jq",
         "luacheck",
-        "remark",
         "rustfmt",
         "shellcheck",
-        "shfmt",
-        "sqlfmt",
+        "sqlfluff",
         "stylua",
         "yamlfmt",
         "yamllint",
