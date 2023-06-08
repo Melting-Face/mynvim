@@ -11,6 +11,12 @@ return {
   'mhinz/vim-startify',
   -- multi cursor
   "mg979/vim-visual-multi",
+  -- neodev
+  {
+    "folke/neodev.nvim",
+    opts = {},
+    config={},
+  },
   -- luapad
   {
     'rafcamlet/nvim-luapad',
@@ -1184,7 +1190,6 @@ return {
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "luasnip" },
-          { name = "neorg" },
           { name = "crates" },
           { name = 'vim-dadbod-completion' },
         }, {
@@ -1248,10 +1253,13 @@ return {
             capabilities = capabilities,
             settings = {
               Lua = {
-                diagnostics = {
-                  globals = {
-                    "vim",
-                  },
+                -- diagnostics = {
+                --   globals = {
+                --     "vim",
+                --   },
+                -- },
+                completion = {
+                  callSnippet = "Replace"
                 },
               },
             },
