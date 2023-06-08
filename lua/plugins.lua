@@ -14,8 +14,8 @@ return {
   -- neodev
   {
     "folke/neodev.nvim",
-    opts = {},
-    config={},
+    config=true,
+    opts={},
   },
   -- luapad
   {
@@ -68,7 +68,7 @@ return {
         desc='Luapad eval'
       },
       {
-        '<leader>le',
+        '<leader>lc',
         function ()
           local luapad = require 'luapad.state'.current()
           luapad:eval()
@@ -1253,13 +1253,13 @@ return {
             capabilities = capabilities,
             settings = {
               Lua = {
-                -- diagnostics = {
-                --   globals = {
-                --     "vim",
-                --   },
-                -- },
                 completion = {
                   callSnippet = "Replace"
+                },
+                diagnostics = {
+                  globals = {
+                    "vim",
+                  },
                 },
               },
             },
