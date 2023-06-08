@@ -11,7 +11,66 @@ return {
   'mhinz/vim-startify',
   -- multi cursor
   "mg979/vim-visual-multi",
-
+  -- luapad
+  {
+    'rafcamlet/nvim-luapad',
+    keys = {
+      {'<leader>li', function () require('luapad').init() end, desc='Luapad init'},
+      {
+        '<leader>la',
+        function ()
+          require('luapad').attach({
+            context = { return_4 =  function() return 4 end }
+          })
+        end,
+        desc = 'Luapad attach',
+      },
+      {
+        '<leader>ld',
+        function ()
+          require('luapad').detach()
+        end,
+        desc = 'Luapad detach',
+      },
+      {
+        '<localleader>l',
+        function ()
+          require('luapad').toggle({
+            context = { return_4 =  function() return 4 end }
+          })
+        end,
+        desc='Luapad toggle',
+      },
+      {
+        '<leader>lr',
+        function ()
+          require 'luapad.run'.run {
+            context = {
+              print = function(str) print(string.upper(str)) end
+            }
+          }
+        end,
+        desc='Luapad run',
+      },
+      {
+        '<leader>le',
+        function ()
+          local luapad = require('luapad.evaluator'):new{buf = vim.api.nvim_get_current_buf()}
+          luapad:start()
+          luapad:eval()
+        end,
+        desc='Luapad eval'
+      },
+      {
+        '<leader>le',
+        function ()
+          local luapad = require 'luapad.state'.current()
+          luapad:eval()
+        end,
+        desc='Luapad current'
+      }
+    }
+  },
   -- emmet
   {
     "mattn/emmet-vim",
@@ -959,8 +1018,8 @@ return {
       },
     },
     keys = {
-      { '<localleader>l', '<cmd>NvimTreeToggle<CR>', desc='nvim tree' },
-      { '<localleader>f', '<cmd>NvimTreeFindFile<CR>', desc='find files(nvim-tree)'},
+      { '<localleader>n', '<cmd>NvimTreeToggle<CR>', desc='nvim tree' },
+      { '<leader>nf', '<cmd>NvimTreeFindFile<CR>', desc='find files(nvim-tree)'},
     }
   },
   -- lualine
