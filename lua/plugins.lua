@@ -11,12 +11,6 @@ return {
   'mhinz/vim-startify',
   -- multi cursor
   "mg979/vim-visual-multi",
-  -- neodev
-  {
-    "folke/neodev.nvim",
-    config=true,
-    opts={},
-  },
   -- luapad
   {
     'rafcamlet/nvim-luapad',
@@ -1253,9 +1247,6 @@ return {
             capabilities = capabilities,
             settings = {
               Lua = {
-                completion = {
-                  callSnippet = "Replace"
-                },
                 diagnostics = {
                   globals = {
                     "vim",
