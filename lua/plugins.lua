@@ -11,66 +11,6 @@ return {
   'mhinz/vim-startify',
   -- multi cursor
   "mg979/vim-visual-multi",
-  -- luapad
-  {
-    'rafcamlet/nvim-luapad',
-    keys = {
-      {'<leader>li', function () require('luapad').init() end, desc='Luapad init'},
-      {
-        '<leader>la',
-        function ()
-          require('luapad').attach({
-            context = { return_4 =  function() return 4 end }
-          })
-        end,
-        desc = 'Luapad attach',
-      },
-      {
-        '<leader>ld',
-        function ()
-          require('luapad').detach()
-        end,
-        desc = 'Luapad detach',
-      },
-      {
-        '<localleader>l',
-        function ()
-          require('luapad').toggle({
-            context = { return_4 =  function() return 4 end }
-          })
-        end,
-        desc='Luapad toggle',
-      },
-      {
-        '<leader>lr',
-        function ()
-          require 'luapad.run'.run {
-            context = {
-              print = function(str) print(string.upper(str)) end
-            }
-          }
-        end,
-        desc='Luapad run',
-      },
-      {
-        '<leader>le',
-        function ()
-          local luapad = require('luapad.evaluator'):new{buf = vim.api.nvim_get_current_buf()}
-          luapad:start()
-          luapad:eval()
-        end,
-        desc='Luapad eval'
-      },
-      {
-        '<leader>lc',
-        function ()
-          local luapad = require 'luapad.state'.current()
-          luapad:eval()
-        end,
-        desc='Luapad current'
-      }
-    }
-  },
   -- emmet
   {
     "mattn/emmet-vim",
@@ -136,13 +76,6 @@ return {
     end
   },
 
-  -- INFO: CURSOR
-  {
-    'kevinhwang91/nvim-hlslens',
-    config = function ()
-      require('hlslens').setup()
-    end,
-  },
   -- HOP
   {
     "phaazon/hop.nvim",
@@ -495,9 +428,8 @@ return {
       local null_ls = require("null-ls")
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
-        debounce = 250,
+        debounce = 500,
         sources = {
-          null_ls.builtins.diagnostics.sqlfluff,
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.ruff,
           null_ls.builtins.diagnostics.flake8,
@@ -505,8 +437,10 @@ return {
           null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.yamllint,
+          null_ls.builtins.diagnostics.sqlfluff.with({
+              extra_args = { "--dialect", "postgres" },
+          }),
 
-          null_ls.builtins.formatting.sqlfluff,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.eslint_d,
@@ -514,6 +448,9 @@ return {
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.yamlfmt,
+          null_ls.builtins.formatting.sqlfluff.with({
+              extra_args = { "--dialect", "postgres" },
+          }),
         },
       })
     end,
