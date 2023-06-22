@@ -432,24 +432,23 @@ return {
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.ruff,
-          null_ls.builtins.diagnostics.flake8,
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.yamllint,
           null_ls.builtins.diagnostics.sqlfluff.with({
-              extra_args = { "--dialect", "postgres" },
+            extra_args = { "--dialect", "postgres" },
           }),
 
           null_ls.builtins.formatting.isort,
-          null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.ruff,
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.yamlfmt,
           null_ls.builtins.formatting.sqlfluff.with({
-              extra_args = { "--dialect", "postgres" },
+            extra_args = { "--dialect", "postgres" },
           }),
         },
       })
