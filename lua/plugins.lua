@@ -920,7 +920,7 @@ return {
         "jdtls",
         "jsonls",
         "lua_ls",
-        "pylsp",
+        "pyright",
         "rust_analyzer",
         "taplo",
         "tsserver",
@@ -1169,7 +1169,7 @@ return {
         "jdtls",
         "jsonls",
         "lua_ls",
-        "pylsp",
+        "pyright",
         "rust_analyzer",
         "taplo",
         "tsserver",
@@ -1191,24 +1191,17 @@ return {
               },
             },
           })
-        elseif language == "pylsp" then
+        elseif language == "pyright" then
           lspconfig[language].setup({
             on_attach = on_attach,
             capabilities = capabilities,
             settings = {
-              pylsp = {
-                plugins = {
-                  autopep8 = {
-                    enabled = false
-                  },
-                  yapf = {
-                    enabled = false
-                  },
-                  pycodestyle = {
-                    enabled = false
-                  },
-                }
-              }
+              python = {
+                analysis = {
+                  diagnosticMode = 'openFilesOnly',
+                  typeCheckingMode = "off",
+                },
+              },
             },
           })
         else
