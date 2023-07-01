@@ -440,7 +440,6 @@ return {
             extra_args = { "--dialect", "postgres" },
           }),
 
-          null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.ruff,
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.rustfmt,
@@ -469,12 +468,10 @@ return {
     },
     config = {
       ensure_installed = {
-        "black",
         "ruff",
         "flake8",
         "eslint_d",
         "hadolint",
-        "isort",
         "jq",
         "luacheck",
         "rustfmt",
