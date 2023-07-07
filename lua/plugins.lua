@@ -118,7 +118,7 @@ return {
   "tpope/vim-fugitive",
   -- neogit
   {
-    'TimUntersberger/neogit',
+    'NeogitOrg/neogit',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'sindrets/diffview.nvim',
@@ -431,7 +431,9 @@ return {
         debounce = 500,
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
-          null_ls.builtins.diagnostics.ruff,
+          null_ls.builtins.diagnostics.ruff.with({
+            extra_args = { "--extend-select", "I,Q"}
+          }),
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.shellcheck,
@@ -440,8 +442,11 @@ return {
             extra_args = { "--dialect", "postgres" },
           }),
 
-          null_ls.builtins.formatting.ruff,
+          null_ls.builtins.formatting.ruff.with({
+            extra_args = { "--extend-select", "I,Q"}
+          }),
           null_ls.builtins.formatting.eslint_d,
+          null_ls.builtins.formatting.prettierd,
           null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
@@ -547,6 +552,9 @@ return {
     event = "LspAttach",
     config = {
       lightbulb = {
+        enable = false,
+      },
+      symbol_in_winbar = {
         enable = false,
       }
     },
