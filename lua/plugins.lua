@@ -428,11 +428,10 @@ return {
       local null_ls = require("null-ls")
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
-        debounce = 500,
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.ruff.with({
-            extra_args = { "--extend-select", "I,Q"}
+            extra_args = { "--extend-select", "I,N,Q,C90"}
           }),
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
@@ -443,11 +442,10 @@ return {
           }),
 
           null_ls.builtins.formatting.ruff.with({
-            extra_args = { "--extend-select", "I,Q"}
+            extra_args = { "--extend-select", "I,N,Q,C90"}
           }),
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.prettierd,
-          null_ls.builtins.formatting.rustfmt,
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.yamlfmt,
@@ -479,7 +477,6 @@ return {
         "hadolint",
         "jq",
         "luacheck",
-        "rustfmt",
         "shellcheck",
         "sqlfluff",
         "stylua",
@@ -736,59 +733,6 @@ return {
       'ruby',
     },
   },
-  -- dap java/typescript
-  {
-    "microsoft/vscode-js-debug",
-    lazy = true,
-    build = "npm install --legacy-peer-deps && npm run compile",
-    version = 'v1.76.0',
-    ft = {
-      "javascript",
-      "typescript",
-    },
-  },
-  {
-    "mxsdev/nvim-dap-vscode-js",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = {
-      "javascript",
-      "typescript",
-    },
-    config = function()
-      local lazy_path = os.getenv("HOME") .. "/.local/share/nvim/lazy"
-      require("dap-vscode-js").setup({
-        debugger_path = lazy_path .. "/vscode-js-debug",
-        adapters = {
-          "pwa-node",
-          "pwa-chrome",
-          "pwa-msedge",
-          "node-terminal",
-          "pwa-extensionHost",
-        },
-      })
-      local dap = require('dap')
-      for _, language in ipairs({ "typescript", "javascript" }) do
-        dap.configurations[language] = {
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch - node",
-            program = "${file}",
-            cwd = "${workspaceFolder}",
-            port = 9229,
-          },
-          {
-            type = "pwa-node",
-            request = "attach",
-            name = "Attach",
-            processId = require("dap.utils").pick_process,
-            cwd = "${workspaceFolder}",
-            port = 9229,
-          },
-        }
-      end
-    end,
-  },
   -- nvim-dap-go
   {
     "leoluz/nvim-dap-go",
@@ -825,45 +769,6 @@ return {
       {'<leader>dd', '<ESC>:lua require("dap-python").debug_selection()<CR>', desc='python debug select'},
       {'<leader>dm', function () require'dap-python'.test_method() end, desc='test method'},
     }
-  },
-  -- nvim-dap-lua
-  {
-    "jbyuki/one-small-step-for-vimkind",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = "lua",
-    config = function()
-      local dap = require("dap")
-      dap.adapters.nlua = function(callback, config)
-        if config.port ~= nil then
-          callback({
-            type = "server",
-            host = config.host,
-            port = config.port,
-          })
-        else
-          require("osv").run_this()
-        end
-      end
-
-      dap.configurations.lua = {
-        {
-          type = "nlua",
-          request = "attach",
-          name = "Attach to running Neovim instance",
-          host = function()
-            local value = vim.fn.input("Host [127.0.0.1]: ")
-            if value ~= "" then
-              return value
-            end
-            return "127.0.0.1"
-          end,
-          port = function()
-            local val = tonumber(vim.fn.input("Port: "))
-            return val
-          end,
-        },
-      }
-    end,
   },
   -- nvim-jdtls
   {
