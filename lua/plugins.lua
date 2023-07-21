@@ -8,7 +8,7 @@ return {
   -- whitespace
   "ntpeters/vim-better-whitespace",
   -- startify
-  'mhinz/vim-startify',
+  "mhinz/vim-startify",
   -- multi cursor
   "mg979/vim-visual-multi",
   -- emmet
@@ -22,29 +22,29 @@ return {
   },
   --undotree
   {
-    'mbbill/undotree',
+    "mbbill/undotree",
     keys = {
-      {'<localleader>u', '<cmd>UndotreeToggle<CR>', desc='undo tree'},
-    }
+      { "<localleader>u", "<cmd>UndotreeToggle<CR>", desc = "undo tree" },
+    },
   },
   -- minimap
   {
     "wfxr/minimap.vim",
     keys = {
-      {'<localleader>m', '<cmd>MinimapToggle<CR>', desc='minimap'},
-    }
+      { "<localleader>m", "<cmd>MinimapToggle<CR>", desc = "minimap" },
+    },
   },
   -- tagbar
   {
     "preservim/tagbar",
     ft = {
-      'python',
-      'javascript',
-      'typescript',
+      "python",
+      "javascript",
+      "typescript",
     },
     keys = {
-      {'<localleader>t', '<cmd>TagbarToggle<CR>', desc='tagbar'}
-    }
+      { "<localleader>t", "<cmd>TagbarToggle<CR>", desc = "tagbar" },
+    },
   },
   -- tmux
   {
@@ -53,7 +53,7 @@ return {
   },
   -- jqx
   {
-    'gennaro-tedesco/nvim-jqx',
+    "gennaro-tedesco/nvim-jqx",
     ft = {
       "json",
       "yaml",
@@ -61,19 +61,32 @@ return {
   },
   -- spectre
   {
-    'windwp/nvim-spectre',
+    "windwp/nvim-spectre",
     dependencies = {
-      'nvim-lua/plenary.nvim',
+      "nvim-lua/plenary.nvim",
     },
     keys = {
-      {'<leader>S', '<cmd>lua require("spectre").open()<CR>', desc="Open Spectre"},
-      {'<leader>so', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', desc="Search current word"},
-      {'<leader>so', '<esc>:lua require("spectre").open_visual()<CR>', desc="Search current word", mode='v'},
-      {'<leader>sp', '<cmd>lua require("spectre").open_file_search()<cr>', desc = 'Search on current file'},
+      { "<leader>S", '<cmd>lua require("spectre").open()<CR>', desc = "Open Spectre" },
+      {
+        "<leader>so",
+        '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+        desc = "Search current word",
+      },
+      {
+        "<leader>so",
+        '<esc>:lua require("spectre").open_visual()<CR>',
+        desc = "Search current word",
+        mode = "v",
+      },
+      {
+        "<leader>sp",
+        '<cmd>lua require("spectre").open_file_search()<cr>',
+        desc = "Search on current file",
+      },
     },
-    config = function ()
-      require('spectre').setup()
-    end
+    config = function()
+      require("spectre").setup()
+    end,
   },
 
   -- HOP
@@ -81,24 +94,38 @@ return {
     "phaazon/hop.nvim",
     config = true,
     keys = {
-      {'f', function() require('hop').hint_char1() end, desc='hop 1', mode={'n', 'v'}},
-      {'F', function() require('hop').hint_char2() end, desc='hop 2', mode={'n', 'v'}},
-    }
+      {
+        "f",
+        function()
+          require("hop").hint_char1()
+        end,
+        desc = "hop 1",
+        mode = { "n", "v" },
+      },
+      {
+        "F",
+        function()
+          require("hop").hint_char2()
+        end,
+        desc = "hop 2",
+        mode = { "n", "v" },
+      },
+    },
   },
 
   --telescope(fzf)
   {
-    'ibhagwan/fzf-lua',
-    event = 'VimEnter',
+    "ibhagwan/fzf-lua",
+    event = "VimEnter",
     keys = {
-      {'<leader>ff', '<cmd>FzfLua files<cr>', desc='find files'},
-      {'<leader>fgc', '<cmd>FzfLua git_bcommits<cr>', desc='git commit log (buffer)'},
-      {'<leader>fgt', '<cmd>FzfLua git_commits<cr>', desc='git commit log (project)'},
-      {'<leader>fk', '<cmd>FzfLua keymaps<cr>', desc='keymaps' },
-      {'<leader>fq', '<cmd>FzfLua quickfix<cr>', desc='quickfix' },
-      {'<leader>fr', '<cmd>FzfLua registers<cr>', desc='registers' },
-      {'<leader>fs', '<cmd>FzfLua grep_visual<cr>', desc='search' },
-    }
+      { "<leader>ff",  "<cmd>FzfLua files<cr>",        desc = "find files" },
+      { "<leader>fgc", "<cmd>FzfLua git_bcommits<cr>", desc = "git commit log (buffer)" },
+      { "<leader>fgt", "<cmd>FzfLua git_commits<cr>",  desc = "git commit log (project)" },
+      { "<leader>fk",  "<cmd>FzfLua keymaps<cr>",      desc = "keymaps" },
+      { "<leader>fq",  "<cmd>FzfLua quickfix<cr>",     desc = "quickfix" },
+      { "<leader>fr",  "<cmd>FzfLua registers<cr>",    desc = "registers" },
+      { "<leader>fs",  "<cmd>FzfLua grep_visual<cr>",  desc = "search" },
+    },
   },
 
   -- INFO: CSV
@@ -118,14 +145,14 @@ return {
   "tpope/vim-fugitive",
   -- neogit
   {
-    'NeogitOrg/neogit',
+    "NeogitOrg/neogit",
     dependencies = {
-      'nvim-lua/plenary.nvim',
-      'sindrets/diffview.nvim',
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
     },
     config = {
       integrations = {
-        diffview = true
+        diffview = true,
       },
       signs = {
         section = { "*", "=" },
@@ -134,8 +161,8 @@ return {
       },
     },
     keys = {
-      {'<leader>ng', '<cmd>Neogit<CR>', desc='neogit'},
-    }
+      { "<leader>ng", "<cmd>Neogit<CR>", desc = "neogit" },
+    },
   },
   -- gitsigns
   {
@@ -148,34 +175,34 @@ return {
         ignore_whitespace = false,
       },
     },
-    event = 'BufRead',
+    event = "BufRead",
     keys = {
-      {'<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<cr>', desc='curret line blame'},
-      {'<leader>hd', '<cmd>Gitsigns toggle_deleted<cr>', desc='deleted'},
-      {'<leader>ht', '<cmd>Gitsigns diffthis<cr>', desc='diff this'},
-      {'[h', '<cmd>Gitsigns prev_hunk<cr>', desc='prev hunk'},
-      {']h', '<cmd>Gitsigns next_hunk<cr>', desc='next hunk'},
-    }
+      { "<leader>hb", "<cmd>Gitsigns toggle_current_line_blame<cr>", desc = "curret line blame" },
+      { "<leader>hd", "<cmd>Gitsigns toggle_deleted<cr>",            desc = "deleted" },
+      { "<leader>ht", "<cmd>Gitsigns diffthis<cr>",                  desc = "diff this" },
+      { "[h",         "<cmd>Gitsigns prev_hunk<cr>",                 desc = "prev hunk" },
+      { "]h",         "<cmd>Gitsigns next_hunk<cr>",                 desc = "next hunk" },
+    },
   },
   -- git congflict
   {
-    'akinsho/git-conflict.nvim',
+    "akinsho/git-conflict.nvim",
     config = true,
   },
   {
-    'https://gitlab.com/yorickpeterse/nvim-pqf.git',
-    config = function ()
-      require('pqf').setup()
-    end
+    "https://gitlab.com/yorickpeterse/nvim-pqf.git",
+    config = function()
+      require("pqf").setup()
+    end,
   },
 
   -- quick fix
   {
-    'kevinhwang91/nvim-bqf',
-    ft = 'qf',
+    "kevinhwang91/nvim-bqf",
+    ft = "qf",
     config = function()
-      require('bqf').setup {}
-    end
+      require("bqf").setup({})
+    end,
   },
   -- notify
   {
@@ -188,9 +215,9 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    config = function ()
-      vim.cmd.colorscheme "catppuccin"
-    end
+    config = function()
+      vim.cmd.colorscheme("catppuccin")
+    end,
   },
   -- nvim-treesitter
   {
@@ -205,7 +232,7 @@ return {
       require("nvim-treesitter.configs").setup({
         sync_install = true,
         indent = {
-          enable=true
+          enable = true,
         },
         ensure_installed = {
           "bash",
@@ -239,10 +266,11 @@ return {
             enable = true,
             lookahead = true,
             keymaps = {
-              ["<leader>af"] = "@function.outer",
-              ["<leader>if"] = "@function.inner",
-              ["<leader>ac"] = "@class.outer",
-              ["<leader>ic"] = "@class.inner",
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+              ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
             },
             selection_modes = {
               ["@parameter.outer"] = "v",
@@ -256,7 +284,10 @@ return {
             set_jumps = true,
             goto_next_start = {
               ["]m"] = "@function.outer",
-              ["]]"] = "@class.outer",
+              ["]]"] = { query = "@class.outer", desc = "Next class start" },
+              ["]o"] = "@loop.*",
+              ["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
+              ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
             },
             goto_next_end = {
               ["]M"] = "@function.outer",
@@ -270,14 +301,20 @@ return {
               ["[M"] = "@function.outer",
               ["[]"] = "@class.outer",
             },
+            goto_next = {
+              ["]d"] = "@conditional.outer",
+            },
+            goto_previous = {
+              ["[d"] = "@conditional.outer",
+            },
           },
           swap = {
             enable = true,
             swap_next = {
-              ["<leader>as"] = "@parameter.inner",
+              ["<leader>a"] = "@parameter.inner",
             },
             swap_previous = {
-              ["<leader>As"] = "@parameter.inner",
+              ["<leader>A"] = "@parameter.inner",
             },
           },
         },
@@ -327,8 +364,8 @@ return {
       })
     end,
     keys = {
-      {'<leader>nn', '<cmd>Neogen<CR>', desc='Neogen'}
-    }
+      { "<leader>nn", "<cmd>Neogen<CR>", desc = "Neogen" },
+    },
   },
   -- for winbar
   {
@@ -346,9 +383,9 @@ return {
       "tpope/vim-dadbod",
     },
     keys = {
-      {'<localleader>d', '<cmd>DBUIToggle<CR>', desc='db ui'},
-      {'<leader>da', '<cmd>DBUIAddConnection<CR>', desc='add connection'},
-    }
+      { "<localleader>d", "<cmd>DBUIToggle<CR>",        desc = "db ui" },
+      { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
+    },
   },
 
   -- PACKAGE
@@ -412,9 +449,21 @@ return {
       })
     end,
     keys = {
-      {'<leader>rl', function () require('rest-nvim').last() end, desc='rest last'},
-      {'<leader>rr', function () require('rest-nvim').run() end, desc='rest run'},
-    }
+      {
+        "<leader>rl",
+        function()
+          require("rest-nvim").last()
+        end,
+        desc = "rest last",
+      },
+      {
+        "<leader>rr",
+        function()
+          require("rest-nvim").run()
+        end,
+        desc = "rest run",
+      },
+    },
   },
   -- mason
   {
@@ -431,7 +480,7 @@ return {
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.ruff.with({
-            extra_args = { "--extend-select", "I,N,Q,C90"}
+            extra_args = { "--extend-select", "I,N,C90" },
           }),
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
@@ -442,7 +491,7 @@ return {
           }),
 
           null_ls.builtins.formatting.ruff.with({
-            extra_args = { "--extend-select", "I,N,Q,C90"}
+            extra_args = { "--extend-select", "I,N,C90" },
           }),
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.prettierd,
@@ -459,8 +508,14 @@ return {
       "nvim-lua/plenary.nvim",
     },
     keys = {
-      {'<space>f', function() vim.lsp.buf.format { async = true } end, desc='LSP format'},
-    }
+      {
+        "<space>f",
+        function()
+          vim.lsp.buf.format({ async = true })
+        end,
+        desc = "LSP format",
+      },
+    },
   },
   -- mason null-ls
   {
@@ -499,8 +554,8 @@ return {
       "markdown",
     },
     keys = {
-      {'<localleader>p', '<cmd>MarkdownPreviewToggle<CR>', desc='markdown preview' },
-    }
+      { "<localleader>p", "<cmd>MarkdownPreviewToggle<CR>", desc = "markdown preview" },
+    },
   },
   -- whici keys
   {
@@ -519,9 +574,9 @@ return {
   {
     "akinsho/bufferline.nvim",
     dependencies = {
-      "kyazdani42/nvim-web-devicons"
+      "kyazdani42/nvim-web-devicons",
     },
-    event = 'VimEnter',
+    event = "VimEnter",
     config = {
       options = {
         separator_style = "padded_slant",
@@ -529,69 +584,69 @@ return {
           return string.format("%s·%s", opts.raise(opts.id), opts.lower(opts.ordinal))
         end,
         diagnostics = "nvim_lsp",
-        buffer_close_icon = '',
+        buffer_close_icon = "",
       },
     },
     keys = {
-      {'<leader>1', '<cmd>BufferLineGoToBuffer 1<cr>', desc='goto buffer 1'},
-      {'<leader>2', '<cmd>BufferLineGoToBuffer 2<cr>', desc='goto buffer 2'},
-      {'<leader>3', '<cmd>BufferLineGoToBuffer 3<cr>', desc='goto buffer 3'},
-      {'<leader>4', '<cmd>BufferLineGoToBuffer 4<cr>', desc='goto buffer 4'},
-      {'<leader>5', '<cmd>BufferLineGoToBuffer 5<cr>', desc='goto buffer 5'},
-      {'<leader>6', '<cmd>BufferLineGoToBuffer 6<cr>', desc='goto buffer 6'},
-      {'<leader>7', '<cmd>BufferLineGoToBuffer 7<cr>', desc='goto buffer 7'},
-      {'<leader>8', '<cmd>BufferLineGoToBuffer 8<cr>', desc='goto buffer 8'},
-      {'<leader>9', '<cmd>BufferLineGoToBuffer 9<cr>', desc='goto buffer 9'},
-    }
+      { "<leader>1", "<cmd>BufferLineGoToBuffer 1<cr>", desc = "goto buffer 1" },
+      { "<leader>2", "<cmd>BufferLineGoToBuffer 2<cr>", desc = "goto buffer 2" },
+      { "<leader>3", "<cmd>BufferLineGoToBuffer 3<cr>", desc = "goto buffer 3" },
+      { "<leader>4", "<cmd>BufferLineGoToBuffer 4<cr>", desc = "goto buffer 4" },
+      { "<leader>5", "<cmd>BufferLineGoToBuffer 5<cr>", desc = "goto buffer 5" },
+      { "<leader>6", "<cmd>BufferLineGoToBuffer 6<cr>", desc = "goto buffer 6" },
+      { "<leader>7", "<cmd>BufferLineGoToBuffer 7<cr>", desc = "goto buffer 7" },
+      { "<leader>8", "<cmd>BufferLineGoToBuffer 8<cr>", desc = "goto buffer 8" },
+      { "<leader>9", "<cmd>BufferLineGoToBuffer 9<cr>", desc = "goto buffer 9" },
+    },
   },
   {
-    "glepnir/lspsaga.nvim",
-    event = "LspAttach",
+    "nvimdev/lspsaga.nvim",
     config = {
       lightbulb = {
         enable = false,
       },
       symbol_in_winbar = {
         enable = false,
-      }
+      },
     },
     dependencies = {
       "kyazdani42/nvim-web-devicons",
       "nvim-treesitter/nvim-treesitter",
     },
     keys = {
-      {"gd", "<cmd>Lspsaga goto_definition<CR>", desc="goto definition"},
-      {"gt", "<cmd>Lspsaga goto_type_definition<CR>", desc="goto type definition"},
-      {"gh", "<cmd>Lspsaga lsp_finder<CR>", desc='lsp finder'},
-      {"gr", "<cmd>Lspsaga rename<CR>", desc="rename"},
-
-      {"<leader>ca", "<cmd>Lspsaga code_action<CR>", desc="code action", mode={'n', 'v'}},
-      {"<leader>o", "<cmd>Lspsaga outline<CR>", desc="outline"},
-
-      {"<leader>sl", "<cmd>Lspsaga show_line_diagnostics<CR>", desc="show line"},
-      {"<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>", desc="show buf"},
-      {"<leader>sw", "<cmd>Lspsaga show_workspace_diagnostics<CR>", desc="show workspace"},
-      {"<leader>sc", "<cmd>Lspsaga show_cursor_diagnostics<CR>", desc="show cursor"},
-
-      {"K", "<cmd>Lspsaga hover_doc<CR>", desc="hover doc"},
-
-      {"[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", desc="jump prev"},
-      {"]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", desc="jump next"},
+      { "gd", "<cmd>Lspsaga goto_definition<CR>",      desc = "goto definition" },
+      { "gt", "<cmd>Lspsaga goto_type_definition<CR>", desc = "goto type definition" },
+      { "gh", "<cmd>Lspsaga lsp_finder<CR>",           desc = "lsp finder" },
+      { "gr", "<cmd>Lspsaga rename<CR>",               desc = "rename" },
+      {
+        "<leader>ca",
+        "<cmd>Lspsaga code_action<CR>",
+        desc = "code action",
+        mode = { "n", "v" },
+      },
+      { "<leader>o",  "<cmd>Lspsaga outline<CR>",                    desc = "outline" },
+      { "<leader>sl", "<cmd>Lspsaga show_line_diagnostics<CR>",      desc = "show line" },
+      { "<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>",       desc = "show buf" },
+      { "<leader>sw", "<cmd>Lspsaga show_workspace_diagnostics<CR>", desc = "show workspace" },
+      { "<leader>sc", "<cmd>Lspsaga show_cursor_diagnostics<CR>",    desc = "show cursor" },
+      { "K",          "<cmd>Lspsaga hover_doc<CR>",                  desc = "hover doc" },
+      { "[e",         "<cmd>Lspsaga diagnostic_jump_prev<CR>",       desc = "jump prev" },
+      { "]e",         "<cmd>Lspsaga diagnostic_jump_next<CR>",       desc = "jump next" },
       {
         "[E",
         function()
           require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
         end,
-        desc="jump prev error"
+        desc = "jump prev error",
       },
       {
         "]E",
         function()
           require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
         end,
-        desc="jump next error"
-      }
-    }
+        desc = "jump next error",
+      },
+    },
   },
   -- scope.nvim for tab
   {
@@ -605,14 +660,14 @@ return {
     "rcarriga/nvim-dap-ui",
     dependencies = "mfussenegger/nvim-dap",
     ft = {
-      'go',
-      'lua',
-      'python',
-      'java',
-      'javascript',
-      'typescript',
-      'rust',
-      'ruby',
+      "go",
+      "lua",
+      "python",
+      "java",
+      "javascript",
+      "typescript",
+      "rust",
+      "ruby",
     },
     config = function()
       local dap = require("dap")
@@ -628,23 +683,23 @@ return {
         dapui.close()
       end
 
-      local llvm_path = io.popen('echo $(brew --prefix llvm)/bin'):read('l')
-      local lldb_vscode = llvm_path .. '/lldb-vscode'
+      local llvm_path = io.popen("echo $(brew --prefix llvm)/bin"):read("l")
+      local lldb_vscode = llvm_path .. "/lldb-vscode"
 
       dap.adapters.lldb = {
-        type = 'executable',
+        type = "executable",
         command = lldb_vscode,
-        name = 'lldb'
+        name = "lldb",
       }
 
       -- NOTE: pre task: g++ -g {filename}
       dap.configurations.cpp = {
         {
-          name = 'Launch',
-          type = 'lldb',
-          request = 'launch',
-          program = vim.fn.getcwd() .. '/a.out',
-          cwd = '${workspaceFolder}',
+          name = "Launch",
+          type = "lldb",
+          request = "launch",
+          program = vim.fn.getcwd() .. "/a.out",
+          cwd = "${workspaceFolder}",
           stopOnEntry = false,
           args = {},
         },
@@ -652,21 +707,23 @@ return {
       dap.configurations.c = dap.configurations.cpp
       dap.configurations.rust = {
         {
-          name = 'Launch',
-          type = 'lldb',
-          request = 'launch',
-          program = vim.fn.getcwd() .. '/a.out',
-          cwd = '${workspaceFolder}',
+          name = "Launch",
+          type = "lldb",
+          request = "launch",
+          program = vim.fn.getcwd() .. "/a.out",
+          cwd = "${workspaceFolder}",
           stopOnEntry = false,
           args = {},
           initCommands = function()
-            local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
+            local rustc_sysroot = vim.fn.trim(vim.fn.system("rustc --print sysroot"))
 
-            local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
-            local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
+            local script_import = 'command script import "'
+                .. rustc_sysroot
+                .. '/lib/rustlib/etc/lldb_lookup.py"'
+            local commands_file = rustc_sysroot .. "/lib/rustlib/etc/lldb_commands"
 
             local commands = {}
-            local file = io.open(commands_file, 'r')
+            local file = io.open(commands_file, "r")
             if file then
               for line in file:lines() do
                 table.insert(commands, line)
@@ -681,40 +738,108 @@ return {
       }
     end,
     keys = {
-      {'<leader>b', function () require"dap".toggle_breakpoint() end, desc='toggle breakpoint'},
-      {'<leader>B', function() require('dap').set_breakpoint() end, desc='set breakpoint'},
       {
-        '<Leader>lp',
+        "<leader>b",
         function()
-          require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+          require("dap").toggle_breakpoint()
         end,
-        desc='set breakpoint with message',
+        desc = "toggle breakpoint",
       },
-      {'<F5>', function () require'dap'.continue() end, desc='dap run(continue)'},
-      {'<F10>', function () require'dap'.step_over() end, desc='dap step over'},
-      {'<F11>', function () require'dap'.step_into() end, desc='dap step into'},
-      {'<F12>', function () require'dap'.step_out() end, desc='dap step out'},
-      {'<Leader>dr', function() require('dap').repl.open() end, desc='open repl'},
-      {'<Leader>dl', function() require('dap').run_last() end, desc='run last'},
-      {'<Leader>dh', function() require('dap.ui.widgets').hover() end, desc='dap ui widgets', mode={'n', 'v'}},
-      {'<Leader>dp', function() require('dap.ui.widgets').preview() end, desc='dap ui preview', mode={'n', 'v'}},
       {
-        '<Leader>df',
+        "<leader>B",
         function()
-          local widgets = require('dap.ui.widgets')
+          require("dap").set_breakpoint()
+        end,
+        desc = "set breakpoint",
+      },
+      {
+        "<Leader>lp",
+        function()
+          require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+        end,
+        desc = "set breakpoint with message",
+      },
+      {
+        "<F5>",
+        function()
+          require("dap").continue()
+        end,
+        desc = "dap run(continue)",
+      },
+      {
+        "<F10>",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "dap step over",
+      },
+      {
+        "<F11>",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "dap step into",
+      },
+      {
+        "<F12>",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "dap step out",
+      },
+      {
+        "<Leader>dr",
+        function()
+          require("dap").repl.open()
+        end,
+        desc = "open repl",
+      },
+      {
+        "<Leader>dl",
+        function()
+          require("dap").run_last()
+        end,
+        desc = "run last",
+      },
+      {
+        "<Leader>dh",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        desc = "dap ui widgets",
+        mode = { "n", "v" },
+      },
+      {
+        "<Leader>dp",
+        function()
+          require("dap.ui.widgets").preview()
+        end,
+        desc = "dap ui preview",
+        mode = { "n", "v" },
+      },
+      {
+        "<Leader>df",
+        function()
+          local widgets = require("dap.ui.widgets")
           widgets.centered_float(widgets.frames)
         end,
-        desc='dap ui widgets float center(frame)',
+        desc = "dap ui widgets float center(frame)",
       },
       {
-        '<Leader>ds',
+        "<Leader>ds",
         function()
-          local widgets = require('dap.ui.widgets')
+          local widgets = require("dap.ui.widgets")
           widgets.centered_float(widgets.scopes)
         end,
-        desc='dap ui widgets float center(scope)',
+        desc = "dap ui widgets float center(scope)",
       },
-      {'<Leader>dt', function () require("dapui").toggle() end, desc='dap ui toggle'},
+      {
+        "<Leader>dt",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "dap ui toggle",
+      },
     },
   },
   -- dap-virtual-text
@@ -723,14 +848,14 @@ return {
     dependencies = "mfussenegger/nvim-dap",
     config = true,
     ft = {
-      'go',
-      'lua',
-      'python',
-      'java',
-      'javascript',
-      'typescript',
-      'rust',
-      'ruby',
+      "go",
+      "lua",
+      "python",
+      "java",
+      "javascript",
+      "typescript",
+      "rust",
+      "ruby",
     },
   },
   -- nvim-dap-go
@@ -740,12 +865,18 @@ return {
     dependencies = "mfussenegger/nvim-dap",
     config = true,
     keys = {
-      {'<leader>dg', function () require'dap-go'.debug_test() end, desc='test debug(go)'}
+      {
+        "<leader>dg",
+        function()
+          require("dap-go").debug_test()
+        end,
+        desc = "test debug(go)",
+      },
     },
   },
   -- nvim-dap-ruby
   {
-    'suketa/nvim-dap-ruby',
+    "suketa/nvim-dap-ruby",
     ft = "ruby",
     dependencies = "mfussenegger/nvim-dap",
     config = true,
@@ -758,26 +889,50 @@ return {
     config = function()
       local python_path = io.popen("which python3"):read("l")
       if python_path ~= nil then
-        local debugpy = io.popen('pip list | grep debugpy'):read('l')
+        local debugpy = io.popen("pip list | grep debugpy"):read("l")
         if debugpy ~= nil then
           require("dap-python").setup(python_path)
         end
       end
     end,
     keys = {
-      {'<leader>dc', function () require'dap-python'.test_class() end, desc='test class'},
-      {'<leader>dd', '<ESC>:lua require("dap-python").debug_selection()<CR>', desc='python debug select'},
-      {'<leader>dm', function () require'dap-python'.test_method() end, desc='test method'},
-    }
+      {
+        "<leader>dc",
+        function()
+          require("dap-python").test_class()
+        end,
+        desc = "test class",
+      },
+      { "<leader>dd", '<ESC>:lua require("dap-python").debug_selection()<CR>', desc = "python debug select" },
+      {
+        "<leader>dm",
+        function()
+          require("dap-python").test_method()
+        end,
+        desc = "test method",
+      },
+    },
   },
   -- nvim-jdtls
   {
     "mfussenegger/nvim-jdtls",
     ft = "java",
     keys = {
-      {'<leader>dc', function () require'jdtls'.test_class() end, desc='test class'},
-      {'<leader>dm', function () require'jdtls'.test_nearest_method() end, desc='test nearest method'},
-    }
+      {
+        "<leader>dc",
+        function()
+          require("jdtls").test_class()
+        end,
+        desc = "test class",
+      },
+      {
+        "<leader>dm",
+        function()
+          require("jdtls").test_nearest_method()
+        end,
+        desc = "test nearest method",
+      },
+    },
   },
 
   -- INFO: TOOL
@@ -803,16 +958,16 @@ return {
       },
     },
     keys = {
-      {'<leader>rd', '<cmd>RustDebuggables<CR>', desc='rust debug'},
+      { "<leader>rd", "<cmd>RustDebuggables<CR>", desc = "rust debug" },
       {
-        '<leader>rh',
-        function ()
+        "<leader>rh",
+        function()
           require("rust-tools").hover_actions.hover_actions()
         end,
-        desc='rust hover',
+        desc = "rust hover",
       },
-      {'<leader>rr', '<cmd>RustRunnables<CR>', desc='rust run'},
-    }
+      { "<leader>rr", "<cmd>RustRunnables<CR>",   desc = "rust run" },
+    },
   },
   -- mason lsp
   {
@@ -864,9 +1019,9 @@ return {
       },
     },
     keys = {
-      { '<localleader>n', '<cmd>NvimTreeToggle<CR>', desc='nvim tree' },
-      { '<leader>nf', '<cmd>NvimTreeFindFile<CR>', desc='find files(nvim-tree)'},
-    }
+      { "<localleader>n", "<cmd>NvimTreeToggle<CR>",   desc = "nvim tree" },
+      { "<leader>nf",     "<cmd>NvimTreeFindFile<CR>", desc = "find files(nvim-tree)" },
+    },
   },
   -- lualine
   {
@@ -947,44 +1102,56 @@ return {
     },
     keys = {
       {
-        '<leader>re',
-        function () require('refactoring').refactor('Extract Function') end,
-        desc='extract function',
-        mode='v',
+        "<leader>re",
+        function()
+          require("refactoring").refactor("Extract Function")
+        end,
+        desc = "extract function",
+        mode = "v",
       },
       {
-        '<leader>rf',
-        function () require('refactoring').refactor('Extract Function To File') end,
-        desc='extract function to file',
-        mode='v',
+        "<leader>rf",
+        function()
+          require("refactoring").refactor("Extract Function To File")
+        end,
+        desc = "extract function to file",
+        mode = "v",
       },
       {
-        '<leader>ri',
-        function () require('refactoring').refactor('Inline Variable') end,
-        desc='inline variable',
-        mode={'n','v'}
+        "<leader>ri",
+        function()
+          require("refactoring").refactor("Inline Variable")
+        end,
+        desc = "inline variable",
+        mode = { "n", "v" },
       },
       {
-        '<leader>rv',
-        function () require('refactoring').refactor('Extract Variable') end,
-        desc='extract variable',
-        mode='v',
+        "<leader>rv",
+        function()
+          require("refactoring").refactor("Extract Variable")
+        end,
+        desc = "extract variable",
+        mode = "v",
       },
       {
-        '<leader>rb',
-        function () require('refactoring').refactor('Extract Block') end,
-        desc='refactoring extract block',
+        "<leader>rb",
+        function()
+          require("refactoring").refactor("Extract Block")
+        end,
+        desc = "refactoring extract block",
       },
       {
-        '<leader>rf',
-        function () require('refactoring').refactor('Extract Block To File') end,
-        desc= 'refactoring extract block to file',
-      }
-    }
+        "<leader>rf",
+        function()
+          require("refactoring").refactor("Extract Block To File")
+        end,
+        desc = "refactoring extract block to file",
+      },
+    },
   },
   -- auto pair
   {
-    'windwp/nvim-autopairs',
+    "windwp/nvim-autopairs",
     config = {},
   },
   -- cmp
@@ -1006,7 +1173,7 @@ return {
       local cmp = require("cmp")
       local navic = require("nvim-navic")
       local lspconfig = require("lspconfig")
-      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       local on_attach = function(client, bufnr)
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
         if client.server_capabilities.documentSymbolProvider then
@@ -1031,16 +1198,13 @@ return {
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "crates" },
-          { name = 'vim-dadbod-completion' },
+          { name = "vim-dadbod-completion" },
         }, {
           { name = "buffer" },
         }),
       })
 
-      cmp.event:on(
-        'confirm_done',
-        cmp_autopairs.on_confirm_done()
-      )
+      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
       cmp.setup.filetype("gitcommit", {
         sources = cmp.config.sources({
@@ -1108,7 +1272,7 @@ return {
             settings = {
               python = {
                 analysis = {
-                  diagnosticMode = 'openFilesOnly',
+                  diagnosticMode = "openFilesOnly",
                   typeCheckingMode = "off",
                 },
               },
@@ -1126,7 +1290,7 @@ return {
   -- NOTE: todo comment
   {
     "folke/todo-comments.nvim",
-    dependencies = {"nvim-lua/plenary.nvim"},
-    config = {}
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = {},
   },
 }
