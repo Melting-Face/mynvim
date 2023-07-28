@@ -37,11 +37,6 @@ return {
   -- tagbar
   {
     "preservim/tagbar",
-    ft = {
-      "python",
-      "javascript",
-      "typescript",
-    },
     keys = {
       { "<localleader>t", "<cmd>TagbarToggle<CR>", desc = "tagbar" },
     },
@@ -94,22 +89,8 @@ return {
     "phaazon/hop.nvim",
     config = true,
     keys = {
-      {
-        "f",
-        function()
-          require("hop").hint_char1()
-        end,
-        desc = "hop 1",
-        mode = { "n", "v" },
-      },
-      {
-        "F",
-        function()
-          require("hop").hint_char2()
-        end,
-        desc = "hop 2",
-        mode = { "n", "v" },
-      },
+      { "f", function() require("hop").hint_char1() end, desc = "hop 1", mode = { "n", "v" } },
+      { "F", function() require("hop").hint_char2() end, desc = "hop 2", mode = { "n", "v" } },
     },
   },
 
@@ -413,58 +394,6 @@ return {
     },
     config = true,
   },
-  -- NOTE: restnvim
-  {
-    "rest-nvim/rest.nvim",
-    ft = "http",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    config = function()
-      require("rest-nvim").setup({
-        result_split_horizontal = false,
-        result_split_in_place = false,
-        skip_ssl_verification = false,
-        encode_url = true,
-        highlight = {
-          enabled = true,
-          timeout = 150,
-        },
-        result = {
-          show_url = true,
-          show_http_info = true,
-          show_headers = true,
-          formatters = {
-            json = "jq",
-            html = function(body)
-              return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
-            end,
-          },
-        },
-        -- Jump to request line on run
-        jump_to_request = false,
-        env_file = ".env",
-        custom_dynamic_variables = {},
-        yank_dry_run = true,
-      })
-    end,
-    keys = {
-      {
-        "<leader>rl",
-        function()
-          require("rest-nvim").last()
-        end,
-        desc = "rest last",
-      },
-      {
-        "<leader>rr",
-        function()
-          require("rest-nvim").run()
-        end,
-        desc = "rest run",
-      },
-    },
-  },
   -- mason
   {
     "williamboman/mason.nvim",
@@ -485,7 +414,6 @@ return {
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.shellcheck,
-          null_ls.builtins.diagnostics.yamllint,
           null_ls.builtins.diagnostics.sqlfluff.with({
             extra_args = { "--dialect", "postgres" },
           }),
@@ -494,10 +422,8 @@ return {
             extra_args = { "--extend-select", "I,N,C90" },
           }),
           null_ls.builtins.formatting.eslint_d,
-          null_ls.builtins.formatting.prettierd,
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
-          null_ls.builtins.formatting.yamlfmt,
           null_ls.builtins.formatting.sqlfluff.with({
             extra_args = { "--dialect", "postgres" },
           }),
@@ -527,7 +453,6 @@ return {
     config = {
       ensure_installed = {
         "ruff",
-        "flake8",
         "eslint_d",
         "hadolint",
         "jq",
@@ -546,7 +471,7 @@ return {
     "iamcco/markdown-preview.nvim",
     build = "cd app && npm install",
     setup = function()
-      vim.g.mkdp_filetypes = { -- luacheck: ignore 112
+      vim.g.mkdp_filetypes = {
         "markdown",
       }
     end,
