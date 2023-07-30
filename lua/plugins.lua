@@ -96,16 +96,17 @@ return {
 
   --telescope(fzf)
   {
-    "ibhagwan/fzf-lua",
+    "nvim-telescope/telescope.nvim",
     event = "VimEnter",
+    config = true,
     keys = {
-      { "<leader>ff",  "<cmd>FzfLua files<cr>",        desc = "find files" },
-      { "<leader>fgc", "<cmd>FzfLua git_bcommits<cr>", desc = "git commit log (buffer)" },
-      { "<leader>fgt", "<cmd>FzfLua git_commits<cr>",  desc = "git commit log (project)" },
-      { "<leader>fk",  "<cmd>FzfLua keymaps<cr>",      desc = "keymaps" },
-      { "<leader>fq",  "<cmd>FzfLua quickfix<cr>",     desc = "quickfix" },
-      { "<leader>fr",  "<cmd>FzfLua registers<cr>",    desc = "registers" },
-      { "<leader>fs",  "<cmd>FzfLua grep_visual<cr>",  desc = "search" },
+      { "<leader>ff",  ":Telescope find_files<CR>",        desc = "find files" },
+      { "<leader>fgc", ":Telescope git_bcommits<CR>", desc = "git commit log (buffer)" },
+      { "<leader>fgt", ":Telescope git_commits<CR>",  desc = "git commit log (project)" },
+      { "<leader>fk",  ":Telescope keymaps<cr>",      desc = "keymaps" },
+      { "<leader>fq",  ":Telescope quickfix<cr>",     desc = "quickfix" },
+      { "<leader>fr",  ":Telescope registers<cr>",    desc = "registers" },
+      { "<leader>fs",  ":Telescope live_grep<CR>",  desc = "search" },
     },
   },
 
