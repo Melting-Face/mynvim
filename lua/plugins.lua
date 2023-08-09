@@ -327,7 +327,6 @@ return {
         javascript = "jsdoc",
         javascriptreact = "jsdoc",
         python = "google_docstrings",
-        rust = "rustdoc",
         sh = "google_bash",
         typescript = "tsdoc",
         typescriptreact = "tsdoc",
@@ -452,18 +451,6 @@ return {
       "jose-elias-alvarez/null-ls.nvim",
     },
     config = {
-      ensure_installed = {
-        "ruff",
-        "eslint_d",
-        "hadolint",
-        "jq",
-        "luacheck",
-        "shellcheck",
-        "sqlfluff",
-        "stylua",
-        "yamlfmt",
-        "yamllint",
-      },
       automatic_installation = true,
     },
   },
@@ -586,14 +573,11 @@ return {
     "rcarriga/nvim-dap-ui",
     dependencies = "mfussenegger/nvim-dap",
     ft = {
-      "go",
       "lua",
       "python",
       "java",
       "javascript",
       "typescript",
-      "rust",
-      "ruby",
     },
     config = function()
       local dap = require("dap")
@@ -784,29 +768,6 @@ return {
       "ruby",
     },
   },
-  -- nvim-dap-go
-  {
-    "leoluz/nvim-dap-go",
-    ft = "go",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
-    keys = {
-      {
-        "<leader>dg",
-        function()
-          require("dap-go").debug_test()
-        end,
-        desc = "test debug(go)",
-      },
-    },
-  },
-  -- nvim-dap-ruby
-  {
-    "suketa/nvim-dap-ruby",
-    ft = "ruby",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
-  },
   -- nvim-dap-python
   {
     "mfussenegger/nvim-dap-python",
@@ -858,41 +819,6 @@ return {
         end,
         desc = "test nearest method",
       },
-    },
-  },
-
-  -- INFO: TOOL
-  -- rust-tools
-  {
-    "simrat39/rust-tools.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-lua/plenary.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    ft = "rust",
-    config = {
-      server = {
-        standalone = true,
-      },
-      dap = {
-        adapter = {
-          type = "executable",
-          command = "lldb-vscode",
-          name = "rt_lldb",
-        },
-      },
-    },
-    keys = {
-      { "<leader>rd", "<cmd>RustDebuggables<CR>", desc = "rust debug" },
-      {
-        "<leader>rh",
-        function()
-          require("rust-tools").hover_actions.hover_actions()
-        end,
-        desc = "rust hover",
-      },
-      { "<leader>rr", "<cmd>RustRunnables<CR>",   desc = "rust run" },
     },
   },
   -- mason lsp
@@ -1004,7 +930,6 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     ft = {
-      "go",
       "java",
       "javascript",
       "python",
@@ -1012,14 +937,12 @@ return {
     },
     config = {
       prompt_func_return_type = {
-        go = true,
         java = true,
         javascript = true,
         python = true,
         typescript = true,
       },
       prompt_func_param_type = {
-        go = true,
         java = true,
         javascript = true,
         python = true,
@@ -1165,7 +1088,6 @@ return {
         "docker_compose_language_service",
         "gradle_ls",
         "graphql",
-        "gopls",
         "jdtls",
         "jsonls",
         "lua_ls",
