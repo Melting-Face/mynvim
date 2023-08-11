@@ -11,15 +11,6 @@ return {
   "mhinz/vim-startify",
   -- multi cursor
   "mg979/vim-visual-multi",
-  -- emmet
-  {
-    "mattn/emmet-vim",
-    ft = {
-      "html",
-      "javascriptreact",
-      "typescriptreact",
-    },
-  },
   --undotree
   {
     "mbbill/undotree",
@@ -27,32 +18,10 @@ return {
       { "<localleader>u", "<cmd>UndotreeToggle<CR>", desc = "undo tree" },
     },
   },
-  -- minimap
-  {
-    "wfxr/minimap.vim",
-    keys = {
-      { "<localleader>m", "<cmd>MinimapToggle<CR>", desc = "minimap" },
-    },
-  },
-  -- tagbar
-  {
-    "preservim/tagbar",
-    keys = {
-      { "<localleader>t", "<cmd>TagbarToggle<CR>", desc = "tagbar" },
-    },
-  },
   -- tmux
   {
     "aserowy/tmux.nvim",
     config = true,
-  },
-  -- jqx
-  {
-    "gennaro-tedesco/nvim-jqx",
-    ft = {
-      "json",
-      "yaml",
-    },
   },
   -- spectre
   {
@@ -218,13 +187,8 @@ return {
         },
         ensure_installed = {
           "bash",
-          "c",
-          "cmake",
-          "cpp",
           "dockerfile",
-          "graphql",
-          "html",
-          "http",
+          "java",
           "javascript",
           "json",
           "lua",
@@ -234,8 +198,6 @@ return {
           "python",
           "sql",
           "regex",
-          "ruby",
-          "rust",
           "toml",
           "typescript",
           "yaml",
@@ -315,7 +277,6 @@ return {
       "javascript",
       "javascriptreact",
       "python",
-      "rust",
       "sh",
       "typescript",
       "typescriptreact",
@@ -368,32 +329,6 @@ return {
       { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
     },
   },
-
-  -- PACKAGE
-  -- package-info
-  {
-    "vuki656/package-info.nvim",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-    },
-    ft = "json",
-    event = {
-      "BufRead package.json",
-    },
-    config = true,
-  },
-  -- crates
-  {
-    "saecki/crates.nvim",
-    ft = "toml",
-    event = {
-      "BufRead Cargo.toml",
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    config = true,
-  },
   -- mason
   {
     "williamboman/mason.nvim",
@@ -409,23 +344,23 @@ return {
         sources = {
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.ruff.with({
-            extra_args = { "--extend-select", "I,N,C90" },
+            extra_args = { "--extend-select", "I,C90" },
           }),
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.sqlfluff.with({
-            extra_args = { "--dialect", "postgres" },
+            extra_args = { "--dialect", "snowflake" },
           }),
 
           null_ls.builtins.formatting.ruff.with({
-            extra_args = { "--extend-select", "I,N,C90" },
+            extra_args = { "--extend-select", "I,C90" },
           }),
           null_ls.builtins.formatting.eslint_d,
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.sqlfluff.with({
-            extra_args = { "--dialect", "postgres" },
+            extra_args = { "--dialect", "snowflake" },
           }),
         },
       })
@@ -452,22 +387,6 @@ return {
     },
     config = {
       automatic_installation = true,
-    },
-  },
-  -- markdown
-  {
-    "iamcco/markdown-preview.nvim",
-    build = "cd app && npm install",
-    setup = function()
-      vim.g.mkdp_filetypes = {
-        "markdown",
-      }
-    end,
-    ft = {
-      "markdown",
-    },
-    keys = {
-      { "<localleader>p", "<cmd>MarkdownPreviewToggle<CR>", desc = "markdown preview" },
     },
   },
   -- whici keys
@@ -758,14 +677,11 @@ return {
     dependencies = "mfussenegger/nvim-dap",
     config = true,
     ft = {
-      "go",
       "lua",
       "python",
       "java",
       "javascript",
       "typescript",
-      "rust",
-      "ruby",
     },
   },
   -- nvim-dap-python
@@ -833,7 +749,6 @@ return {
         "docker_compose_language_service",
         "gradle_ls",
         "graphql",
-        "gopls",
         "jdtls",
         "jsonls",
         "lua_ls",
