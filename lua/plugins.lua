@@ -23,36 +23,6 @@ return {
     "aserowy/tmux.nvim",
     config = true,
   },
-  -- spectre
-  {
-    "windwp/nvim-spectre",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    keys = {
-      { "<leader>S", '<cmd>lua require("spectre").open()<CR>', desc = "Open Spectre" },
-      {
-        "<leader>so",
-        '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
-        desc = "Search current word",
-      },
-      {
-        "<leader>so",
-        '<esc>:lua require("spectre").open_visual()<CR>',
-        desc = "Search current word",
-        mode = "v",
-      },
-      {
-        "<leader>sp",
-        '<cmd>lua require("spectre").open_file_search()<cr>',
-        desc = "Search on current file",
-      },
-    },
-    config = function()
-      require("spectre").setup()
-    end,
-  },
-
   -- HOP
   {
     "phaazon/hop.nvim",
@@ -82,12 +52,10 @@ return {
   -- INFO: CSV
   {
     "mechatroner/rainbow_csv",
-    lazy = true,
     ft = "csv",
   },
   {
     "chrisbra/csv.vim",
-    lazy = true,
     ft = "csv",
   },
 
@@ -122,7 +90,6 @@ return {
       current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "eol",
-        delay = 250,
         ignore_whitespace = false,
       },
     },
@@ -511,60 +478,6 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
-
-      local llvm_path = io.popen("echo $(brew --prefix llvm)/bin"):read("l")
-      local lldb_vscode = llvm_path .. "/lldb-vscode"
-
-      dap.adapters.lldb = {
-        type = "executable",
-        command = lldb_vscode,
-        name = "lldb",
-      }
-
-      -- NOTE: pre task: g++ -g {filename}
-      dap.configurations.cpp = {
-        {
-          name = "Launch",
-          type = "lldb",
-          request = "launch",
-          program = vim.fn.getcwd() .. "/a.out",
-          cwd = "${workspaceFolder}",
-          stopOnEntry = false,
-          args = {},
-        },
-      }
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = {
-        {
-          name = "Launch",
-          type = "lldb",
-          request = "launch",
-          program = vim.fn.getcwd() .. "/a.out",
-          cwd = "${workspaceFolder}",
-          stopOnEntry = false,
-          args = {},
-          initCommands = function()
-            local rustc_sysroot = vim.fn.trim(vim.fn.system("rustc --print sysroot"))
-
-            local script_import = 'command script import "'
-                .. rustc_sysroot
-                .. '/lib/rustlib/etc/lldb_lookup.py"'
-            local commands_file = rustc_sysroot .. "/lib/rustlib/etc/lldb_commands"
-
-            local commands = {}
-            local file = io.open(commands_file, "r")
-            if file then
-              for line in file:lines() do
-                table.insert(commands, line)
-              end
-              file:close()
-            end
-            table.insert(commands, 1, script_import)
-
-            return commands
-          end,
-        },
-      }
     end,
     keys = {
       {
@@ -1049,11 +962,5 @@ return {
         end
       end
     end,
-  },
-  -- NOTE: todo comment
-  {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = {},
   },
 }
