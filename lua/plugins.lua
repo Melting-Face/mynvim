@@ -142,7 +142,6 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
-      "windwp/nvim-ts-autotag",
     },
     lazy = true,
     build = ":TSUpdate",
@@ -168,9 +167,6 @@ return {
           "toml",
           "typescript",
           "yaml",
-        },
-        autotag = {
-          enable = true,
         },
         textobjects = {
           select = {
