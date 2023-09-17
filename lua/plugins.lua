@@ -11,6 +11,8 @@ return {
 	"mhinz/vim-startify",
 	-- multi cursor
 	"mg979/vim-visual-multi",
+  -- autopair
+  "jiangmiao/auto-pairs",
 	--undotree
 	{
 		"mbbill/undotree",
