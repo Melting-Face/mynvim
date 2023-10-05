@@ -30,27 +30,17 @@ function install_package() {
 
   "$PREFIX" install go
   "$PREFIX" install lua
-  "$PREFIX" install sed
   "$PREFIX" install fzf
   "$PREFIX" install tmux
   "$PREFIX" install node
   "$PREFIX" install python
   "$PREFIX" install ripgrep
-  "$PREFIX" install lazydocker
-  "$PREFIX" install code-minimap
+  "$PREFIX" install luarocks
   "$PREFIX" install delve
-  "$PREFIX" install llvm
   "$PREFIX" install rust
-  "$PREFIX" install htop
-  "$PREFIX" install lsd
   "$PREFIX" install jq
   pip3 install neovim
   pip3 install debugpy
-  pip3 install flake8
-  pip3 install pytest
-  pip3 install ipython
-  pip3 install jupyter
-  pip3 install refurb
   sudo gem install tmuxinator
 }
 

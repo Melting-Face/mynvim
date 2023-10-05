@@ -39,10 +39,6 @@ return {
     "aserowy/tmux.nvim",
     config = true,
   },
-  {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-  },
   -- HOP
   {
     "phaazon/hop.nvim",
@@ -405,9 +401,10 @@ return {
   -- indent-blankline
   {
     "lukas-reineke/indent-blankline.nvim",
-    config = {
-      show_end_of_line = true,
-    },
+    main = "ibl",
+    config = function()
+      require("ibl").setup({})
+    end,
   },
   -- bufferline
   {
@@ -445,6 +442,7 @@ return {
       { "gi",       vim.lsp.buf.implementation,  desc = "implementation(lsp)" },
       { "<c-k>",    vim.lsp.buf.signature_help,  desc = "signature help(lsp)" },
       { "<space>D", vim.lsp.buf.type_definition, desc = "type definition(lsp)" },
+      { "<space>q", vim.diagnostic.setloclist,   desc = "setloclist(lsp)" },
       { "gr",       vim.lsp.buf.references,      desc = "references(lsp)" },
       {
         "<leader>ca",
@@ -668,7 +666,6 @@ return {
         "dockerls",
         "docker_compose_language_service",
         "gradle_ls",
-        "graphql",
         "jdtls",
         "jsonls",
         "lua_ls",
@@ -910,7 +907,6 @@ return {
         "dockerls",
         "docker_compose_language_service",
         "gradle_ls",
-        "graphql",
         "jdtls",
         "jsonls",
         "lua_ls",
