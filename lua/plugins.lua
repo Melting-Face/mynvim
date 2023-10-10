@@ -5,14 +5,10 @@ return {
   "nvim-lua/plenary.nvim",
   -- tabular
   "godlygeek/tabular",
-  -- whitespace
-  "ntpeters/vim-better-whitespace",
   -- startify
   "mhinz/vim-startify",
   -- multi cursor
   "mg979/vim-visual-multi",
-  -- autopair
-  -- "jiangmiao/auto-pairs",
   -- vim move
   {
     "matze/vim-move",
@@ -403,7 +399,18 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     config = function()
-      require("ibl").setup({})
+      local highlight = {
+        "CursorColumn",
+        "Whitespace",
+      }
+      require("ibl").setup({
+        indent = { highlight = highlight, char = "" },
+        whitespace = {
+          highlight = highlight,
+          remove_blankline_trail = false,
+        },
+        scope = { enabled = false },
+      })
     end,
   },
   -- bufferline
