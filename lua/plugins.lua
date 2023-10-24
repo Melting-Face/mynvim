@@ -335,7 +335,7 @@ return {
           null_ls.builtins.diagnostics.ruff.with({
             extra_args = {
               "--extend-select",
-              "I,C4,C90,COM,SIM,PD",
+              "I,C4,C90,COM,SIM,PD,Q",
               "--extend-ignore",
               "PD901",
             },
@@ -350,7 +350,7 @@ return {
           null_ls.builtins.formatting.ruff.with({
             extra_args = {
               "--extend-select",
-              "I,C4,C90,COM,SIM,PD",
+              "I,C4,C90,COM,SIM,PD,Q",
               "--extend-ignore",
               "PD901",
             },
