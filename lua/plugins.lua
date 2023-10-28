@@ -180,7 +180,7 @@ return {
         ensure_installed = {
           "bash",
           "dockerfile",
-          "java",
+          -- "java",
           "javascript",
           "json",
           "lua",
@@ -255,49 +255,49 @@ return {
     end,
   },
   -- neogen
-  {
-    "danymat/neogen",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    },
-    ft = {
-      "lua",
-      "java",
-      "javascript",
-      "javascriptreact",
-      "python",
-      "sh",
-      "typescript",
-      "typescriptreact",
-    },
-    config = function()
-      local lang_doc_map = {
-        lua = "ldoc",
-        java = "javadoc",
-        javascript = "jsdoc",
-        javascriptreact = "jsdoc",
-        python = "google_docstrings",
-        sh = "google_bash",
-        typescript = "tsdoc",
-        typescriptreact = "tsdoc",
-      }
-
-      local languages = {}
-
-      for lang, doc in ipairs(lang_doc_map) do
-        languages[lang]["template"]["annotation_convention"] = doc
-      end
-
-      require("neogen").setup({
-        enabled = true,
-        snippet_engine = "luasnip",
-        languages = languages,
-      })
-    end,
-    keys = {
-      { "<leader>nn", "<cmd>Neogen<CR>", desc = "Neogen" },
-    },
-  },
+  -- {
+  --   "danymat/neogen",
+  --   dependencies = {
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  --   ft = {
+  --     "lua",
+  --     "java",
+  --     "javascript",
+  --     "javascriptreact",
+  --     "python",
+  --     "sh",
+  --     "typescript",
+  --     "typescriptreact",
+  --   },
+  --   config = function()
+  --     local lang_doc_map = {
+  --       lua = "ldoc",
+  --       java = "javadoc",
+  --       javascript = "jsdoc",
+  --       javascriptreact = "jsdoc",
+  --       python = "google_docstrings",
+  --       sh = "google_bash",
+  --       typescript = "tsdoc",
+  --       typescriptreact = "tsdoc",
+  --     }
+  --
+  --     local languages = {}
+  --
+  --     for lang, doc in ipairs(lang_doc_map) do
+  --       languages[lang]["template"]["annotation_convention"] = doc
+  --     end
+  --
+  --     require("neogen").setup({
+  --       enabled = true,
+  --       snippet_engine = "luasnip",
+  --       languages = languages,
+  --     })
+  --   end,
+  --   keys = {
+  --     { "<leader>nn", "<cmd>Neogen<CR>", desc = "Neogen" },
+  --   },
+  -- },
   -- for winbar
   {
     "SmiteshP/nvim-navic",
@@ -308,16 +308,16 @@ return {
     },
   },
   -- NOTE: vim dadbod
-  {
-    "kristijanhusak/vim-dadbod-ui",
-    dependencies = {
-      "tpope/vim-dadbod",
-    },
-    keys = {
-      { "<localleader>d", "<cmd>DBUIToggle<CR>",        desc = "db ui" },
-      { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
-    },
-  },
+  -- {
+  --   "kristijanhusak/vim-dadbod-ui",
+  --   dependencies = {
+  --     "tpope/vim-dadbod",
+  --   },
+  --   keys = {
+  --     { "<localleader>d", "<cmd>DBUIToggle<CR>",        desc = "db ui" },
+  --     { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
+  --   },
+  -- },
   -- mason
   {
     "williamboman/mason.nvim",
@@ -331,36 +331,39 @@ return {
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
         sources = {
-          null_ls.builtins.diagnostics.eslint_d,
-          null_ls.builtins.diagnostics.ruff.with({
-            extra_args = {
-              "--extend-select",
-              "I,C4,C90,COM,SIM,PD,Q",
-              "--extend-ignore",
-              "PD901",
-            },
-          }),
+          -- null_ls.builtins.diagnostics.eslint_d,
+          -- null_ls.builtins.diagnostics.ruff.with({
+          --   extra_args = {
+          --     "--extend-select",
+          --     "I,C4,C90,COM,SIM,PD,Q",
+          --     "--extend-ignore",
+          --     "PD901",
+          --   },
+          -- }),
+          -- null_ls.builtins.diagnostics.sqlfluff.with({
+          --   extra_args = { "--dialect", "snowflake" },
+          -- }),
+          -- null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.hadolint,
-          null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.shellcheck,
-          null_ls.builtins.diagnostics.sqlfluff.with({
-            extra_args = { "--dialect", "snowflake" },
-          }),
+          -- null_ls.builtins.diagnostics.sqlfluff.with({
+          --   extra_args = { "--dialect", "snowflake" },
+          -- }),
 
-          null_ls.builtins.formatting.ruff.with({
-            extra_args = {
-              "--extend-select",
-              "I,C4,C90,COM,SIM,PD,Q",
-              "--extend-ignore",
-              "PD901",
-            },
-          }),
-          null_ls.builtins.formatting.eslint_d,
-          null_ls.builtins.formatting.stylua,
+          -- null_ls.builtins.formatting.ruff.with({
+          --   extra_args = {
+          --     "--extend-select",
+          --     "I,C4,C90,COM,SIM,PD,Q",
+          --     "--extend-ignore",
+          --     "PD901",
+          --   },
+          -- }),
+          -- null_ls.builtins.formatting.sqlfluff.with({
+          --   extra_args = { "--dialect", "snowflake" },
+          -- }),
+          -- null_ls.builtins.formatting.eslint_d,
+          -- null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
-          null_ls.builtins.formatting.sqlfluff.with({
-            extra_args = { "--dialect", "snowflake" },
-          }),
         },
       })
     end,
@@ -468,201 +471,201 @@ return {
 
   -- INFO: DAP
   -- nvim-dap-ui
-  {
-    "rcarriga/nvim-dap-ui",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = {
-      "lua",
-      "python",
-      "java",
-      "javascript",
-      "typescript",
-    },
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-      dapui.setup()
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
-      end
-    end,
-    keys = {
-      {
-        "<leader>b",
-        function()
-          require("dap").toggle_breakpoint()
-        end,
-        desc = "toggle breakpoint",
-      },
-      {
-        "<leader>B",
-        function()
-          require("dap").set_breakpoint()
-        end,
-        desc = "set breakpoint",
-      },
-      {
-        "<Leader>lp",
-        function()
-          require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-        end,
-        desc = "set breakpoint with message",
-      },
-      {
-        "<F5>",
-        function()
-          require("dap").continue()
-        end,
-        desc = "dap run(continue)",
-      },
-      {
-        "<F10>",
-        function()
-          require("dap").step_over()
-        end,
-        desc = "dap step over",
-      },
-      {
-        "<F11>",
-        function()
-          require("dap").step_into()
-        end,
-        desc = "dap step into",
-      },
-      {
-        "<F12>",
-        function()
-          require("dap").step_out()
-        end,
-        desc = "dap step out",
-      },
-      {
-        "<Leader>dr",
-        function()
-          require("dap").repl.open()
-        end,
-        desc = "open repl",
-      },
-      {
-        "<Leader>dl",
-        function()
-          require("dap").run_last()
-        end,
-        desc = "run last",
-      },
-      {
-        "<Leader>dh",
-        function()
-          require("dap.ui.widgets").hover()
-        end,
-        desc = "dap ui widgets",
-        mode = { "n", "v" },
-      },
-      {
-        "<Leader>dp",
-        function()
-          require("dap.ui.widgets").preview()
-        end,
-        desc = "dap ui preview",
-        mode = { "n", "v" },
-      },
-      {
-        "<Leader>df",
-        function()
-          local widgets = require("dap.ui.widgets")
-          widgets.centered_float(widgets.frames)
-        end,
-        desc = "dap ui widgets float center(frame)",
-      },
-      {
-        "<Leader>ds",
-        function()
-          local widgets = require("dap.ui.widgets")
-          widgets.centered_float(widgets.scopes)
-        end,
-        desc = "dap ui widgets float center(scope)",
-      },
-      {
-        "<Leader>dt",
-        function()
-          require("dapui").toggle()
-        end,
-        desc = "dap ui toggle",
-      },
-    },
-  },
+  -- {
+  --   "rcarriga/nvim-dap-ui",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   ft = {
+  --     "lua",
+  --     "python",
+  --     "java",
+  --     "javascript",
+  --     "typescript",
+  --   },
+  --   config = function()
+  --     local dap = require("dap")
+  --     local dapui = require("dapui")
+  --     dapui.setup()
+  --     dap.listeners.after.event_initialized["dapui_config"] = function()
+  --       dapui.open()
+  --     end
+  --     dap.listeners.before.event_terminated["dapui_config"] = function()
+  --       dapui.close()
+  --     end
+  --     dap.listeners.before.event_exited["dapui_config"] = function()
+  --       dapui.close()
+  --     end
+  --   end,
+  --   keys = {
+  --     {
+  --       "<leader>b",
+  --       function()
+  --         require("dap").toggle_breakpoint()
+  --       end,
+  --       desc = "toggle breakpoint",
+  --     },
+  --     {
+  --       "<leader>B",
+  --       function()
+  --         require("dap").set_breakpoint()
+  --       end,
+  --       desc = "set breakpoint",
+  --     },
+  --     {
+  --       "<Leader>lp",
+  --       function()
+  --         require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+  --       end,
+  --       desc = "set breakpoint with message",
+  --     },
+  --     {
+  --       "<F5>",
+  --       function()
+  --         require("dap").continue()
+  --       end,
+  --       desc = "dap run(continue)",
+  --     },
+  --     {
+  --       "<F10>",
+  --       function()
+  --         require("dap").step_over()
+  --       end,
+  --       desc = "dap step over",
+  --     },
+  --     {
+  --       "<F11>",
+  --       function()
+  --         require("dap").step_into()
+  --       end,
+  --       desc = "dap step into",
+  --     },
+  --     {
+  --       "<F12>",
+  --       function()
+  --         require("dap").step_out()
+  --       end,
+  --       desc = "dap step out",
+  --     },
+  --     {
+  --       "<Leader>dr",
+  --       function()
+  --         require("dap").repl.open()
+  --       end,
+  --       desc = "open repl",
+  --     },
+  --     {
+  --       "<Leader>dl",
+  --       function()
+  --         require("dap").run_last()
+  --       end,
+  --       desc = "run last",
+  --     },
+  --     {
+  --       "<Leader>dh",
+  --       function()
+  --         require("dap.ui.widgets").hover()
+  --       end,
+  --       desc = "dap ui widgets",
+  --       mode = { "n", "v" },
+  --     },
+  --     {
+  --       "<Leader>dp",
+  --       function()
+  --         require("dap.ui.widgets").preview()
+  --       end,
+  --       desc = "dap ui preview",
+  --       mode = { "n", "v" },
+  --     },
+  --     {
+  --       "<Leader>df",
+  --       function()
+  --         local widgets = require("dap.ui.widgets")
+  --         widgets.centered_float(widgets.frames)
+  --       end,
+  --       desc = "dap ui widgets float center(frame)",
+  --     },
+  --     {
+  --       "<Leader>ds",
+  --       function()
+  --         local widgets = require("dap.ui.widgets")
+  --         widgets.centered_float(widgets.scopes)
+  --       end,
+  --       desc = "dap ui widgets float center(scope)",
+  --     },
+  --     {
+  --       "<Leader>dt",
+  --       function()
+  --         require("dapui").toggle()
+  --       end,
+  --       desc = "dap ui toggle",
+  --     },
+  --   },
+  -- },
   -- dap-virtual-text
-  {
-    "theHamsta/nvim-dap-virtual-text",
-    dependencies = "mfussenegger/nvim-dap",
-    config = true,
-    ft = {
-      "lua",
-      "python",
-      "java",
-      "javascript",
-      "typescript",
-    },
-  },
+  -- {
+  --   "theHamsta/nvim-dap-virtual-text",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   config = true,
+  --   ft = {
+  --     "lua",
+  --     "python",
+  --     "java",
+  --     "javascript",
+  --     "typescript",
+  --   },
+  -- },
   -- nvim-dap-python
-  {
-    "mfussenegger/nvim-dap-python",
-    dependencies = "mfussenegger/nvim-dap",
-    ft = "python",
-    config = function()
-      local python_path = io.popen("which python3"):read("l")
-      if python_path ~= nil then
-        local debugpy = io.popen("pip list | grep debugpy"):read("l")
-        if debugpy ~= nil then
-          require("dap-python").setup(python_path)
-        end
-      end
-    end,
-    keys = {
-      {
-        "<leader>dc",
-        function()
-          require("dap-python").test_class()
-        end,
-        desc = "test class",
-      },
-      { "<leader>dd", '<ESC>:lua require("dap-python").debug_selection()<CR>', desc = "python debug select" },
-      {
-        "<leader>dm",
-        function()
-          require("dap-python").test_method()
-        end,
-        desc = "test method",
-      },
-    },
-  },
+  -- {
+  --   "mfussenegger/nvim-dap-python",
+  --   dependencies = "mfussenegger/nvim-dap",
+  --   ft = "python",
+  --   config = function()
+  --     local python_path = io.popen("which python3"):read("l")
+  --     if python_path ~= nil then
+  --       local debugpy = io.popen("pip list | grep debugpy"):read("l")
+  --       if debugpy ~= nil then
+  --         require("dap-python").setup(python_path)
+  --       end
+  --     end
+  --   end,
+  --   keys = {
+  --     {
+  --       "<leader>dc",
+  --       function()
+  --         require("dap-python").test_class()
+  --       end,
+  --       desc = "test class",
+  --     },
+  --     { "<leader>dd", '<ESC>:lua require("dap-python").debug_selection()<CR>', desc = "python debug select" },
+  --     {
+  --       "<leader>dm",
+  --       function()
+  --         require("dap-python").test_method()
+  --       end,
+  --       desc = "test method",
+  --     },
+  --   },
+  -- },
   -- nvim-jdtls
-  {
-    "mfussenegger/nvim-jdtls",
-    ft = "java",
-    keys = {
-      {
-        "<leader>dc",
-        function()
-          require("jdtls").test_class()
-        end,
-        desc = "test class",
-      },
-      {
-        "<leader>dm",
-        function()
-          require("jdtls").test_nearest_method()
-        end,
-        desc = "test nearest method",
-      },
-    },
-  },
+  -- {
+  --   "mfussenegger/nvim-jdtls",
+  --   ft = "java",
+  --   keys = {
+  --     {
+  --       "<leader>dc",
+  --       function()
+  --         require("jdtls").test_class()
+  --       end,
+  --       desc = "test class",
+  --     },
+  --     {
+  --       "<leader>dm",
+  --       function()
+  --         require("jdtls").test_nearest_method()
+  --       end,
+  --       desc = "test nearest method",
+  --     },
+  --   },
+  -- },
   -- mason lsp
   {
     "williamboman/mason-lspconfig.nvim",
@@ -760,81 +763,81 @@ return {
     end,
   },
   -- refactoring
-  {
-    "ThePrimeagen/refactoring.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    ft = {
-      "java",
-      "javascript",
-      "python",
-      "typescript",
-    },
-    config = {
-      prompt_func_return_type = {
-        java = true,
-        javascript = true,
-        python = true,
-        typescript = true,
-      },
-      prompt_func_param_type = {
-        java = true,
-        javascript = true,
-        python = true,
-        typescript = true,
-      },
-    },
-    keys = {
-      {
-        "<leader>re",
-        function()
-          require("refactoring").refactor("Extract Function")
-        end,
-        desc = "extract function",
-        mode = "v",
-      },
-      {
-        "<leader>rf",
-        function()
-          require("refactoring").refactor("Extract Function To File")
-        end,
-        desc = "extract function to file",
-        mode = "v",
-      },
-      {
-        "<leader>ri",
-        function()
-          require("refactoring").refactor("Inline Variable")
-        end,
-        desc = "inline variable",
-        mode = { "n", "v" },
-      },
-      {
-        "<leader>rv",
-        function()
-          require("refactoring").refactor("Extract Variable")
-        end,
-        desc = "extract variable",
-        mode = "v",
-      },
-      {
-        "<leader>rb",
-        function()
-          require("refactoring").refactor("Extract Block")
-        end,
-        desc = "refactoring extract block",
-      },
-      {
-        "<leader>rf",
-        function()
-          require("refactoring").refactor("Extract Block To File")
-        end,
-        desc = "refactoring extract block to file",
-      },
-    },
-  },
+  -- {
+  --   "ThePrimeagen/refactoring.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  --   ft = {
+  --     "java",
+  --     "javascript",
+  --     "python",
+  --     "typescript",
+  --   },
+  --   config = {
+  --     prompt_func_return_type = {
+  --       java = true,
+  --       javascript = true,
+  --       python = true,
+  --       typescript = true,
+  --     },
+  --     prompt_func_param_type = {
+  --       java = true,
+  --       javascript = true,
+  --       python = true,
+  --       typescript = true,
+  --     },
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>re",
+  --       function()
+  --         require("refactoring").refactor("Extract Function")
+  --       end,
+  --       desc = "extract function",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>rf",
+  --       function()
+  --         require("refactoring").refactor("Extract Function To File")
+  --       end,
+  --       desc = "extract function to file",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>ri",
+  --       function()
+  --         require("refactoring").refactor("Inline Variable")
+  --       end,
+  --       desc = "inline variable",
+  --       mode = { "n", "v" },
+  --     },
+  --     {
+  --       "<leader>rv",
+  --       function()
+  --         require("refactoring").refactor("Extract Variable")
+  --       end,
+  --       desc = "extract variable",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>rb",
+  --       function()
+  --         require("refactoring").refactor("Extract Block")
+  --       end,
+  --       desc = "refactoring extract block",
+  --     },
+  --     {
+  --       "<leader>rf",
+  --       function()
+  --         require("refactoring").refactor("Extract Block To File")
+  --       end,
+  --       desc = "refactoring extract block to file",
+  --     },
+  --   },
+  -- },
   -- cmp
   {
     "hrsh7th/nvim-cmp",
@@ -847,7 +850,7 @@ return {
       "hrsh7th/cmp-cmdline",
       "neovim/nvim-lspconfig",
       "SmiteshP/nvim-navic",
-      "kristijanhusak/vim-dadbod-completion",
+      -- "kristijanhusak/vim-dadbod-completion",
     },
     config = function()
       local cmp = require("cmp")
@@ -877,7 +880,7 @@ return {
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "crates" },
-          { name = "vim-dadbod-completion" },
+          -- { name = "vim-dadbod-completion" },
         }, {
           { name = "buffer" },
         }),
