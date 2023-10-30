@@ -347,9 +347,6 @@ return {
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.yamllint,
-          -- null_ls.builtins.diagnostics.sqlfluff.with({
-          --   extra_args = { "--dialect", "snowflake" },
-          -- }),
 
           -- null_ls.builtins.formatting.ruff.with({
           --   extra_args = {
@@ -451,7 +448,6 @@ return {
       { "gd",       vim.lsp.buf.definition,      desc = "goto definition(lsp)" },
       { "K",        vim.lsp.buf.hover,           desc = "hover(lsp)" },
       { "gi",       vim.lsp.buf.implementation,  desc = "implementation(lsp)" },
-      { "<c-k>",    vim.lsp.buf.signature_help,  desc = "signature help(lsp)" },
       { "<space>D", vim.lsp.buf.type_definition, desc = "type definition(lsp)" },
       { "<space>q", vim.diagnostic.setloclist,   desc = "setloclist(lsp)" },
       { "gr",       vim.lsp.buf.references,      desc = "references(lsp)" },

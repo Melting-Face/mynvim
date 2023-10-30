@@ -16,12 +16,12 @@ brew install ripgrep
 # brew install rust
 # brew install jq
 
-ln -sf "$PWD/tmux.conf" "$HOME/.tmux.conf"
+ln -f "$PWD/tmux.conf" "$HOME/.tmux.conf"
 tmux source-file "$HOME/.tmux.conf"
 
 mkdir -p "$HOME/.config/nvim"
-ln -sf "$PWD/init.lua" "$HOME/.config/nvim/init.lua"
-ln -sf "$PWD/lua" "$HOME/.config/nvim/lua"
+ln -f "$PWD/init.lua" "$HOME/.config/nvim/init.lua"
+ln -f "$PWD/lua" "$HOME/.config/nvim/lua"
 # ln -sf "$PWD/ftplugin" "$HOME/.config/nvim/ftplugin"
 
 nvim --headless "+Lazy! sync" +qa
