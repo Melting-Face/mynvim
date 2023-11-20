@@ -21,7 +21,7 @@ tmux source-file "$HOME/.tmux.conf"
 
 mkdir -p "$HOME/.config/nvim"
 ln -f "$PWD/init.lua" "$HOME/.config/nvim/init.lua"
-ln -f "$PWD/lua" "$HOME/.config/nvim/lua"
+ln -sf "$PWD/lua" "$HOME/.config/nvim/lua"
 # ln -sf "$PWD/ftplugin" "$HOME/.config/nvim/ftplugin"
 
 nvim --headless "+Lazy! sync" +qa
