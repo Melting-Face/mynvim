@@ -26,7 +26,7 @@ vim.o.encoding='UTF-8'
 vim.o.updatetime=100
 vim.o.timeoutlen=2500
 -- mouse option is 'all'
-vim.o.mouse = 'a'
+vim.o.mouse = 'r'
 -- termguicolor option is true
 vim.o.termguicolors = true
 -- background is dark

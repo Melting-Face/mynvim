@@ -10,19 +10,19 @@ return {
   -- multi cursor
   "mg979/vim-visual-multi",
   -- vim move
-  {
-    "matze/vim-move",
-    keys = {
-      { "∆", "<Plug>MoveLineDown", mode = { "n" } },
-      { "˚", "<Plug>MoveLineUp", mode = { "n" } },
-      { "˙", "<Plug>MoveCharLeft", mode = { "n" } },
-      { "¬", "<Plug>MoveCharRight", mode = { "n" } },
-      { "∆", "<Plug>MoveBlockDown", mode = { "v" } },
-      { "˚", "<Plug>MoveBlockUp", mode = { "v" } },
-      { "˙", "<Plug>MoveBlockLeft", mode = { "v" } },
-      { "¬", "<Plug>MoveBlockRight", mode = { "v" } },
-    },
-  },
+  -- {
+  --   "matze/vim-move",
+  --   keys = {
+  --     { "∆", "<Plug>MoveLineDown", mode = { "n" } },
+  --     { "˚", "<Plug>MoveLineUp", mode = { "n" } },
+  --     { "˙", "<Plug>MoveCharLeft", mode = { "n" } },
+  --     { "¬", "<Plug>MoveCharRight", mode = { "n" } },
+  --     { "∆", "<Plug>MoveBlockDown", mode = { "v" } },
+  --     { "˚", "<Plug>MoveBlockUp", mode = { "v" } },
+  --     { "˙", "<Plug>MoveBlockLeft", mode = { "v" } },
+  --     { "¬", "<Plug>MoveBlockRight", mode = { "v" } },
+  --   },
+  -- },
   --undotree
   {
     "mbbill/undotree",
@@ -149,12 +149,12 @@ return {
     end,
   },
   -- notify
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      vim.notify = require("notify")
-    end,
-  },
+  -- {
+  --   "rcarriga/nvim-notify",
+  --   config = function()
+  --     vim.notify = require("notify")
+  --   end,
+  -- },
   -- theme
   {
     "catppuccin/nvim",
@@ -325,42 +325,43 @@ return {
   },
   -- null_ls
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     config = function()
       local null_ls = require("null-ls")
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
         sources = {
-          -- null_ls.builtins.diagnostics.eslint_d,
-          -- null_ls.builtins.diagnostics.ruff.with({
-          --   extra_args = {
-          --     "--extend-select",
-          --     "I,C4,C90,COM,SIM,PD,Q",
-          --     "--extend-ignore",
-          --     "PD901",
-          --   },
-          -- }),
-          -- null_ls.builtins.diagnostics.sqlfluff.with({
-          --   extra_args = { "--dialect", "snowflake" },
-          -- }),
-          -- null_ls.builtins.diagnostics.luacheck,
+          null_ls.builtins.diagnostics.eslint_d,
+          null_ls.builtins.diagnostics.ruff.with({
+            extra_args = {
+              "--extend-select",
+              "I,C4,C90,COM,SIM,PD",
+              "--extend-ignore",
+              "PD901",
+            },
+          }),
+          null_ls.builtins.diagnostics.sqlfluff.with({
+            extra_args = { "--dialect", "snowflake" },
+          }),
+          null_ls.builtins.diagnostics.luacheck,
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.shellcheck,
           null_ls.builtins.diagnostics.yamllint,
 
-          -- null_ls.builtins.formatting.ruff.with({
-          --   extra_args = {
-          --     "--extend-select",
-          --     "I,C4,C90,COM,SIM,PD,Q",
-          --     "--extend-ignore",
-          --     "PD901",
-          --   },
-          -- }),
-          -- null_ls.builtins.formatting.sqlfluff.with({
-          --   extra_args = { "--dialect", "snowflake" },
-          -- }),
-          -- null_ls.builtins.formatting.eslint_d,
-          -- null_ls.builtins.formatting.stylua,
+          null_ls.builtins.formatting.ruff.with({
+            extra_args = {
+              "--extend-select",
+              "I,C4,C90,COM,SIM,PD",
+              "--extend-ignore",
+              "PD901",
+            },
+          }),
+          null_ls.builtins.formatting.ruff_format,
+          null_ls.builtins.formatting.sqlfluff.with({
+            extra_args = { "--dialect", "snowflake" },
+          }),
+          null_ls.builtins.formatting.eslint_d,
+          null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
         },
       })
