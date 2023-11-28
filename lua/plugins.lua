@@ -255,49 +255,49 @@ return {
     end,
   },
   -- neogen
-  -- {
-  --   "danymat/neogen",
-  --   dependencies = {
-  --     "nvim-treesitter/nvim-treesitter",
-  --   },
-  --   ft = {
-  --     "lua",
-  --     "java",
-  --     "javascript",
-  --     "javascriptreact",
-  --     "python",
-  --     "sh",
-  --     "typescript",
-  --     "typescriptreact",
-  --   },
-  --   config = function()
-  --     local lang_doc_map = {
-  --       lua = "ldoc",
-  --       java = "javadoc",
-  --       javascript = "jsdoc",
-  --       javascriptreact = "jsdoc",
-  --       python = "google_docstrings",
-  --       sh = "google_bash",
-  --       typescript = "tsdoc",
-  --       typescriptreact = "tsdoc",
-  --     }
-  --
-  --     local languages = {}
-  --
-  --     for lang, doc in ipairs(lang_doc_map) do
-  --       languages[lang]["template"]["annotation_convention"] = doc
-  --     end
-  --
-  --     require("neogen").setup({
-  --       enabled = true,
-  --       snippet_engine = "luasnip",
-  --       languages = languages,
-  --     })
-  --   end,
-  --   keys = {
-  --     { "<leader>nn", "<cmd>Neogen<CR>", desc = "Neogen" },
-  --   },
-  -- },
+  {
+    "danymat/neogen",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+    ft = {
+      "lua",
+      "java",
+      "javascript",
+      "javascriptreact",
+      "python",
+      "sh",
+      "typescript",
+      "typescriptreact",
+    },
+    config = function()
+      local lang_doc_map = {
+        lua = "ldoc",
+        java = "javadoc",
+        javascript = "jsdoc",
+        javascriptreact = "jsdoc",
+        python = "google_docstrings",
+        sh = "google_bash",
+        typescript = "tsdoc",
+        typescriptreact = "tsdoc",
+      }
+
+      local languages = {}
+
+      for lang, doc in ipairs(lang_doc_map) do
+        languages[lang]["template"]["annotation_convention"] = doc
+      end
+
+      require("neogen").setup({
+        enabled = true,
+        snippet_engine = "luasnip",
+        languages = languages,
+      })
+    end,
+    keys = {
+      { "<leader>nn", "<cmd>Neogen<CR>", desc = "Neogen" },
+    },
+  },
   -- for winbar
   {
     "SmiteshP/nvim-navic",
@@ -384,7 +384,7 @@ return {
     "jayp0521/mason-null-ls.nvim",
     dependencies = {
       "williamboman/mason.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
+      "nvimtools/none-ls.nvim",
     },
     config = {
       automatic_installation = true,
@@ -761,81 +761,81 @@ return {
     end,
   },
   -- refactoring
-  -- {
-  --   "ThePrimeagen/refactoring.nvim",
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-treesitter/nvim-treesitter",
-  --   },
-  --   ft = {
-  --     "java",
-  --     "javascript",
-  --     "python",
-  --     "typescript",
-  --   },
-  --   config = {
-  --     prompt_func_return_type = {
-  --       java = true,
-  --       javascript = true,
-  --       python = true,
-  --       typescript = true,
-  --     },
-  --     prompt_func_param_type = {
-  --       java = true,
-  --       javascript = true,
-  --       python = true,
-  --       typescript = true,
-  --     },
-  --   },
-  --   keys = {
-  --     {
-  --       "<leader>re",
-  --       function()
-  --         require("refactoring").refactor("Extract Function")
-  --       end,
-  --       desc = "extract function",
-  --       mode = "v",
-  --     },
-  --     {
-  --       "<leader>rf",
-  --       function()
-  --         require("refactoring").refactor("Extract Function To File")
-  --       end,
-  --       desc = "extract function to file",
-  --       mode = "v",
-  --     },
-  --     {
-  --       "<leader>ri",
-  --       function()
-  --         require("refactoring").refactor("Inline Variable")
-  --       end,
-  --       desc = "inline variable",
-  --       mode = { "n", "v" },
-  --     },
-  --     {
-  --       "<leader>rv",
-  --       function()
-  --         require("refactoring").refactor("Extract Variable")
-  --       end,
-  --       desc = "extract variable",
-  --       mode = "v",
-  --     },
-  --     {
-  --       "<leader>rb",
-  --       function()
-  --         require("refactoring").refactor("Extract Block")
-  --       end,
-  --       desc = "refactoring extract block",
-  --     },
-  --     {
-  --       "<leader>rf",
-  --       function()
-  --         require("refactoring").refactor("Extract Block To File")
-  --       end,
-  --       desc = "refactoring extract block to file",
-  --     },
-  --   },
-  -- },
+  {
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    ft = {
+      "java",
+      "javascript",
+      "python",
+      "typescript",
+    },
+    config = {
+      prompt_func_return_type = {
+        java = true,
+        javascript = true,
+        python = true,
+        typescript = true,
+      },
+      prompt_func_param_type = {
+        java = true,
+        javascript = true,
+        python = true,
+        typescript = true,
+      },
+    },
+    keys = {
+      {
+        "<leader>re",
+        function()
+          require("refactoring").refactor("Extract Function")
+        end,
+        desc = "extract function",
+        mode = "v",
+      },
+      {
+        "<leader>rf",
+        function()
+          require("refactoring").refactor("Extract Function To File")
+        end,
+        desc = "extract function to file",
+        mode = "v",
+      },
+      {
+        "<leader>ri",
+        function()
+          require("refactoring").refactor("Inline Variable")
+        end,
+        desc = "inline variable",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>rv",
+        function()
+          require("refactoring").refactor("Extract Variable")
+        end,
+        desc = "extract variable",
+        mode = "v",
+      },
+      {
+        "<leader>rb",
+        function()
+          require("refactoring").refactor("Extract Block")
+        end,
+        desc = "refactoring extract block",
+      },
+      {
+        "<leader>rf",
+        function()
+          require("refactoring").refactor("Extract Block To File")
+        end,
+        desc = "refactoring extract block to file",
+      },
+    },
+  },
   -- cmp
   {
     "hrsh7th/nvim-cmp",
