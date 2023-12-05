@@ -942,7 +942,7 @@ return {
             capabilities = capabilities,
             settings = {
               yaml = {
-                schemas = { kubernetes = "*.yaml" },
+                schemas = { kubernetes = "*.yml" },
               },
             },
           })
