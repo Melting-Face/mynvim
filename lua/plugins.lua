@@ -444,25 +444,6 @@ return {
       { "<leader>9", "<cmd>BufferLineGoToBuffer 9<cr>", desc = "goto buffer 9" },
     },
   },
-  {
-    "neovim/nvim-lspconfig",
-    keys = {
-      { "gD",       vim.lsp.buf.declaration,     desc = "goto declareation(lsp)" },
-      { "gd",       vim.lsp.buf.definition,      desc = "goto definition(lsp)" },
-      { "K",        vim.lsp.buf.hover,           desc = "hover(lsp)" },
-      { "gi",       vim.lsp.buf.implementation,  desc = "implementation(lsp)" },
-      { "<space>D", vim.lsp.buf.type_definition, desc = "type definition(lsp)" },
-      { "<space>q", vim.diagnostic.setloclist,   desc = "setloclist(lsp)" },
-      { "gr",       vim.lsp.buf.references,      desc = "references(lsp)" },
-      {
-        "<leader>ca",
-        "<cmd>Lspsaga code_action<CR>",
-        desc = "code action",
-        mode = { "n", "v" },
-      },
-      { "K", vim.lsp.buf.hover, desc = "hover doc" },
-    },
-  },
   -- scope.nvim for tab
   {
     "tiagovla/scope.nvim",
@@ -852,12 +833,12 @@ return {
       "SmiteshP/nvim-navic",
       -- "kristijanhusak/vim-dadbod-completion",
     },
+    event = "BufRead",
     config = function()
       local cmp = require("cmp")
       local navic = require("nvim-navic")
       local lspconfig = require("lspconfig")
       local on_attach = function(client, bufnr)
-        vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
         if client.server_capabilities.documentSymbolProvider then
           navic.attach(client, bufnr)
         end
@@ -952,6 +933,16 @@ return {
                   diagnosticMode = "openFilesOnly",
                   typeCheckingMode = "off",
                 },
+              },
+            },
+          })
+        elseif language == "yamlls" then
+          lspconfig[language].setup({
+            on_attach = on_attach,
+            capabilities = capabilities,
+            settings = {
+              yaml = {
+                schemas = { kubernetes = "*.yaml" },
               },
             },
           })
