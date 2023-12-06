@@ -308,16 +308,16 @@ return {
     },
   },
   -- NOTE: vim dadbod
-  -- {
-  --   "kristijanhusak/vim-dadbod-ui",
-  --   dependencies = {
-  --     "tpope/vim-dadbod",
-  --   },
-  --   keys = {
-  --     { "<localleader>d", "<cmd>DBUIToggle<CR>",        desc = "db ui" },
-  --     { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
-  --   },
-  -- },
+  {
+    "kristijanhusak/vim-dadbod-ui",
+    dependencies = {
+      "tpope/vim-dadbod",
+    },
+    keys = {
+      { "<localleader>d", "<cmd>DBUIToggle<CR>",        desc = "db ui" },
+      { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
+    },
+  },
   -- mason
   {
     "williamboman/mason.nvim",
@@ -831,9 +831,8 @@ return {
       "hrsh7th/cmp-cmdline",
       "neovim/nvim-lspconfig",
       "SmiteshP/nvim-navic",
-      -- "kristijanhusak/vim-dadbod-completion",
+      "kristijanhusak/vim-dadbod-completion",
     },
-    event = "BufRead",
     config = function()
       local cmp = require("cmp")
       local navic = require("nvim-navic")
@@ -861,7 +860,7 @@ return {
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "crates" },
-          -- { name = "vim-dadbod-completion" },
+          { name = "vim-dadbod-completion" },
         }, {
           { name = "buffer" },
         }),
