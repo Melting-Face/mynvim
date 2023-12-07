@@ -350,6 +350,7 @@ return {
 
           null_ls.builtins.formatting.ruff.with({
             extra_args = {
+              "--fix",
               "--extend-select",
               "I,C4,C90,COM,SIM,PD",
               "--extend-ignore",
@@ -942,7 +943,11 @@ return {
             capabilities = capabilities,
             settings = {
               yaml = {
-                schemas = { kubernetes = "*.yml" },
+                schemas = {
+                  kubernetes = "*.yml",
+                  ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
+                  "*.yml",
+                },
               },
             },
           })
