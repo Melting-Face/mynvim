@@ -5,16 +5,14 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
   git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
 
-# brew install go
+brew install go
 brew install lua
 brew install tmux
 brew install node
 brew install python
 brew install ripgrep
-# brew install luarocks
-# brew install delve
-# brew install rust
-# brew install jq
+# install rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 ln -f "$PWD/tmux.conf" "$HOME/.tmux.conf"
 tmux source-file "$HOME/.tmux.conf"

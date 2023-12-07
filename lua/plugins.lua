@@ -658,6 +658,7 @@ return {
         "docker_compose_language_service",
         -- "gradle_ls",
         -- "jdtls",
+        "helm_ls",
         "jsonls",
         "lua_ls",
         "pyright",
