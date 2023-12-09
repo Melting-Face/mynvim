@@ -366,6 +366,7 @@ return {
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.taplo,
           null_ls.builtins.formatting.yq,
+          null_ls.builtins.formatting.rustfmt,
         },
       })
     end,
@@ -453,180 +454,180 @@ return {
 
   -- INFO: DAP
   -- nvim-dap-ui
-  -- {
-  --   "rcarriga/nvim-dap-ui",
-  --   dependencies = "mfussenegger/nvim-dap",
-  --   ft = {
-  --     "lua",
-  --     "python",
-  --     "java",
-  --     "javascript",
-  --     "typescript",
-  --   },
-  --   config = function()
-  --     local dap = require("dap")
-  --     local dapui = require("dapui")
-  --     dapui.setup()
-  --     dap.listeners.after.event_initialized["dapui_config"] = function()
-  --       dapui.open()
-  --     end
-  --     dap.listeners.before.event_terminated["dapui_config"] = function()
-  --       dapui.close()
-  --     end
-  --     dap.listeners.before.event_exited["dapui_config"] = function()
-  --       dapui.close()
-  --     end
-  --   end,
-  --   keys = {
-  --     {
-  --       "<leader>b",
-  --       function()
-  --         require("dap").toggle_breakpoint()
-  --       end,
-  --       desc = "toggle breakpoint",
-  --     },
-  --     {
-  --       "<leader>B",
-  --       function()
-  --         require("dap").set_breakpoint()
-  --       end,
-  --       desc = "set breakpoint",
-  --     },
-  --     {
-  --       "<Leader>lp",
-  --       function()
-  --         require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-  --       end,
-  --       desc = "set breakpoint with message",
-  --     },
-  --     {
-  --       "<F5>",
-  --       function()
-  --         require("dap").continue()
-  --       end,
-  --       desc = "dap run(continue)",
-  --     },
-  --     {
-  --       "<F10>",
-  --       function()
-  --         require("dap").step_over()
-  --       end,
-  --       desc = "dap step over",
-  --     },
-  --     {
-  --       "<F11>",
-  --       function()
-  --         require("dap").step_into()
-  --       end,
-  --       desc = "dap step into",
-  --     },
-  --     {
-  --       "<F12>",
-  --       function()
-  --         require("dap").step_out()
-  --       end,
-  --       desc = "dap step out",
-  --     },
-  --     {
-  --       "<Leader>dr",
-  --       function()
-  --         require("dap").repl.open()
-  --       end,
-  --       desc = "open repl",
-  --     },
-  --     {
-  --       "<Leader>dl",
-  --       function()
-  --         require("dap").run_last()
-  --       end,
-  --       desc = "run last",
-  --     },
-  --     {
-  --       "<Leader>dh",
-  --       function()
-  --         require("dap.ui.widgets").hover()
-  --       end,
-  --       desc = "dap ui widgets",
-  --       mode = { "n", "v" },
-  --     },
-  --     {
-  --       "<Leader>dp",
-  --       function()
-  --         require("dap.ui.widgets").preview()
-  --       end,
-  --       desc = "dap ui preview",
-  --       mode = { "n", "v" },
-  --     },
-  --     {
-  --       "<Leader>df",
-  --       function()
-  --         local widgets = require("dap.ui.widgets")
-  --         widgets.centered_float(widgets.frames)
-  --       end,
-  --       desc = "dap ui widgets float center(frame)",
-  --     },
-  --     {
-  --       "<Leader>ds",
-  --       function()
-  --         local widgets = require("dap.ui.widgets")
-  --         widgets.centered_float(widgets.scopes)
-  --       end,
-  --       desc = "dap ui widgets float center(scope)",
-  --     },
-  --     {
-  --       "<Leader>dt",
-  --       function()
-  --         require("dapui").toggle()
-  --       end,
-  --       desc = "dap ui toggle",
-  --     },
-  --   },
-  -- },
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies = "mfussenegger/nvim-dap",
+    ft = {
+      "lua",
+      "python",
+      "java",
+      "javascript",
+      "typescript",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      dapui.setup()
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end,
+    keys = {
+      {
+        "<leader>b",
+        function()
+          require("dap").toggle_breakpoint()
+        end,
+        desc = "toggle breakpoint",
+      },
+      {
+        "<leader>B",
+        function()
+          require("dap").set_breakpoint()
+        end,
+        desc = "set breakpoint",
+      },
+      {
+        "<Leader>lp",
+        function()
+          require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+        end,
+        desc = "set breakpoint with message",
+      },
+      {
+        "<F5>",
+        function()
+          require("dap").continue()
+        end,
+        desc = "dap run(continue)",
+      },
+      {
+        "<F10>",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "dap step over",
+      },
+      {
+        "<F11>",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "dap step into",
+      },
+      {
+        "<F12>",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "dap step out",
+      },
+      {
+        "<Leader>dr",
+        function()
+          require("dap").repl.open()
+        end,
+        desc = "open repl",
+      },
+      {
+        "<Leader>dl",
+        function()
+          require("dap").run_last()
+        end,
+        desc = "run last",
+      },
+      {
+        "<Leader>dh",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        desc = "dap ui widgets",
+        mode = { "n", "v" },
+      },
+      {
+        "<Leader>dp",
+        function()
+          require("dap.ui.widgets").preview()
+        end,
+        desc = "dap ui preview",
+        mode = { "n", "v" },
+      },
+      {
+        "<Leader>df",
+        function()
+          local widgets = require("dap.ui.widgets")
+          widgets.centered_float(widgets.frames)
+        end,
+        desc = "dap ui widgets float center(frame)",
+      },
+      {
+        "<Leader>ds",
+        function()
+          local widgets = require("dap.ui.widgets")
+          widgets.centered_float(widgets.scopes)
+        end,
+        desc = "dap ui widgets float center(scope)",
+      },
+      {
+        "<Leader>dt",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "dap ui toggle",
+      },
+    },
+  },
   -- dap-virtual-text
-  -- {
-  --   "theHamsta/nvim-dap-virtual-text",
-  --   dependencies = "mfussenegger/nvim-dap",
-  --   config = true,
-  --   ft = {
-  --     "lua",
-  --     "python",
-  --     "java",
-  --     "javascript",
-  --     "typescript",
-  --   },
-  -- },
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    dependencies = "mfussenegger/nvim-dap",
+    config = true,
+    ft = {
+      "lua",
+      "python",
+      "java",
+      "javascript",
+      "typescript",
+    },
+  },
   -- nvim-dap-python
-  -- {
-  --   "mfussenegger/nvim-dap-python",
-  --   dependencies = "mfussenegger/nvim-dap",
-  --   ft = "python",
-  --   config = function()
-  --     local python_path = io.popen("which python3"):read("l")
-  --     if python_path ~= nil then
-  --       local debugpy = io.popen("pip list | grep debugpy"):read("l")
-  --       if debugpy ~= nil then
-  --         require("dap-python").setup(python_path)
-  --       end
-  --     end
-  --   end,
-  --   keys = {
-  --     {
-  --       "<leader>dc",
-  --       function()
-  --         require("dap-python").test_class()
-  --       end,
-  --       desc = "test class",
-  --     },
-  --     { "<leader>dd", '<ESC>:lua require("dap-python").debug_selection()<CR>', desc = "python debug select" },
-  --     {
-  --       "<leader>dm",
-  --       function()
-  --         require("dap-python").test_method()
-  --       end,
-  --       desc = "test method",
-  --     },
-  --   },
-  -- },
+  {
+    "mfussenegger/nvim-dap-python",
+    dependencies = "mfussenegger/nvim-dap",
+    ft = "python",
+    config = function()
+      local python_path = io.popen("which python3"):read("l")
+      if python_path ~= nil then
+        local debugpy = io.popen("pip list | grep debugpy"):read("l")
+        if debugpy ~= nil then
+          require("dap-python").setup(python_path)
+        end
+      end
+    end,
+    keys = {
+      {
+        "<leader>dc",
+        function()
+          require("dap-python").test_class()
+        end,
+        desc = "test class",
+      },
+      { "<leader>dd", '<ESC>:lua require("dap-python").debug_selection()<CR>', desc = "python debug select" },
+      {
+        "<leader>dm",
+        function()
+          require("dap-python").test_method()
+        end,
+        desc = "test method",
+      },
+    },
+  },
   -- nvim-jdtls
   -- {
   --   "mfussenegger/nvim-jdtls",
@@ -659,7 +660,7 @@ return {
         "docker_compose_language_service",
         -- "gradle_ls",
         -- "jdtls",
-        -- "helm_ls",
+        "helm_ls",
         "jsonls",
         "lua_ls",
         "pyright",
@@ -834,6 +835,7 @@ return {
       "neovim/nvim-lspconfig",
       "SmiteshP/nvim-navic",
       "kristijanhusak/vim-dadbod-completion",
+      "simrat39/rust-tools.nvim",
     },
     config = function()
       local cmp = require("cmp")
@@ -900,7 +902,7 @@ return {
         "docker_compose_language_service",
         -- "gradle_ls",
         -- "jdtls",
-        -- "helm_ls",
+        "helm_ls",
         "jsonls",
         "lua_ls",
         "pyright",
@@ -947,7 +949,7 @@ return {
                 schemas = {
                   kubernetes = "*.yml",
                   ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
-                  "*.yml",
+                  "*gitlab*.yml",
                 },
               },
             },
@@ -957,6 +959,10 @@ return {
             on_attach = on_attach,
             capabilities = capabilities,
           })
+        end
+        if language == "rust_analyzer" then
+          local rt = require("rust-tools")
+          rt.setup();
         end
       end
     end,
