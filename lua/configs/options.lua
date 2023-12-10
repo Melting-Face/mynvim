@@ -42,3 +42,4 @@ vim.opt.listchars:append "eol:↴"
 vim.g.ftplugin_sql_omni_key = '<C-;>'
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_show_database_icon = 1
+vim.g.better_whitespace_guicolor='#C0CAF5'

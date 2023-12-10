@@ -9,6 +9,8 @@ return {
   "mhinz/vim-startify",
   -- multi cursor
   "mg979/vim-visual-multi",
+  -- white space
+  "ntpeters/vim-better-whitespace",
   -- vim move
   -- {
   --   "matze/vim-move",
@@ -962,7 +964,7 @@ return {
         end
         if language == "rust_analyzer" then
           local rt = require("rust-tools")
-          rt.setup();
+          rt.setup()
         end
       end
     end,
