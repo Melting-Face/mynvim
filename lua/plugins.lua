@@ -46,6 +46,8 @@ return {
       },
     },
   },
+  -- sed
+  "nvim-pack/nvim-spectre",
 
   --telescope(fzf)
   {
@@ -307,7 +309,7 @@ return {
   -- null_ls
   {
     "nvimtools/none-ls.nvim",
-    commit = 'fc0f601',
+    commit = "fc0f601",
     config = function()
       local null_ls = require("null-ls")
       null_ls.setup({
@@ -928,9 +930,21 @@ return {
             settings = {
               yaml = {
                 schemas = {
-                  kubernetes = "*.yml",
+                  kubernetes = {
+                    "*config.yml",
+                    "*deployment.yml",
+                    "*secret.yml",
+                    "*service.yml",
+                    "*values.yml",
+                  },
                   ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
                   "*gitlab*.yml",
+                  ["https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json"] = {
+                    "*dbt_project.yml",
+                    "*packages.yml",
+                    "*profiles.yml",
+                    "*schema.yml",
+                  }
                 },
               },
             },
