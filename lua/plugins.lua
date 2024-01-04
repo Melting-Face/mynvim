@@ -47,8 +47,10 @@ return {
     },
   },
   -- sed
-  "nvim-pack/nvim-spectre",
-
+  {
+    "nvim-pack/nvim-spectre",
+    config = true,
+  },
   --telescope(fzf)
   {
     "nvim-telescope/telescope.nvim",
