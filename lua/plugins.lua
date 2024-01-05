@@ -66,6 +66,13 @@ return {
       { "<leader>fs",  ":Telescope live_grep<CR>",    desc = "search" },
     },
   },
+  -- text case
+  {
+    "johmsalas/text-case.nvim",
+    config = function()
+      require("textcase").setup({})
+    end,
+  },
 
   -- INFO: CSV
   {
@@ -946,7 +953,7 @@ return {
                     "*packages.yml",
                     "*profiles.yml",
                     "*schema.yml",
-                  }
+                  },
                 },
               },
             },
