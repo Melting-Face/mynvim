@@ -25,6 +25,7 @@ vim.o.fileencodings = 'utf8'
 vim.o.encoding='UTF-8'
 vim.o.updatetime=100
 vim.o.timeoutlen=2500
+vim.o.undodir = os.getenv("HOME") .. "/.tmp/vim/undo/"
 -- mouse option is 'all'
 vim.o.mouse = 'r'
 -- termguicolor option is true
