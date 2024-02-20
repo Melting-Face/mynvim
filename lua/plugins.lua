@@ -582,6 +582,7 @@ return {
     dependencies = "mfussenegger/nvim-dap",
     config = true,
     ft = {
+      "rust",
       "lua",
       "python",
       "java",
