@@ -320,6 +320,7 @@ return {
   -- null_ls
   {
     "nvimtools/none-ls.nvim",
+    commit = '7e146f3a188853843bb4ca1bff24c912bb9b7177',
     config = function()
       local null_ls = require("null-ls")
       null_ls.setup({
