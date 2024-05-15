@@ -7,10 +7,12 @@ fi
 
 brew install go
 brew install lua
+brew install nvim
 brew install tmux
 brew install node
 brew install python
 brew install ripgrep
+brew install gnu-sed
 # install rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
@@ -19,7 +21,7 @@ ln -f "$PWD/tmux.conf" "$HOME/.tmux.conf"
 
 mkdir -p "$HOME/.config/nvim"
 ln -f "$PWD/init.lua" "$HOME/.config/nvim/init.lua"
-ln -f "$PWD/lua" "$HOME/.config/nvim/lua"
-ln -f "$PWD/ftplugin" "$HOME/.config/nvim/ftplugin"
+ln -sf "$PWD/lua" "$HOME/.config/nvim/lua"
+ln -sf "$PWD/ftplugin" "$HOME/.config/nvim/ftplugin"
 
 nvim --headless "+Lazy! sync" +qa
