@@ -106,6 +106,7 @@ return {
   -- neogit
   {
     "NeogitOrg/neogit",
+    tag = "v0.0.1",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "sindrets/diffview.nvim",
