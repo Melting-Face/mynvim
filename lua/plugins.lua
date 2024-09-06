@@ -642,7 +642,6 @@ return {
         "ruff_lsp",
         "rust_analyzer",
         "taplo",
-        "tsserver",
         "yamlls",
       },
       automatic_installation = true,
@@ -888,7 +887,6 @@ return {
         "ruff_lsp",
         "rust_analyzer",
         "taplo",
-        "tsserver",
         "yamlls",
       }
 
