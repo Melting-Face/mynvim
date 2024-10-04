@@ -942,11 +942,11 @@ return {
               yaml = {
                 schemas = {
                   kubernetes = {
-                    "*config.yml",
-                    "*deployment.yml",
-                    "*secret.yml",
-                    "*service.yml",
-                    "*values.yml",
+                    "*config*.yml",
+                    "*deployment*.yml",
+                    "*secret*.yml",
+                    "*service*.yml",
+                    "*values*.yml",
                   },
                   ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
                   "*gitlab*.yml",
@@ -955,6 +955,8 @@ return {
                     "*packages.yml",
                     "*profiles.yml",
                     "*schema.yml",
+                    "*source.yml",
+                    "*model.yml",
                   },
                 },
               },
