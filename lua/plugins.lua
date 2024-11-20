@@ -326,6 +326,9 @@ return {
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
         sources = {
+          null_ls.builtins.code_actions.refactoring,
+          null_ls.builtins.code_actions.gitsigns,
+
           null_ls.builtins.diagnostics.sqlfluff.with({
             extra_args = { "--dialect", "trino" },
           }),
