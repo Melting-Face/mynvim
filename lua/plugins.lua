@@ -923,7 +923,7 @@ return {
               },
             },
           })
-        elseif language == "ruff_lsp" then
+        elseif language == "ruff" then
           lspconfig[language].setup({
             on_attach = on_attach,
             init_options = {
