@@ -1,3 +1,24 @@
+local language_servers = {
+  "bashls",
+  "dockerls",
+  "docker_compose_language_service",
+  "eslint",
+  "gradle_ls",
+  "groovyls",
+  "jdtls",
+  "helm_ls",
+  "jsonls",
+  "lua_ls",
+  "prismals",
+  "pyright",
+  "ruff",
+  "rust_analyzer",
+  "terraformls",
+  "taplo",
+  "ts_ls",
+  "yamlls",
+}
+
 return {
   -- devicons
   "nvim-tree/nvim-web-devicons",
@@ -631,24 +652,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     dependencies = "neovim/nvim-lspconfig",
     config = {
-      ensure_installed = {
-        "bashls",
-        "dockerls",
-        "docker_compose_language_service",
-        "eslint",
-        "gradle_ls",
-        "jdtls",
-        "helm_ls",
-        "jsonls",
-        "lua_ls",
-        "prismals",
-        "pyright",
-        "ruff",
-        "rust_analyzer",
-        "taplo",
-        "ts_ls",
-        "yamlls",
-      },
+      ensure_installed = language_servers,
       automatic_installation = true,
     },
   },
@@ -877,24 +881,7 @@ return {
 
       -- Setup lspconfig.
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
-      local languages = {
-        "bashls",
-        "dockerls",
-        "docker_compose_language_service",
-        "eslint",
-        "gradle_ls",
-        "jdtls",
-        "helm_ls",
-        "jsonls",
-        "lua_ls",
-        "prismals",
-        "pyright",
-        "ruff",
-        "rust_analyzer",
-        "taplo",
-        "ts_ls",
-        "yamlls",
-      }
+      local languages = language_servers
 
       for _, language in ipairs(languages) do
         if language == "lua_ls" then
