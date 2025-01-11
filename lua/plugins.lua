@@ -352,6 +352,7 @@ return {
           null_ls.builtins.diagnostics.sqlfluff.with({
             extra_args = { "--dialect", "trino" },
           }),
+          null_ls.builtins.diagnostics.gitlint,
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.yamllint,
 
