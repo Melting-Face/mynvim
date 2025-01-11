@@ -4,7 +4,6 @@ local language_servers = {
   "docker_compose_language_service",
   "eslint",
   "gradle_ls",
-  "groovyls",
   "jdtls",
   "helm_ls",
   "jsonls",
@@ -112,7 +111,6 @@ return {
   -- neogit
   {
     "NeogitOrg/neogit",
-    tag = "v0.0.1",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "sindrets/diffview.nvim",
