@@ -454,6 +454,8 @@ return {
       "nvim-neotest/nvim-nio",
     },
     ft = {
+      "c",
+      "cpp",
       "rust",
       "lua",
       "python",
@@ -463,6 +465,29 @@ return {
     },
     config = function()
       local dap = require("dap")
+
+      local home = os.getenv("HOME")
+      local mason = home .. "/.local/share/nvim/mason/packages"
+
+      dap.adapters.codelldb = {
+        type = "executable",
+        command = mason .. "/codelldb/codelldb",
+      }
+
+      dap.configurations.rust = {
+        {
+          name = "Launch file",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+          end,
+          cwd = "${workspaceFolder}",
+          stopOnEntry = false,
+        },
+      }
+      dap.configurations.c = dap.configurations.rust
+      dap.configurations.cpp = dap.configurations.rust
       local dapui = require("dapui")
       dapui.setup()
       dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -804,9 +829,9 @@ return {
   },
   -- rust-tools
   {
-    "simrat39/rust-tools.nvim",
-    config = true,
-    ft = "rust",
+    "mrcjkb/rustaceanvim",
+    version = "^5", -- Recommended
+    lazy = false, -- This plugin is already lazy
   },
   -- cmp
   {
@@ -884,7 +909,8 @@ return {
       local languages = language_servers
 
       for _, language in ipairs(languages) do
-        if language == "lua_ls" then
+        if language == "rust_analyzer" then
+        elseif language == "lua_ls" then
           lspconfig[language].setup({
             on_attach = on_attach,
             capabilities = capabilities,
