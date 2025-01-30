@@ -18,6 +18,17 @@ local language_servers = {
   "yamlls",
 }
 
+local filetypes = {
+  "c",
+  "cpp",
+  "rust",
+  "lua",
+  "python",
+  "java",
+  "javascript",
+  "typescript",
+}
+
 return {
   -- devicons
   "nvim-tree/nvim-web-devicons",
@@ -453,16 +464,7 @@ return {
       "mfussenegger/nvim-dap",
       "nvim-neotest/nvim-nio",
     },
-    ft = {
-      "c",
-      "cpp",
-      "rust",
-      "lua",
-      "python",
-      "java",
-      "javascript",
-      "typescript",
-    },
+    ft = filetypes,
     config = function()
       local dap = require("dap")
 
@@ -610,14 +612,7 @@ return {
     "theHamsta/nvim-dap-virtual-text",
     dependencies = "mfussenegger/nvim-dap",
     config = true,
-    ft = {
-      "rust",
-      "lua",
-      "python",
-      "java",
-      "javascript",
-      "typescript",
-    },
+    ft = filetypes,
   },
   -- nvim-dap-python
   {
