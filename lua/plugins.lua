@@ -49,6 +49,11 @@ return {
       { "<localleader>u", "<cmd>UndotreeToggle<CR>", desc = "undo tree" },
     },
   },
+  --todo
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
   -- tmux
   {
     "aserowy/tmux.nvim",
