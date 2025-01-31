@@ -360,6 +360,8 @@ return {
           null_ls.builtins.code_actions.refactoring,
           null_ls.builtins.code_actions.gitsigns,
 
+          null_ls.builtins.diagnostics.codespell,
+
           null_ls.builtins.diagnostics.sqlfluff.with({
             extra_args = { "--dialect", "trino" },
           }),
