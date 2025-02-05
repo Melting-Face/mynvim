@@ -169,6 +169,7 @@ return {
   {
     "akinsho/git-conflict.nvim",
     config = true,
+    tag = "v2.1.0",
   },
   {
     "https://gitlab.com/yorickpeterse/nvim-pqf.git",
