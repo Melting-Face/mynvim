@@ -380,6 +380,7 @@ return {
           }),
           null_ls.builtins.formatting.prettierd,
           null_ls.builtins.formatting.stylua,
+          null_ls.builtins.formatting.xmllint,
         },
       })
     end,
@@ -696,7 +697,7 @@ return {
   },
   -- nvim tree
   {
-    "kyazdani42/nvim-tree.lua",
+    "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = {
       sync_root_with_cwd = true,
@@ -704,6 +705,9 @@ return {
         open_file = {
           quit_on_open = true,
         },
+      },
+      git = {
+        enable = false,
       },
     },
     keys = {
@@ -834,7 +838,7 @@ return {
   {
     "mrcjkb/rustaceanvim",
     version = "^5", -- Recommended
-    lazy = false, -- This plugin is already lazy
+    lazy = false,   -- This plugin is already lazy
   },
   -- cmp
   {
@@ -876,7 +880,6 @@ return {
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "luasnip" },
-          { name = "crates" },
           { name = "vim-dadbod-completion" },
         }, {
           { name = "buffer" },
@@ -947,7 +950,7 @@ return {
               settings = {
                 args = {
                   "--extend-select",
-                  "E,F,I,C4,C90,SIM,PD",
+                  "AIR,B,C4,C90,E,F,G,I,LOG,NPY,PD,Q,SIM,T20,UP",
                   "--extend-ignore",
                   "PD901",
                 },
