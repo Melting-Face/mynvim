@@ -950,7 +950,7 @@ return {
               settings = {
                 args = {
                   "--extend-select",
-                  "AIR,B,C4,C90,E,F,G,I,LOG,NPY,PD,Q,SIM,T20,UP",
+                  "AIR,B,C4,C90,E,F,FURB,G,I,LOG,NPY,PD,Q,SIM,T20,UP",
                   "--extend-ignore",
                   "PD901",
                 },
