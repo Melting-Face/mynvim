@@ -366,15 +366,11 @@ return {
           null_ls.builtins.code_actions.refactoring,
           null_ls.builtins.code_actions.gitsigns,
 
-          null_ls.builtins.diagnostics.sqlfluff.with({
-            extra_args = { "--dialect", "trino" },
-          }),
+          null_ls.builtins.diagnostics.sqruff,
           null_ls.builtins.diagnostics.hadolint,
           null_ls.builtins.diagnostics.yamllint,
 
-          null_ls.builtins.formatting.sqlfluff.with({
-            extra_args = { "--dialect", "trino" },
-          }),
+          null_ls.builtins.formatting.sqruff,
           null_ls.builtins.formatting.prettierd,
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.formatting.xmllint,
