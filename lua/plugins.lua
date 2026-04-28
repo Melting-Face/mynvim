@@ -727,7 +727,7 @@ return {
 
       require("lualine").setup({
         options = {
-          theme = "catppuccin",
+          theme = "auto",
           disabled_filetypes = {
             winbar = {
               "NvimTree",
@@ -752,81 +752,81 @@ return {
     end,
   },
   -- refactoring
-  {
-    "ThePrimeagen/refactoring.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    ft = {
-      "java",
-      "javascript",
-      "python",
-      "typescript",
-    },
-    config = {
-      prompt_func_return_type = {
-        java = true,
-        javascript = true,
-        python = true,
-        typescript = true,
-      },
-      prompt_func_param_type = {
-        java = true,
-        javascript = true,
-        python = true,
-        typescript = true,
-      },
-    },
-    keys = {
-      {
-        "<leader>re",
-        function()
-          require("refactoring").refactor("Extract Function")
-        end,
-        desc = "extract function",
-        mode = "v",
-      },
-      {
-        "<leader>rf",
-        function()
-          require("refactoring").refactor("Extract Function To File")
-        end,
-        desc = "extract function to file",
-        mode = "v",
-      },
-      {
-        "<leader>ri",
-        function()
-          require("refactoring").refactor("Inline Variable")
-        end,
-        desc = "inline variable",
-        mode = { "n", "v" },
-      },
-      {
-        "<leader>rv",
-        function()
-          require("refactoring").refactor("Extract Variable")
-        end,
-        desc = "extract variable",
-        mode = "v",
-      },
-      {
-        "<leader>rb",
-        function()
-          require("refactoring").refactor("Extract Block")
-        end,
-        desc = "refactoring extract block",
-      },
-      {
-        "<leader>rf",
-        function()
-          require("refactoring").refactor("Extract Block To File")
-        end,
-        desc = "refactoring extract block to file",
-      },
-    },
-  },
+  -- {
+  --   "ThePrimeagen/refactoring.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  --   ft = {
+  --     "java",
+  --     "javascript",
+  --     "python",
+  --     "typescript",
+  --   },
+  --   config = {
+  --     prompt_func_return_type = {
+  --       java = true,
+  --       javascript = true,
+  --       python = true,
+  --       typescript = true,
+  --     },
+  --     prompt_func_param_type = {
+  --       java = true,
+  --       javascript = true,
+  --       python = true,
+  --       typescript = true,
+  --     },
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>re",
+  --       function()
+  --         require("refactoring").refactor("Extract Function")
+  --       end,
+  --       desc = "extract function",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>rf",
+  --       function()
+  --         require("refactoring").refactor("Extract Function To File")
+  --       end,
+  --       desc = "extract function to file",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>ri",
+  --       function()
+  --         require("refactoring").refactor("Inline Variable")
+  --       end,
+  --       desc = "inline variable",
+  --       mode = { "n", "v" },
+  --     },
+  --     {
+  --       "<leader>rv",
+  --       function()
+  --         require("refactoring").refactor("Extract Variable")
+  --       end,
+  --       desc = "extract variable",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>rb",
+  --       function()
+  --         require("refactoring").refactor("Extract Block")
+  --       end,
+  --       desc = "refactoring extract block",
+  --     },
+  --     {
+  --       "<leader>rf",
+  --       function()
+  --         require("refactoring").refactor("Extract Block To File")
+  --       end,
+  --       desc = "refactoring extract block to file",
+  --     },
+  --   },
+  -- },
   -- rust-tools
   {
     "mrcjkb/rustaceanvim",
@@ -1079,11 +1079,5 @@ return {
       { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
       { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>",   desc = "Deny diff" },
     },
-  },
-  {
-    "OXY2DEV/markview.nvim",
-    lazy = false,
-    -- Completion for `blink.cmp`
-    dependencies = { "saghen/blink.cmp" },
   },
 }
