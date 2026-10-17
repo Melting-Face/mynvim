@@ -53,6 +53,36 @@ jobs:
         if: runner.os == 'Linux'
         run: ./install.sh --yes --with tmux,go,lua
 
+  # Fedora(dnf), Arch(pacman)를 깨끗한 컨테이너에서 실제 설치로 검증
+  distros:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["fedora:latest", "archlinux:latest"]
+    container: ${{ matrix.image }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 설치 (기본)
+        run: ./install.sh --yes
+
+      - name: PATH에 ~/.local/bin 추가
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Lua spec
+        run: bash tests/run_lua.sh
+
+      - name: nvim 0.11 확인
+        run: nvim --headless "+lua assert(vim.fn.has('nvim-0.11')==1)" +qa
+
+      - name: treesitter 스모크
+        run: nvim --headless tests/lua/paths_spec.lua "+luafile tests/treesitter_smoke.lua"
+
   windows:
     runs-on: windows-latest
     timeout-minutes: 30

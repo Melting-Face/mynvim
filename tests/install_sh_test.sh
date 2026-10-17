@@ -171,6 +171,15 @@ test_core_apt_has_build_essential() {
     assert_not_contains "$out" "tmux"
 }
 
+test_pacman_first_install_syncs_db() {
+    local out
+    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=pacman "$INSTALL_SH" --with tmux --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    # 첫 설치만 -Syu로 DB를 동기화하고, 이후 설치는 -S
+    assert_equals "1" "$(printf '%s\n' "$out" | grep -c 'pacman -Syu ')"
+    assert_contains "$out" "pacman -S --noconfirm --needed tmux"
+}
+
 test_with_tmux_installs_tmux_and_tpm() {
     local out home
     home="$(mktemp -d)"

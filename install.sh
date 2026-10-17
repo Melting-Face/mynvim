@@ -180,6 +180,7 @@ has_cmd() {
 # 루트가 아니면 sudo를 붙인다 (컨테이너 등 루트 환경에서는 비움)
 SUDO=""
 APT_UPDATED=0
+PACMAN_SYNCED=0
 init_sudo() {
     SUDO=""
     if [ "$(id -u)" -ne 0 ]; then
@@ -248,7 +249,15 @@ pkg_install() {
             run $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
             ;;
         dnf) run $SUDO dnf install -y "$@" ;;
-        pacman) run $SUDO pacman -S --noconfirm --needed "$@" ;;
+        pacman)
+            # 새 컨테이너/설치 직후에는 패키지 DB가 없으므로 처음 한 번은 -Syu로 동기화 (부분 업그레이드 방지)
+            if [ "$PACMAN_SYNCED" -eq 0 ]; then
+                run $SUDO pacman -Syu --noconfirm --needed "$@"
+                PACMAN_SYNCED=1
+            else
+                run $SUDO pacman -S --noconfirm --needed "$@"
+            fi
+            ;;
     esac
 }
 
