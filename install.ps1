@@ -60,12 +60,42 @@ function Test-CommandAvailable {
     return [bool](Get-Command -Name $Name -ErrorAction SilentlyContinue)
 }
 
-# 대화형 세션인지 확인한다 (입력이 리다이렉트되지 않은 경우만)
+# 명령줄 인자에 -NonInteractive(약어 -noni 등 포함, 대소문자 무시)가 있는지 확인한다
+# -File/-Command 뒤의 인자는 스크립트에 넘어가는 값이므로 보지 않는다
+function Test-NonInteractiveArgument {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [string[]]$Arguments
+    )
+    foreach ($argument in @($Arguments)) {
+        if ([string]::IsNullOrEmpty($argument) -or $argument -notmatch '^[-/]') {
+            continue
+        }
+        $name = $argument.TrimStart('-', '/').ToLowerInvariant()
+        if (@('file', 'f', 'command', 'c') -contains $name) {
+            break
+        }
+        # PowerShell은 고유한 접두어를 허용한다 (-noni ~ -noninteractive)
+        if ($name.Length -ge 4 -and 'noninteractive'.StartsWith($name, [System.StringComparison]::Ordinal)) {
+            return $true
+        }
+    }
+    return $false
+}
+
+# 대화형 세션인지 확인한다 (입력이 리다이렉트되지 않고, 호스트가 -NonInteractive로 실행되지 않은 경우만)
+# -NonInteractive 호스트에서 Read-Host는 실패하므로 묻지 않고 필수만 설치한다
 function Test-InteractiveSession {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    return ([Environment]::UserInteractive -and -not [Console]::IsInputRedirected)
+    if (-not [Environment]::UserInteractive -or [Console]::IsInputRedirected) {
+        return $false
+    }
+    return (-not (Test-NonInteractiveArgument -Arguments ([Environment]::GetCommandLineArgs())))
 }
 
 # 선택 항목을 정해진 순서(go, rust, java, lua)의 배열로 정리한다
@@ -276,8 +306,9 @@ function Update-OutdatedNvim {
         Invoke-Winget -Arguments $wingetArgs
         $exitCode = $LASTEXITCODE
         # 0: 성공, -1978335189(0x8A15002B): 적용할 업데이트 없음
+        # 그 밖(예: -1978335212(0x8A150014), winget 밖에서 설치한 nvim)은 중단하지 않고 경고만 한다
         if (@(0, -1978335189) -notcontains $exitCode) {
-            throw "nvim 업그레이드 실패 (exit code $exitCode)"
+            Write-Warning "nvim 업그레이드 실패 (exit code $exitCode). winget 밖에서 설치한 nvim일 수 있습니다. 'winget upgrade --id Neovim.Neovim'으로 확인하거나, 직접 0.11 이상으로 올리세요"
         }
     }
     Update-SessionPath -DryRun:$DryRun
@@ -366,16 +397,36 @@ function Get-LinkTargetPath {
     if ([string]::IsNullOrEmpty($item.LinkType)) {
         return $null
     }
-    # PowerShell 5.1에서는 Target이 배열일 수 있으므로 첫 요소를 쓴다
-    $rawTarget = @($item.Target)[0]
-    if ([string]::IsNullOrEmpty($rawTarget)) {
+    # Target 읽기나 경로 변환이 실패하면(권한, 형식이 다른 재분석 지점 등) 링크 대상을 모르는 것으로 본다
+    try {
+        # PowerShell 5.1에서는 Target이 배열일 수 있으므로 첫 요소를 쓴다
+        $rawTarget = @($item.Target)[0]
+        if ([string]::IsNullOrEmpty($rawTarget)) {
+            return $null
+        }
+        $rawTarget = $rawTarget -replace '^\\\?\?\\', ''
+        if (-not [System.IO.Path]::IsPathRooted($rawTarget)) {
+            $rawTarget = Join-Path -Path (Split-Path -Parent $Path) -ChildPath $rawTarget
+        }
+        return [System.IO.Path]::GetFullPath($rawTarget).TrimEnd('\', '/')
+    } catch {
         return $null
     }
-    $rawTarget = $rawTarget -replace '^\\\?\?\\', ''
-    if (-not [System.IO.Path]::IsPathRooted($rawTarget)) {
-        $rawTarget = Join-Path -Path (Split-Path -Parent $Path) -ChildPath $rawTarget
+}
+
+# 경로 항목(깨진 정션 포함)이 디렉터리면 'Directory', 아니면 'File'을 돌려준다. 링크를 따라가지 않는다
+function Get-PathEntryKind {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+    $attributes = [System.IO.File]::GetAttributes($Path)
+    if ($attributes.HasFlag([System.IO.FileAttributes]::Directory)) {
+        return 'Directory'
     }
-    return [System.IO.Path]::GetFullPath($rawTarget).TrimEnd('\', '/')
+    return 'File'
 }
 
 # 파일/디렉터리(깨진 정션 포함)를 링크를 따라가지 않고 이름만 바꾼다
@@ -387,12 +438,37 @@ function Move-PathEntry {
         [Parameter(Mandatory = $true)]
         [string]$Destination
     )
-    $attributes = [System.IO.File]::GetAttributes($Path)
-    if ($attributes.HasFlag([System.IO.FileAttributes]::Directory)) {
+    if ((Get-PathEntryKind -Path $Path) -eq 'Directory') {
         [System.IO.Directory]::Move($Path, $Destination)
     } else {
         [System.IO.File]::Move($Path, $Destination)
     }
+}
+
+# 레포(Source)가 연결 대상(Target)의 하위 경로이면 $true (같은 경로는 하위가 아님)
+function Test-RepoInsideTarget {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Source,
+        [Parameter(Mandatory = $true)]
+        [string]$Target
+    )
+    return (Test-PathInside -Path (Resolve-FullPath -Path $Source) -Parent (Resolve-FullPath -Path $Target))
+}
+
+# 레포가 연결 대상 안에 있을 때의 오류 메시지
+function Get-RepoInsideTargetMessage {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Source,
+        [Parameter(Mandatory = $true)]
+        [string]$Target
+    )
+    return "레포($Source)가 연결 대상($Target) 안에 있습니다. 레포를 다른 곳(예: `$HOME\mynvim)에 clone한 뒤 다시 실행하세요"
 }
 
 # Target을 Source로 향하는 디렉터리 정션으로 만든다. 기존 대상은 지우지 않고 백업한다
@@ -420,8 +496,9 @@ function Set-ConfigLink {
     }
 
     # 레포가 대상 안에 clone된 경우: 대상을 백업(이동)하면 레포 경로가 바뀌므로 아무것도 바꾸지 않고 중단한다
-    if (Test-PathInside -Path $sourceFull -Parent $targetFull) {
-        throw "레포($sourceFull)가 연결 대상($targetFull) 안에 있습니다. 레포를 다른 곳(예: `$HOME\mynvim)에 clone한 뒤 다시 실행하세요"
+    # (Main의 사전 점검과 같은 검사를 한 번 더 하는 방어 코드)
+    if (Test-RepoInsideTarget -Source $sourceFull -Target $targetFull) {
+        throw (Get-RepoInsideTargetMessage -Source $sourceFull -Target $targetFull)
     }
 
     $parent = Split-Path -Parent $targetFull
@@ -440,7 +517,9 @@ function Set-ConfigLink {
             $backup = "$targetFull.bak.$stamp-$n"
         }
         Write-Output "백업: $targetFull -> $backup"
-        Invoke-Step -DryRun:$DryRun -Command "Move-Item -LiteralPath `"$targetFull`" -Destination `"$backup`"" -Action {
+        # DryRun에도 실제로 실행하는 명령([IO.Directory]::Move 또는 [IO.File]::Move)을 출력한다
+        $entryKind = Get-PathEntryKind -Path $targetFull
+        Invoke-Step -DryRun:$DryRun -Command "[IO.$entryKind]::Move(`"$targetFull`", `"$backup`")" -Action {
             Move-PathEntry -Path $targetFull -Destination $backup
         }
     }
@@ -478,6 +557,32 @@ function Set-WeztermConfig {
     }
 }
 
+# 스크립트를 종료 코드와 함께 끝낸다 (테스트에서 Mock 하기 위한 래퍼: exit는 Pester 세션까지 끝내므로)
+function Exit-Script {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$Code
+    )
+    exit $Code
+}
+
+# 이 레포 경로 (테스트에서 Mock 하기 위한 래퍼)
+function Get-RepoDir {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+    return $PSScriptRoot
+}
+
+# nvim 설정 연결 대상 경로 (%LOCALAPPDATA%\nvim)
+function Get-NvimConfigTarget {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+    return (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim')
+}
+
 function Main {
     [CmdletBinding()]
     param(
@@ -488,11 +593,19 @@ function Main {
     )
     $ErrorActionPreference = 'Stop'
 
+    # 사전 점검: 묻거나 설치하기 전에, 레포가 nvim 설정 대상 안에 clone되었으면 바로 중단한다
+    $repoDir = Get-RepoDir
+    $nvimTarget = Get-NvimConfigTarget
+    if (Test-RepoInsideTarget -Source $repoDir -Target $nvimTarget) {
+        [Console]::Error.WriteLine("install.ps1: $(Get-RepoInsideTargetMessage -Source (Resolve-FullPath -Path $repoDir) -Target (Resolve-FullPath -Path $nvimTarget))")
+        Exit-Script -Code 1
+    }
+
     try {
         $components = @(Resolve-Components -With $With -All:$All -Yes:$Yes)
     } catch {
         [Console]::Error.WriteLine("install.ps1: $($_.Exception.Message)")
-        exit 2
+        Exit-Script -Code 2
     }
 
     $selected = '없음 (필수만)'
@@ -508,10 +621,9 @@ function Main {
 
     if (-not (Test-CommandAvailable -Name 'winget')) {
         [Console]::Error.WriteLine('install.ps1: winget이 필요합니다. Microsoft Store에서 App Installer를 설치하세요: https://aka.ms/getwinget')
-        exit 1
+        Exit-Script -Code 1
     }
 
-    $repoDir = $PSScriptRoot
     try {
         # 1) 패키지 설치
         foreach ($id in (Get-CorePackageId)) {
@@ -524,7 +636,7 @@ function Main {
         Update-OutdatedNvim -DryRun:$DryRun
 
         # 2) 설정 연결 (기존 대상은 백업)
-        Set-ConfigLink -Source $repoDir -Target (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') -DryRun:$DryRun
+        Set-ConfigLink -Source $repoDir -Target $nvimTarget -DryRun:$DryRun
         if (Test-CommandAvailable -Name 'wezterm') {
             Set-WeztermConfig -Path (Join-Path -Path $repoDir -ChildPath 'wezterm.lua') -DryRun:$DryRun
         } else {
@@ -540,7 +652,7 @@ function Main {
         }
     } catch {
         [Console]::Error.WriteLine("install.ps1: $($_.Exception.Message)")
-        exit 1
+        Exit-Script -Code 1
     }
 }
 
