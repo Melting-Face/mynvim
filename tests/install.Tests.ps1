@@ -28,6 +28,7 @@ Describe 'install.ps1' {
         Mock Test-WingetPackageInstalled { $false }
         Mock Set-UserEnvironmentVariable { }
         Mock Test-InteractiveSession { $false }
+        Mock Get-NvimVersion { [version]'0.12.0' }
 
         # 테스트마다 겹치지 않는 작업 디렉터리를 만든다
         function New-TestBase {
@@ -44,6 +45,8 @@ Describe 'install.ps1' {
         }
 
         It 'unknown component exits 2' -Skip:$NotWindows {
+            # Windows PowerShell 5.1은 EAP=Stop일 때 2>&1로 받은 stderr 첫 줄을 종료 오류로 바꾸므로 이 블록에서만 Continue
+            $ErrorActionPreference = 'Continue'
             $output = & $PowerShellExe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $InstallScript -With foo -DryRun 2>&1
             $LASTEXITCODE | Should -Be 2
             ($output | Out-String) | Should -Match 'foo'
@@ -261,6 +264,39 @@ Describe 'install.ps1' {
         }
     }
 
+    Context 'nvim version' {
+        It 'parses the first line of nvim --version' {
+            ConvertTo-NvimVersion -Text 'NVIM v0.10.2' | Should -Be ([version]'0.10.2')
+            ConvertTo-NvimVersion -Text 'NVIM v0.12.0-dev-1234+gabcdef' | Should -Be ([version]'0.12.0')
+            ConvertTo-NvimVersion -Text 'something else' | Should -BeNullOrEmpty
+        }
+
+        It 'upgrades nvim older than 0.11' {
+            Mock Get-NvimVersion { [version]'0.10.2' }
+            Mock Update-SessionPath { }
+            Update-OutdatedNvim | Out-Null
+            Should -Invoke Invoke-Winget -Times 1 -Exactly -ParameterFilter {
+                ($Arguments -join ' ') -eq 'upgrade --id Neovim.Neovim -e --accept-source-agreements --accept-package-agreements'
+            }
+            Should -Invoke Update-SessionPath -Times 1 -Exactly
+        }
+
+        It 'DryRun only prints the upgrade for nvim older than 0.11' {
+            Mock Get-NvimVersion { [version]'0.10.2' }
+            $output = Update-OutdatedNvim -DryRun
+            ($output -join "`n") | Should -Match ([regex]::Escape('+ winget upgrade --id Neovim.Neovim -e --accept-source-agreements --accept-package-agreements'))
+            Should -Invoke Invoke-Winget -Times 0 -Exactly
+        }
+
+        It 'does not upgrade nvim 0.12.0' {
+            Mock Get-NvimVersion { [version]'0.12.0' }
+            Mock Update-SessionPath { }
+            Update-OutdatedNvim | Out-Null
+            Should -Invoke Invoke-Winget -Times 0 -Exactly
+            Should -Invoke Update-SessionPath -Times 0 -Exactly
+        }
+    }
+
     Context 'Set-WeztermConfig' {
         It 'sets WEZTERM_CONFIG_FILE for the user' {
             $path = Join-Path -Path $TestDrive -ChildPath 'wezterm.lua'
@@ -299,6 +335,8 @@ Describe 'install.ps1' {
 
         It 'missing winget exits 1' -Skip:$NotWindows {
             # winget(WindowsApps)이 없는 PATH로 자식 프로세스를 실행한다
+            # Windows PowerShell 5.1은 EAP=Stop일 때 2>&1로 받은 stderr 첫 줄을 종료 오류로 바꾸므로 이 블록에서만 Continue
+            $ErrorActionPreference = 'Continue'
             $savedPath = $env:Path
             try {
                 $env:Path = Join-Path -Path $env:SystemRoot -ChildPath 'System32'

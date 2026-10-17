@@ -224,6 +224,63 @@ function Update-SessionPath {
     }
 }
 
+# 'nvim --version' 첫 줄("NVIM v0.10.2")을 [version]으로 바꾼다. 형식이 다르면 $null
+function ConvertTo-NvimVersion {
+    [CmdletBinding()]
+    [OutputType([version])]
+    param(
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]$Text
+    )
+    if ($Text -match '^NVIM v(\d+)\.(\d+)\.(\d+)') {
+        return [version]('{0}.{1}.{2}' -f $Matches[1], $Matches[2], $Matches[3])
+    }
+    return $null
+}
+
+# 설치된 nvim 버전을 돌려준다. nvim이 없으면 $null (테스트에서 Mock 하기 위한 래퍼)
+function Get-NvimVersion {
+    [CmdletBinding()]
+    [OutputType([version])]
+    param()
+    if (-not (Test-CommandAvailable -Name 'nvim')) {
+        return $null
+    }
+    $firstLine = @(& nvim --version)[0]
+    return (ConvertTo-NvimVersion -Text $firstLine)
+}
+
+# nvim이 0.11 미만이면 winget으로 업그레이드하고 PATH를 다시 반영한다
+function Update-OutdatedNvim {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = '-DryRun으로 변경 여부를 제어한다')]
+    [CmdletBinding()]
+    param(
+        [switch]$DryRun
+    )
+    $minimum = [version]'0.11.0'
+    $current = Get-NvimVersion
+    if ($null -eq $current) {
+        Write-Output 'nvim을 PATH에서 찾지 못해 버전 확인을 건너뜀'
+        return
+    }
+    if ($current -ge $minimum) {
+        Write-Output "nvim $current 확인됨 (0.11 이상)"
+        return
+    }
+    Write-Output "nvim 0.11 이상이 필요합니다 (현재: $current)"
+    $wingetArgs = @('upgrade', '--id', 'Neovim.Neovim', '-e', '--accept-source-agreements', '--accept-package-agreements')
+    Invoke-Step -DryRun:$DryRun -Command ('winget ' + ($wingetArgs -join ' ')) -Action {
+        Invoke-Winget -Arguments $wingetArgs
+        $exitCode = $LASTEXITCODE
+        # 0: 성공, -1978335189(0x8A15002B): 적용할 업데이트 없음
+        if (@(0, -1978335189) -notcontains $exitCode) {
+            throw "nvim 업그레이드 실패 (exit code $exitCode)"
+        }
+    }
+    Update-SessionPath -DryRun:$DryRun
+}
+
 # 상대 경로를 현재 위치 기준 전체 경로로 바꾼다 (존재하지 않아도 됨, 끝의 구분자는 제거)
 function Resolve-FullPath {
     [CmdletBinding()]
@@ -436,6 +493,7 @@ function Main {
             Install-WingetPackage -Id (Get-OptionalPackageId -Component $component) -DryRun:$DryRun
         }
         Update-SessionPath -DryRun:$DryRun
+        Update-OutdatedNvim -DryRun:$DryRun
 
         # 2) 설정 연결 (기존 대상은 백업)
         Set-ConfigLink -Source $repoDir -Target (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') -DryRun:$DryRun
