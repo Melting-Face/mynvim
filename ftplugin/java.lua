@@ -1,5 +1,4 @@
 local paths = require("configs.paths")
-local mason = vim.fn.stdpath("data") .. "/mason/packages"
 local jdtls_path = paths.mason_package("jdtls")
 -- Windows에서는 jdtls.cmd 래퍼를 사용한다
 local jdtls_bin = paths.is_windows() and "jdtls.cmd" or "jdtls"
@@ -20,10 +19,13 @@ end
 
 local jdtls = require("jdtls")
 
+-- mason 경로는 모두 configs.paths를 통해 만든다
+local debug_server = paths.mason_package("java-debug-adapter") .. "/extension/server"
+local test_server = paths.mason_package("java-test") .. "/extension/server"
 local bundles = {
-  vim.fn.glob(mason .. "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar", 1),
+  vim.fn.glob(debug_server .. "/com.microsoft.java.debug.plugin-*.jar", 1),
 }
-vim.list_extend(bundles, vim.split(vim.fn.glob(mason .. "/java-test/extension/server/*.jar", 1), "\n"))
+vim.list_extend(bundles, vim.split(vim.fn.glob(test_server .. "/*.jar", 1), "\n"))
 
 config["init_options"] = {
   bundles = bundles,
