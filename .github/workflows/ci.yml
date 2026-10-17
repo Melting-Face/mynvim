@@ -1,0 +1,158 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unix:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: shellcheck 준비
+        run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            brew install shellcheck
+          fi
+
+      - name: shellcheck
+        run: shellcheck install.sh tests/*.sh
+
+      - name: install.sh 테스트
+        run: bash tests/install_sh_test.sh
+
+      - name: 문서 테스트
+        run: bash tests/docs_test.sh
+
+      - name: 설치 (기본)
+        run: ./install.sh --yes
+
+      - name: PATH에 ~/.local/bin 추가
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Lua spec
+        run: bash tests/run_lua.sh
+
+      - name: nvim 0.11 확인
+        run: nvim --headless "+lua assert(vim.fn.has('nvim-0.11')==1)" +qa
+
+      - name: treesitter 스모크
+        run: nvim --headless tests/lua/paths_spec.lua "+luafile tests/treesitter_smoke.lua"
+
+      - name: 설치 (tmux,go,lua 선택)
+        if: runner.os == 'Linux'
+        run: ./install.sh --yes --with tmux,go,lua
+
+  # Fedora(dnf), Arch(pacman)를 깨끗한 컨테이너에서 실제 설치로 검증
+  distros:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["fedora:latest", "archlinux:latest"]
+    container: ${{ matrix.image }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 설치 (기본)
+        run: ./install.sh --yes
+
+      - name: PATH에 ~/.local/bin 추가
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Lua spec
+        run: bash tests/run_lua.sh
+
+      - name: nvim 0.11 확인
+        run: nvim --headless "+lua assert(vim.fn.has('nvim-0.11')==1)" +qa
+
+      - name: treesitter 스모크
+        run: nvim --headless tests/lua/paths_spec.lua "+luafile tests/treesitter_smoke.lua"
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [pwsh, powershell]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pester, PSScriptAnalyzer 설치
+        run: |
+          Install-Module Pester -MinimumVersion 5.0 -Force -Scope CurrentUser -SkipPublisherCheck
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Pester
+        run: |
+          Import-Module Pester -MinimumVersion 5.0
+          Invoke-Pester -Path tests/install.Tests.ps1 -Output Detailed -CI
+
+      - name: PSScriptAnalyzer
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path install.ps1 -Severity Warning,Error
+          $results | Format-Table -AutoSize
+          if ($results) { throw "ScriptAnalyzer 결과 $(@($results).Count)건" }
+
+      # 이하 실제 설치와 검증은 두 레그 모두 실행한다
+      - name: winget 확인
+        run: winget --version
+
+      # README의 안내 명령 그대로 (Windows PowerShell 5.1)
+      - name: 설치 (README 명령, Windows PowerShell 5.1)
+        if: matrix.shell == 'powershell'
+        run: powershell -ExecutionPolicy Bypass -File .\install.ps1 -Yes
+
+      - name: 설치 (PowerShell 7)
+        if: matrix.shell == 'pwsh'
+        run: pwsh -File .\install.ps1 -Yes
+
+      - name: 이후 단계용 PATH 갱신
+        run: |
+          $machine = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+          $user = [Environment]::GetEnvironmentVariable('Path', 'User')
+          foreach ($p in ($machine + ';' + $user).Split(';')) {
+              if ($p) { Add-Content -Path $env:GITHUB_PATH -Value $p }
+          }
+
+      - name: Lua spec
+        run: |
+          $failed = $false
+          foreach ($f in Get-ChildItem tests/lua/*_spec.lua) {
+              nvim --headless -u NONE -l $f.FullName
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Host "FAIL $($f.Name)"
+                  $failed = $true
+              } else {
+                  Write-Host "PASS $($f.Name)"
+              }
+          }
+          if ($failed) { exit 1 }
+
+      - name: nvim 0.11 확인
+        run: |
+          nvim --headless "+lua assert(vim.fn.has('nvim-0.11')==1)" +qa
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: treesitter 스모크
+        run: |
+          nvim --headless tests/lua/paths_spec.lua "+luafile tests/treesitter_smoke.lua"
+          if ($LASTEXITCODE -ne 0) { exit 1 }

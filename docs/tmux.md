@@ -1,0 +1,103 @@
+# tmux
+
+tmux는 [설치 스크립트](../README.md#설치-옵션)의 선택 항목입니다. 네이티브 Windows에서는 지원하지 않습니다(WSL에서는 사용 가능).
+
+```shell
+./install.sh --with tmux
+```
+
+설치하면 tmux, 플러그인 관리자 tpm(`~/.tmux/plugins/tpm`), `~/.tmux.conf` 링크(이 레포의 [`tmux.conf`](../tmux.conf))가 준비됩니다.
+
+## 기본 키
+
+prefix는 `C-a`입니다(기본값 `C-b`에서 바꿨습니다). 아래 `prefix`는 `Ctrl+a`를 누른 뒤 뗀다는 뜻입니다.
+
+| 키 | 동작 |
+| --- | --- |
+| `prefix` + `J` / `K` / `H` / `L` | 패널 크기를 아래 / 위 / 왼쪽 / 오른쪽으로 2칸 조절 (반복 가능) |
+| `prefix` + `C-a` | 안쪽 tmux나 프로그램에 `C-a` 전달 |
+
+그 외 설정은 다음과 같습니다.
+
+- 마우스 사용 켜짐
+- 복사 모드는 vi 키
+- 히스토리 50000줄
+
+## 플러그인
+
+플러그인은 [tpm](https://github.com/tmux-plugins/tpm)으로 관리합니다.
+
+- [tpm](https://github.com/tmux-plugins/tpm)
+
+- [sensible](https://github.com/tmux-plugins/tmux-sensible)
+
+- [one dark](https://github.com/odedlaz/tmux-onedark-theme)
+
+- [cpu](https://github.com/tmux-plugins/tmux-cpu)
+
+- [battery](https://github.com/tmux-plugins/tmux-battery)
+
+- [prefix highlight](https://github.com/tmux-plugins/tmux-prefix-highlight)
+
+`tmux.conf`에는 [logging](https://github.com/tmux-plugins/tmux-logging)과 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator)도 선언되어 있습니다.
+
+### tpm 사용법
+
+| 키 | 동작 |
+| --- | --- |
+| `prefix` + `I` | 플러그인 설치 |
+| `prefix` + `U` | 플러그인 업데이트 |
+| `prefix` + `alt` + `u` | 목록에서 지워진 플러그인 삭제 |
+
+처음 tmux를 켠 뒤 플러그인이 보이지 않으면 `prefix` + `I`를 누르세요.
+tpm이 없다면 직접 설치합니다.
+
+```shell
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+## tmuxinator
+
+[tmuxinator](https://github.com/tmuxinator/tmuxinator)는 tmux 세션 구성을 프로젝트별 설정 파일로 관리하는 도구입니다.
+
+### 설치
+
+```shell
+gem install tmuxinator
+```
+
+### 프로젝트
+
+새 프로젝트를 만듭니다.
+
+```shell
+tmuxinator new [project]
+```
+
+프로젝트를 시작합니다.
+
+```shell
+tmuxinator start [project]
+```
+
+### windows 설정
+
+<b>root</b>
+
+- tmux pane workspace path
+
+<b>layout</b>
+
+- even-horizontal
+
+- even-vertical
+
+- main-horizontal
+
+- main-vertical
+
+- tiled
+
+<b>pane</b>
+
+- execution programs
