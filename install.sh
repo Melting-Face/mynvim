@@ -167,6 +167,215 @@ run() {
     fi
 }
 
+# 사용 가능한 명령인지 확인한다 (MYNVIM_ASSUME_MISSING에 적힌 이름은 없는 것으로 취급: 테스트용)
+has_cmd() {
+    case " ${MYNVIM_ASSUME_MISSING:-} " in
+        *" $1 "*) return 1 ;;
+    esac
+    command -v "$1" >/dev/null 2>&1
+}
+
+# 루트가 아니면 sudo를 붙인다 (컨테이너 등 루트 환경에서는 비움)
+SUDO=""
+APT_UPDATED=0
+init_sudo() {
+    SUDO=""
+    if [ "$(id -u)" -ne 0 ]; then
+        SUDO="sudo"
+    fi
+}
+
+# 현재 PKG 기준 패키지 이름을 공백 구분으로 출력한다 (없으면 빈 문자열)
+pkg_names() {
+    case "$1" in
+        core)
+            case "$PKG" in
+                brew) echo "git ripgrep node python gnu-sed" ;;
+                apt) echo "git ripgrep nodejs npm python3 python3-pip python3-venv build-essential curl unzip $(clipboard_pkg)" ;;
+                dnf) echo "git ripgrep nodejs python3 python3-pip gcc make curl unzip $(clipboard_pkg)" ;;
+                pacman) echo "git ripgrep nodejs npm python python-pip base-devel curl unzip $(clipboard_pkg)" ;;
+            esac
+            ;;
+        tmux) echo "tmux" ;;
+        go)
+            case "$PKG" in
+                apt) echo "golang-go" ;;
+                dnf) echo "golang" ;;
+                *) echo "go" ;;
+            esac
+            ;;
+        rust) echo "" ;;
+        java)
+            case "$PKG" in
+                brew) echo "temurin@21" ;;
+                apt) echo "openjdk-21-jdk" ;;
+                dnf) echo "java-21-openjdk-devel" ;;
+                pacman) echo "jdk21-openjdk" ;;
+            esac
+            ;;
+        lua)
+            case "$PKG" in
+                apt) echo "lua5.4" ;;
+                *) echo "lua" ;;
+            esac
+            ;;
+    esac
+}
+
+# 리눅스 클립보드 패키지 이름 (WSL은 win32yank를 쓰므로 빈 문자열)
+clipboard_pkg() {
+    if [ "$PLATFORM" = "linux" ]; then
+        if [ -n "${WAYLAND_DISPLAY:-}" ]; then
+            echo "wl-clipboard"
+        else
+            echo "xclip"
+        fi
+    fi
+}
+
+# 패키지 관리자로 패키지를 설치한다
+pkg_install() {
+    [ $# -gt 0 ] || return 0
+    case "$PKG" in
+        brew) run brew install "$@" ;;
+        apt)
+            if [ "$APT_UPDATED" -eq 0 ]; then
+                run $SUDO apt-get update
+                APT_UPDATED=1
+            fi
+            run $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
+            ;;
+        dnf) run $SUDO dnf install -y "$@" ;;
+        pacman) run $SUDO pacman -S --noconfirm --needed "$@" ;;
+    esac
+}
+
+# brew가 없으면 안내 후 종료한다
+require_brew() {
+    if ! has_cmd brew; then
+        err "Homebrew가 필요합니다. https://brew.sh 를 참고해 먼저 설치하세요"
+        exit 1
+    fi
+}
+
+install_core() {
+    local pkgs
+    if [ "$PKG" = "brew" ]; then
+        require_brew
+        if [ "$PLATFORM" = "macos" ] && ! xcode-select -p >/dev/null 2>&1; then
+            echo "C 컴파일러가 필요합니다. 다음을 실행하세요: xcode-select --install"
+        fi
+    else
+        init_sudo
+    fi
+    if [ "$PLATFORM" = "wsl" ] && ! has_cmd win32yank.exe; then
+        echo "WSL 클립보드: Windows 쪽에 win32yank.exe를 설치하세요 (winget install equalsraf.win32yank)"
+    fi
+    pkgs="$(pkg_names core)"
+    # shellcheck disable=SC2086  # 공백 구분 목록을 의도적으로 분리
+    pkg_install $pkgs
+    warn_old_node
+}
+
+# Node 18 미만이면 경고만 출력한다
+warn_old_node() {
+    local v major
+    has_cmd node || return 0
+    v="$(node -v 2>/dev/null)" || return 0
+    major="${v#v}"
+    major="${major%%.*}"
+    case "$major" in
+        '' | *[!0-9]*) return 0 ;;
+    esac
+    if [ "$major" -lt 18 ]; then
+        echo "경고: Node $v 는 너무 오래되었습니다 (18 이상 권장). 설치는 하지 않습니다"
+    fi
+}
+
+install_optional() {
+    local pkgs
+    case "$1" in
+        rust)
+            if has_cmd rustup; then
+                echo "rustup이 이미 설치되어 있어 건너뜀"
+            else
+                run sh -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+            fi
+            ;;
+        java)
+            if [ "$PKG" = "brew" ]; then
+                run brew install --cask temurin@21
+            else
+                pkg_install "$(pkg_names java)"
+            fi
+            ;;
+        tmux)
+            pkg_install "$(pkg_names tmux)"
+            if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+                run git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+            fi
+            ;;
+        *)
+            pkgs="$(pkg_names "$1")"
+            # shellcheck disable=SC2086
+            pkg_install $pkgs
+            ;;
+    esac
+}
+
+# 설치된 nvim 버전("0.11.2")을 출력한다. 없으면 빈 문자열
+# MYNVIM_NVIM_VERSION이 설정되어 있으면(빈 값 포함) 그 값을 쓴다
+detect_nvim_version() {
+    if [ "${MYNVIM_NVIM_VERSION+set}" = "set" ]; then
+        echo "$MYNVIM_NVIM_VERSION"
+        return 0
+    fi
+    has_cmd nvim || return 0
+    nvim --version 2>/dev/null | sed -n '1s/^NVIM v\([0-9][0-9.]*\).*/\1/p'
+}
+
+# 0.11 이상이면 0 (bash 3.2 호환: 숫자로 major/minor 비교)
+nvim_version_ok() {
+    local v="$1" major minor
+    [ -n "$v" ] || return 1
+    major="${v%%.*}"
+    minor="${v#*.}"
+    minor="${minor%%.*}"
+    case "$major$minor" in
+        '' | *[!0-9]*) return 1 ;;
+    esac
+    [ "$major" -gt 0 ] || [ "$minor" -ge 11 ]
+}
+
+ensure_nvim() {
+    local v arch
+    v="$(detect_nvim_version)"
+    if nvim_version_ok "$v"; then
+        echo "nvim ${v} 확인됨 (0.11 이상)"
+        return 0
+    fi
+    echo "nvim 0.11 이상이 필요합니다 (현재: ${v:-없음})"
+    if [ "$PKG" = "brew" ]; then
+        run brew install neovim
+        return 0
+    fi
+    case "${MYNVIM_ARCH:-$(uname -m)}" in
+        x86_64) arch="x86_64" ;;
+        aarch64 | arm64) arch="arm64" ;;
+        *)
+            err "지원하지 않는 아키텍처: ${MYNVIM_ARCH:-$(uname -m)}"
+            exit 1
+            ;;
+    esac
+    run mkdir -p "$HOME/.local/opt/nvim" "$HOME/.local/bin"
+    run sh -c "curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz | tar -xz --strip-components=1 -C '$HOME/.local/opt/nvim'"
+    run ln -sf "$HOME/.local/opt/nvim/bin/nvim" "$HOME/.local/bin/nvim"
+    case ":$PATH:" in
+        *":$HOME/.local/bin:"*) ;;
+        *) echo "안내: $HOME/.local/bin 이 PATH에 없습니다. 셸 설정에 export PATH=\"\$HOME/.local/bin:\$PATH\" 를 추가하세요" ;;
+    esac
+}
+
 main() {
     set -euo pipefail
     parse_args "$@"
@@ -177,6 +386,14 @@ main() {
     echo "패키지 관리자: $PKG"
     echo "선택 항목: ${WITH:-없음 (필수만)}"
     [ "$DRY_RUN" -eq 1 ] && echo "(dry-run: 변경 없음)"
+    # 1) 패키지 설치 (Task 4에서 MYNVIM_SKIP_PACKAGES 분기 추가)
+    install_core
+    local c
+    for c in $WITH; do
+        install_optional "$c"
+    done
+    ensure_nvim
+    # 2) 링크 단계, 3) Lazy 동기화는 Task 4에서 추가
     return 0
 }
 

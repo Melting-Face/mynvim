@@ -151,6 +151,92 @@ test_run_executes_when_not_dry_run() {
     assert_equals "hello" "$out"
 }
 
+test_core_apt_has_build_essential() {
+    local out
+    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "build-essential"
+    assert_not_contains "$out" "tmux"
+}
+
+test_with_tmux_installs_tmux_and_tpm() {
+    local out home
+    home="$(mktemp -d)"
+    out="$(HOME="$home" MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --with tmux --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "apt-get install -y tmux"
+    assert_contains "$out" "tmux-plugins/tpm"
+}
+
+test_rust_uses_rustup_noninteractive() {
+    local out
+    out="$(MYNVIM_ASSUME_MISSING=rustup MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --with rust --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "sh.rustup.rs"
+    assert_contains "$out" "-y"
+}
+
+test_brew_core_has_gnu_sed() {
+    local out
+    out="$(MYNVIM_PLATFORM=macos MYNVIM_PKG=brew "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "gnu-sed"
+}
+
+test_wsl_skips_clipboard_pkg() {
+    local out
+    out="$(MYNVIM_PLATFORM=wsl MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_not_contains "$out" "xclip"
+    assert_not_contains "$out" "wl-clipboard"
+}
+
+test_old_nvim_triggers_tarball() {
+    local out
+    out="$(MYNVIM_NVIM_VERSION=0.9.5 MYNVIM_ARCH=x86_64 MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "nvim-linux-x86_64"
+}
+
+test_new_nvim_skips_tarball() {
+    local out
+    out="$(MYNVIM_NVIM_VERSION=0.11.2 MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_not_contains "$out" "nvim-linux-"
+}
+
+test_arm64_tarball_name() {
+    local out
+    out="$(MYNVIM_NVIM_VERSION='' MYNVIM_ARCH=aarch64 MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "nvim-linux-arm64"
+}
+
+test_brew_missing_exits_with_guide() {
+    local out code=0
+    out="$(PATH=/usr/bin:/bin MYNVIM_PLATFORM=macos /bin/bash "$INSTALL_SH" --yes --dry-run 2>&1 </dev/null)" || code=$?
+    assert_equals "1" "$code"
+    assert_contains "$out" "brew.sh"
+}
+
+test_java_brew_uses_cask() {
+    local out
+    out="$(MYNVIM_PLATFORM=macos MYNVIM_PKG=brew "$INSTALL_SH" --with java --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "brew install --cask temurin@21"
+}
+
+test_nvim_version_ok_compare() {
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    nvim_version_ok 0.11.0 || fail "0.11.0은 통과해야 함"
+    nvim_version_ok 0.12.1 || fail "0.12.1은 통과해야 함"
+    nvim_version_ok 1.0.0 || fail "1.0.0은 통과해야 함"
+    ! nvim_version_ok 0.9.5 || fail "0.9.5는 실패해야 함"
+    ! nvim_version_ok 0.10.4 || fail "0.10.4는 실패해야 함"
+    ! nvim_version_ok "" || fail "빈 값은 실패해야 함"
+}
+
 # ---------------------------------------------------------------- 실행기
 
 main() {
