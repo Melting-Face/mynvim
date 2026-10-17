@@ -1,22 +1,4 @@
-local language_servers = {
-  "bashls",
-  "dockerls",
-  "docker_compose_language_service",
-  "eslint",
-  "gradle_ls",
-  "jdtls",
-  "helm_ls",
-  "jsonls",
-  "lua_ls",
-  "prismals",
-  "pyright",
-  "ruff",
-  "rust_analyzer",
-  "terraformls",
-  "taplo",
-  "ts_ls",
-  "yamlls",
-}
+local language_servers = require("configs.lsp_servers").list()
 
 local filetypes = {
   "c",
@@ -203,6 +185,10 @@ return {
     lazy = true,
     build = ":TSUpdate",
     config = function()
+      -- Windows에서는 MSVC 대신 zig/gcc/clang으로 파서를 컴파일한다
+      if require("configs.paths").is_windows() then
+        require("nvim-treesitter.install").compilers = { "zig", "gcc", "clang" }
+      end
       require("nvim-treesitter.configs").setup({
         sync_install = true,
         indent = {
@@ -470,12 +456,11 @@ return {
     config = function()
       local dap = require("dap")
 
-      local home = os.getenv("HOME")
-      local mason = home .. "/.local/share/nvim/mason/packages"
+      local paths = require("configs.paths")
 
       dap.adapters.codelldb = {
         type = "executable",
-        command = mason .. "/codelldb/codelldb",
+        command = paths.exe(paths.mason_package("codelldb") .. "/codelldb"),
       }
 
       dap.configurations.rust = {
@@ -622,11 +607,14 @@ return {
     dependencies = "mfussenegger/nvim-dap",
     ft = "python",
     config = function()
-      local python_path = io.popen("which python3"):read("l")
-      if python_path ~= nil then
-        local debugpy = io.popen("pip list | grep debugpy"):read("l")
-        if debugpy ~= nil then
-          require("dap-python").setup(python_path)
+      local py = vim.fn.exepath("python3")
+      if py == "" then
+        py = vim.fn.exepath("python")
+      end
+      if py ~= "" then
+        -- debugpy가 설치되어 있을 때만 설정
+        if vim.system({ py, "-c", "import debugpy" }):wait().code == 0 then
+          require("dap-python").setup(py)
         end
       end
     end,
