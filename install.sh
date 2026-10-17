@@ -376,6 +376,70 @@ ensure_nvim() {
     esac
 }
 
+# 경로의 물리 경로를 출력한다 (디렉터리는 cd -P, 파일은 부모 디렉터리만 해석; bash 3.2 호환)
+physical_path() {
+    local p="$1"
+    if [ -d "$p" ]; then
+        (cd -P "$p" 2>/dev/null && pwd -P)
+    else
+        local d
+        d="$(cd -P "$(dirname "$p")" 2>/dev/null && pwd -P)" || return 1
+        echo "$d/$(basename "$p")"
+    fi
+}
+
+# dst가 이미 src를 가리키거나 같은 경로인지 확인한다
+is_linked() {
+    local src_phys="$1" dst="$2" target
+    if [ -L "$dst" ]; then
+        target="$(readlink "$dst")"
+        case "$target" in
+            /*) ;;
+            *) target="$(dirname "$dst")/$target" ;;
+        esac
+        [ "$(physical_path "$target" 2>/dev/null)" = "$src_phys" ] && return 0
+    fi
+    [ -e "$dst" ] && [ "$(physical_path "$dst" 2>/dev/null)" = "$src_phys" ]
+}
+
+# dst를 src로 향하는 심볼릭 링크로 만든다. 기존 대상은 지우지 않고 백업한다
+link_path() {
+    local src="$1" dst="$2" src_phys bak stamp n
+    src_phys="$(physical_path "$src")"
+    if is_linked "$src_phys" "$dst"; then
+        echo "already linked: $dst"
+        return 0
+    fi
+    run mkdir -p "$(dirname "$dst")"
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
+        stamp="$(date +%Y%m%d-%H%M%S)"
+        bak="$dst.bak.$stamp"
+        n=0
+        while [ -e "$bak" ] || [ -L "$bak" ]; do
+            n=$((n + 1))
+            bak="$dst.bak.$stamp-$n"
+        done
+        echo "백업: $dst -> $bak"
+        run mv "$dst" "$bak"
+    fi
+    run ln -s "$src" "$dst"
+}
+
+# nvim 설정과 선택한 항목의 설정 파일을 연결한다
+link_configs() {
+    link_path "$REPO_DIR" "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+    case " $WITH " in
+        *" tmux "*) link_path "$REPO_DIR/tmux.conf" "$HOME/.tmux.conf" ;;
+    esac
+    if has_cmd wezterm; then
+        if [ "$PLATFORM" = "wsl" ]; then
+            echo "WSL: WezTerm 설정은 Windows 쪽(%USERPROFILE%\\.wezterm.lua)에서 관리하므로 건너뜀"
+        else
+            link_path "$REPO_DIR/wezterm.lua" "$HOME/.wezterm.lua"
+        fi
+    fi
+}
+
 main() {
     set -euo pipefail
     parse_args "$@"
@@ -386,14 +450,21 @@ main() {
     echo "패키지 관리자: $PKG"
     echo "선택 항목: ${WITH:-없음 (필수만)}"
     [ "$DRY_RUN" -eq 1 ] && echo "(dry-run: 변경 없음)"
-    # 1) 패키지 설치 (Task 4에서 MYNVIM_SKIP_PACKAGES 분기 추가)
-    install_core
-    local c
-    for c in $WITH; do
-        install_optional "$c"
-    done
-    ensure_nvim
-    # 2) 링크 단계, 3) Lazy 동기화는 Task 4에서 추가
+    # 1) 패키지 설치 (MYNVIM_SKIP_PACKAGES=1이면 건너뜀: 테스트용)
+    if [ "${MYNVIM_SKIP_PACKAGES:-}" != "1" ]; then
+        install_core
+        local c
+        for c in $WITH; do
+            install_optional "$c"
+        done
+        ensure_nvim
+    fi
+    # 2) 설정 연결 (기존 대상은 백업)
+    link_configs
+    # 3) 플러그인 동기화
+    if [ "${MYNVIM_SKIP_PACKAGES:-}" != "1" ]; then
+        run nvim --headless "+Lazy! sync" +qa
+    fi
     return 0
 }
 

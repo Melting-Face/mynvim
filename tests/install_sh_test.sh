@@ -237,6 +237,168 @@ test_nvim_version_ok_compare() {
     ! nvim_version_ok "" || fail "빈 값은 실패해야 함"
 }
 
+# ---------------------------------------------------------------- 링크 테스트
+# 실제 링크를 만들므로 항상 임시 HOME에서, XDG_CONFIG_HOME 없이, 패키지 단계 생략으로 실행한다.
+
+# run_install <HOME> [env 인자...] -- [install.sh 인자...] : 격리된 환경에서 install.sh 실행
+run_install() {
+    local home="$1" script="$INSTALL_SH"
+    shift
+    env -u XDG_CONFIG_HOME HOME="$home" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
+        "$@" /bin/bash "$script" --yes </dev/null
+}
+
+# list_baks <HOME> : nvim 백업 항목 경로를 한 줄씩 출력한다
+list_baks() {
+    find "$1/.config" -maxdepth 1 -name 'nvim.bak.*'
+}
+
+# make_fake_wezterm <디렉터리> : PATH에 둘 가짜 wezterm 실행 파일을 만든다
+make_fake_wezterm() {
+    mkdir -p "$1"
+    printf '#!/bin/sh\nexit 0\n' >"$1/wezterm"
+    chmod +x "$1/wezterm"
+}
+
+test_link_creates_symlink() {
+    local tmp
+    tmp="$(mktemp -d)"
+    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    [ -L "$tmp/.config/nvim" ] || fail "nvim 링크가 없음"
+    assert_equals "$ROOT" "$(readlink "$tmp/.config/nvim")"
+    rm -rf "$tmp"
+}
+
+test_existing_dir_backed_up() {
+    local tmp bak
+    tmp="$(mktemp -d)"
+    mkdir -p "$tmp/.config/nvim"
+    echo "mine" >"$tmp/.config/nvim/init.lua"
+    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    [ -L "$tmp/.config/nvim" ] || fail "nvim 링크가 없음"
+    bak="$(list_baks "$tmp" | head -n 1)"
+    [ -n "$bak" ] || fail "백업이 없음"
+    assert_equals "mine" "$(cat "$bak/init.lua")"
+    rm -rf "$tmp"
+}
+
+test_rerun_no_new_backup() {
+    local tmp out count
+    tmp="$(mktemp -d)"
+    mkdir -p "$tmp/.config/nvim"
+    run_install "$tmp" >/dev/null || fail "1회차 실패"
+    out="$(run_install "$tmp")" || fail "2회차 실패"
+    assert_contains "$out" "already linked"
+    count="$(list_baks "$tmp" | wc -l | tr -d ' ')"
+    assert_equals "1" "$count"
+    rm -rf "$tmp"
+}
+
+test_dangling_symlink_backed_up() {
+    local tmp bak
+    tmp="$(mktemp -d)"
+    mkdir -p "$tmp/.config"
+    ln -s "$tmp/nowhere" "$tmp/.config/nvim"
+    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    assert_equals "$ROOT" "$(readlink "$tmp/.config/nvim")"
+    bak="$(list_baks "$tmp" | head -n 1)"
+    [ -L "$bak" ] || fail "깨진 링크가 백업되지 않음"
+    assert_equals "$tmp/nowhere" "$(readlink "$bak")"
+    [ ! -e "$tmp/nowhere" ] || fail "원래 링크 대상이 생기면 안 됨"
+    rm -rf "$tmp"
+}
+
+test_backup_name_collision_never_overwrites() {
+    local tmp
+    tmp="$(mktemp -d)"
+    mkdir -p "$tmp/.config/nvim"
+    echo "mine" >"$tmp/.config/nvim/init.lua"
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    # shellcheck disable=SC2329  # link_path가 호출하는 date를 고정
+    date() { echo "20260101-000000"; }
+    mkdir -p "$tmp/.config/nvim.bak.20260101-000000"
+    echo "old" >"$tmp/.config/nvim.bak.20260101-000000/keep"
+    link_path "$ROOT" "$tmp/.config/nvim" >/dev/null
+    assert_equals "old" "$(cat "$tmp/.config/nvim.bak.20260101-000000/keep")"
+    assert_equals "mine" "$(cat "$tmp/.config/nvim.bak.20260101-000000-1/init.lua")"
+    rm -rf "$tmp"
+}
+
+test_repo_path_with_spaces() {
+    local tmp repo
+    tmp="$(mktemp -d)"
+    repo="$tmp/my repos/mynvim"
+    mkdir -p "$repo"
+    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$repo/"
+    mkdir -p "$tmp/home"
+    env -u XDG_CONFIG_HOME HOME="$tmp/home" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
+        /bin/bash "$repo/install.sh" --yes </dev/null >/dev/null || fail "종료 코드가 0이 아님"
+    assert_equals "$repo" "$(readlink "$tmp/home/.config/nvim")"
+    [ -f "$tmp/home/.config/nvim/init.lua" ] || fail "링크를 통해 init.lua가 보이지 않음"
+    rm -rf "$tmp"
+}
+
+test_wsl_skips_wezterm_even_if_on_path() {
+    local tmp out
+    tmp="$(mktemp -d)"
+    make_fake_wezterm "$tmp/bin"
+    mkdir -p "$tmp/home"
+    out="$(run_install "$tmp/home" MYNVIM_PLATFORM=wsl PATH="$tmp/bin:$PATH")" || fail "종료 코드가 0이 아님"
+    [ ! -e "$tmp/home/.wezterm.lua" ] || fail "WSL에서 .wezterm.lua가 생기면 안 됨"
+    assert_contains "$out" "Windows"
+    rm -rf "$tmp"
+}
+
+test_wezterm_linked_when_present() {
+    local tmp
+    tmp="$(mktemp -d)"
+    make_fake_wezterm "$tmp/bin"
+    mkdir -p "$tmp/home"
+    run_install "$tmp/home" MYNVIM_PLATFORM=linux PATH="$tmp/bin:$PATH" >/dev/null || fail "종료 코드가 0이 아님"
+    assert_equals "$ROOT/wezterm.lua" "$(readlink "$tmp/home/.wezterm.lua")"
+    rm -rf "$tmp"
+}
+
+test_tmux_conf_linked_only_when_selected() {
+    local tmp
+    tmp="$(mktemp -d)"
+    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    [ ! -e "$tmp/.tmux.conf" ] || fail "tmux 미선택인데 링크됨"
+    rm -rf "$tmp"
+    tmp="$(mktemp -d)"
+    env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
+        /bin/bash "$INSTALL_SH" --with tmux </dev/null >/dev/null || fail "종료 코드가 0이 아님"
+    assert_equals "$ROOT/tmux.conf" "$(readlink "$tmp/.tmux.conf")"
+    rm -rf "$tmp"
+}
+
+test_clone_into_config_dir_skips() {
+    local tmp repo out
+    tmp="$(mktemp -d)"
+    repo="$tmp/.config/nvim"
+    mkdir -p "$repo"
+    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$repo/"
+    out="$(env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
+        /bin/bash "$repo/install.sh" --yes </dev/null)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "already linked"
+    [ ! -L "$repo" ] || fail "링크로 바뀌면 안 됨"
+    assert_equals "0" "$(list_baks "$tmp" | wc -l | tr -d ' ')"
+    rm -rf "$tmp"
+}
+
+test_dry_run_link_changes_nothing() {
+    local tmp out
+    tmp="$(mktemp -d)"
+    mkdir -p "$tmp/.config/nvim"
+    out="$(env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
+        /bin/bash "$INSTALL_SH" --yes --dry-run </dev/null)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "+ mv"
+    assert_contains "$out" "+ ln -s"
+    [ -d "$tmp/.config/nvim" ] && [ ! -L "$tmp/.config/nvim" ] || fail "dry-run이 변경함"
+    rm -rf "$tmp"
+}
+
 # ---------------------------------------------------------------- 실행기
 
 main() {
