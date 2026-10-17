@@ -26,7 +26,7 @@ jobs:
           fi
 
       - name: shellcheck
-        run: shellcheck --severity=warning install.sh tests/*.sh
+        run: shellcheck install.sh tests/*.sh
 
       - name: install.sh 테스트
         run: bash tests/install_sh_test.sh
@@ -45,6 +45,9 @@ jobs:
 
       - name: nvim 0.11 확인
         run: nvim --headless "+lua assert(vim.fn.has('nvim-0.11')==1)" +qa
+
+      - name: treesitter 스모크
+        run: nvim --headless tests/lua/paths_spec.lua "+luafile tests/treesitter_smoke.lua"
 
       - name: 설치 (tmux,go,lua 선택)
         if: runner.os == 'Linux'
@@ -79,17 +82,20 @@ jobs:
           $results | Format-Table -AutoSize
           if ($results) { throw "ScriptAnalyzer 결과 $(@($results).Count)건" }
 
-      # 이하 실제 설치와 Lua spec은 pwsh 레그에서만 실행
+      # 이하 실제 설치와 검증은 두 레그 모두 실행한다
       - name: winget 확인
-        if: matrix.shell == 'pwsh'
         run: winget --version
 
-      - name: 설치
+      # README의 안내 명령 그대로 (Windows PowerShell 5.1)
+      - name: 설치 (README 명령, Windows PowerShell 5.1)
+        if: matrix.shell == 'powershell'
+        run: powershell -ExecutionPolicy Bypass -File .\install.ps1 -Yes
+
+      - name: 설치 (PowerShell 7)
         if: matrix.shell == 'pwsh'
-        run: .\install.ps1 -Yes
+        run: pwsh -File .\install.ps1 -Yes
 
       - name: 이후 단계용 PATH 갱신
-        if: matrix.shell == 'pwsh'
         run: |
           $machine = [Environment]::GetEnvironmentVariable('Path', 'Machine')
           $user = [Environment]::GetEnvironmentVariable('Path', 'User')
@@ -98,7 +104,6 @@ jobs:
           }
 
       - name: Lua spec
-        if: matrix.shell == 'pwsh'
         run: |
           $failed = $false
           foreach ($f in Get-ChildItem tests/lua/*_spec.lua) {
@@ -113,7 +118,11 @@ jobs:
           if ($failed) { exit 1 }
 
       - name: nvim 0.11 확인
-        if: matrix.shell == 'pwsh'
         run: |
           nvim --headless "+lua assert(vim.fn.has('nvim-0.11')==1)" +qa
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: treesitter 스모크
+        run: |
+          nvim --headless tests/lua/paths_spec.lua "+luafile tests/treesitter_smoke.lua"
           if ($LASTEXITCODE -ne 0) { exit 1 }

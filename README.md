@@ -59,7 +59,7 @@ winget install wez.wezterm
     - macOS, Linux: `~/.wezterm.lua`를 이 레포의 [`wezterm.lua`](wezterm.lua)로 링크합니다.
     - Windows: 파일 링크 대신 사용자 환경변수 `WEZTERM_CONFIG_FILE`을 설정합니다.
     - WezTerm을 나중에 설치했다면 설치 스크립트를 다시 실행하세요.
-- **Windows 기본 셸**은 PowerShell 7(`pwsh.exe`)입니다. 없다면 `winget install Microsoft.PowerShell`로 설치하세요.
+- **Windows 기본 셸**은 PowerShell 7(`pwsh.exe`)입니다. 설치 스크립트가 필수 항목으로 함께 설치합니다(`Microsoft.PowerShell`).
 - **WSL 사용자**는 WezTerm을 Windows 쪽에 설치하고 WSL 도메인으로 접속합니다.
   [`wezterm.lua`](wezterm.lua)의 주석 처리된 `default_domain` 예시(`config.default_domain = "WSL:Ubuntu"`)를 풀고 배포판 이름을 맞추세요.
   WSL 안의 설치 스크립트는 `~/.wezterm.lua`를 만들지 않습니다.
@@ -67,11 +67,11 @@ winget install wez.wezterm
 ## 빠른 시작
 
 **clone한 경로가 곧 설정 경로입니다. 설치 후에는 폴더를 옮기지 마세요.** 설정이 이 폴더를 가리키는 링크이기 때문입니다.
-`git`이 없다면 먼저 설치하세요(Windows: `winget install Git.Git`).
+설정 경로(`~/.config/nvim`, `%LOCALAPPDATA%\nvim`) 안에 clone하지 말고 `~/mynvim`처럼 별도 폴더에 clone하세요.
 
 ### macOS
 
-[Homebrew](https://brew.sh)가 먼저 필요합니다.
+[Homebrew](https://brew.sh)가 먼저 필요합니다. `git`이 없다면 `xcode-select --install` 또는 `brew install git`으로 설치하세요.
 
 ```shell
 git clone https://github.com/Melting-Face/mynvim.git ~/mynvim
@@ -80,6 +80,14 @@ git clone https://github.com/Melting-Face/mynvim.git ~/mynvim
 
 ### Linux / WSL
 
+`git`이 없다면 배포판에 맞는 명령으로 먼저 설치하세요.
+
+```shell
+sudo apt install -y git          # Debian/Ubuntu, WSL
+sudo dnf install -y git          # Fedora
+sudo pacman -S --needed git      # Arch
+```
+
 ```shell
 git clone https://github.com/Melting-Face/mynvim.git ~/mynvim
 ~/mynvim/install.sh
@@ -87,7 +95,13 @@ git clone https://github.com/Melting-Face/mynvim.git ~/mynvim
 
 ### Windows (PowerShell)
 
-관리자 권한은 필요 없습니다.
+관리자 권한은 필요 없습니다. winget(App Installer)이 먼저 필요합니다. 없다면 https://aka.ms/getwinget 에서 설치하세요.
+
+`git`이 없다면 먼저 설치하고, **새 PowerShell 창을 연 뒤** 다음 단계로 넘어가세요(새 창이어야 `git`이 PATH에 잡힙니다).
+
+```powershell
+winget install Git.Git
+```
 
 ```powershell
 git clone https://github.com/Melting-Face/mynvim.git $HOME\mynvim
@@ -99,6 +113,11 @@ powershell -ExecutionPolicy Bypass -File $HOME\mynvim\install.ps1
 
 ```shell
 ~/mynvim/install.sh --dry-run --yes
+```
+
+```powershell
+cd $HOME\mynvim
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -DryRun -Yes
 ```
 
 설치가 끝나면 `nvim`을 실행하세요. 플러그인은 설치 중에 이미 동기화됩니다.
@@ -152,13 +171,18 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 | Neovim 0.11+ | `neovim` (0.11 미만일 때) | 공식 tarball | 공식 tarball | 공식 tarball | `Neovim.Neovim` |
 | Git | `git` | `git` | `git` | `git` | `Git.Git` |
 | ripgrep | `ripgrep` | `ripgrep` | `ripgrep` | `ripgrep` | `BurntSushi.ripgrep.MSVC` |
-| Node.js | `node` | `nodejs`, `npm` | `nodejs` | `nodejs`, `npm` | `OpenJS.NodeJS.LTS` |
+| Node.js 18+ | `node` | `nodejs`, `npm` | `nodejs` | `nodejs`, `npm` | `OpenJS.NodeJS.LTS` |
 | Python | `python` | `python3`, `python3-pip`, `python3-venv` | `python3`, `python3-pip` | `python`, `python-pip` | `Python.Python.3.12` |
 | C 컴파일러 (treesitter용) | Xcode CLT (`xcode-select --install`) | `build-essential` | `gcc`, `make` | `base-devel` | `zig.zig` |
-| 기타 | `gnu-sed` | `curl`, `unzip` | `curl`, `unzip` | `curl`, `unzip` | |
+| PowerShell 7 (WezTerm 기본 셸) | | | | | `Microsoft.PowerShell` |
+| 기타 | `gnu-sed` | `curl`, `unzip`, `xz-utils` | `curl`, `unzip` | `curl`, `unzip` | |
 | 클립보드 | 기본 제공 | `xclip` 또는 `wl-clipboard` | 같음 | 같음 | 기본 제공 |
 
 - Linux에서 Neovim이 0.11 미만이면 공식 tarball을 `~/.local/opt/nvim`에 풀고 `~/.local/bin/nvim`으로 링크합니다.
+  이미 `~/.local/bin/nvim`이 0.11 이상이면 다시 받지 않습니다.
+- Linux에서 패키지로 받은 Node.js가 없거나 18 미만이면 공식 LTS(v22) tarball을 체크섬 검증 후 `~/.local/opt/node`에 풀고
+  `node`, `npm`, `npx`를 `~/.local/bin`에 링크합니다. macOS는 brew의 `node`를 쓰며 18 미만이면 경고만 합니다.
+- `~/.local/bin`에 설치했는데 셸에서 다른 `nvim`/`node`가 먼저 잡히면 경고를 출력합니다([문제 해결](#문제-해결) 참고).
 - Wayland 세션이면 `wl-clipboard`, 아니면 `xclip`을 설치합니다. WSL은 `win32yank.exe`를 씁니다([문제 해결](#문제-해결) 참고).
 - macOS의 C 컴파일러는 스크립트가 설치하지 않고 안내만 합니다.
 
@@ -331,9 +355,10 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 정상입니다. 일부 패키지가 관리자 승인을 요청합니다. 셸을 관리자 권한으로 열 필요는 없습니다.
 
-### `nvim`을 찾을 수 없음 (Linux)
+### `nvim`을 찾을 수 없음, 또는 오래된 `nvim`이 실행됨 (Linux)
 
-Neovim을 tarball로 설치했다면 `~/.local/bin`이 PATH에 있어야 합니다. 셸 설정(`~/.bashrc`, `~/.zshrc`)에 추가하세요.
+Neovim이나 Node.js를 tarball로 설치했다면 `~/.local/bin`이 PATH에서 **가장 앞**에 있어야 합니다.
+(`/usr/bin`의 오래된 `nvim`이 먼저 잡히면 설치 스크립트가 경고를 출력합니다.) 셸 설정(`~/.bashrc`, `~/.zshrc`)에 추가하세요.
 
 ```shell
 export PATH="$HOME/.local/bin:$PATH"
@@ -379,11 +404,12 @@ mv ~/.config/nvim.bak.20260101-120000 ~/.config/nvim
 
 ### Windows
 
-정션은 `Remove-Item`으로 지워도 레포 내용은 지워지지 않습니다(링크만 제거됩니다).
+정션은 반드시 `cmd /c rmdir`(`/s` 없이)로 지우세요. 정션(링크)만 제거되고 레포 내용은 그대로 남습니다.
+**`Remove-Item`은 쓰지 마세요.** Windows PowerShell 5.1에서는 정션 안의 파일, 즉 레포 내용까지 지울 수 있습니다.
 
 ```powershell
 # 정션을 지우고 백업 이름을 되돌립니다 (타임스탬프는 실제 값으로 바꾸세요)
-Remove-Item $env:LOCALAPPDATA\nvim
+cmd /c rmdir "$env:LOCALAPPDATA\nvim"
 Rename-Item $env:LOCALAPPDATA\nvim.bak.20260101-120000 nvim
 
 # WezTerm 설정 환경변수를 삭제합니다

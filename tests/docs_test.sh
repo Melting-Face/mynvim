@@ -42,6 +42,31 @@ test_readme_required_phrases() {
     done
 }
 
+test_readme_windows_followability() {
+    local phrase
+    # winget 준비, 새 PowerShell 창 안내, PowerShell 7 설치, PowerShell dry-run 예시
+    for phrase in 'https://aka.ms/getwinget' '새 PowerShell 창' 'Microsoft.PowerShell' \
+        '.\install.ps1 -DryRun -Yes'; do
+        assert_file_contains "$README" "$phrase"
+    done
+}
+
+test_readme_linux_git_install() {
+    local phrase
+    for phrase in 'sudo apt install -y git' 'sudo dnf install -y git' 'sudo pacman -S --needed git'; do
+        assert_file_contains "$README" "$phrase"
+    done
+}
+
+# shellcheck disable=SC2016  # $env:는 PowerShell 문법 그대로 찾는다
+test_readme_junction_removed_safely() {
+    # Windows PowerShell 5.1의 Remove-Item은 비어 있지 않은 정션 안을 재귀 삭제할 수 있다
+    assert_file_contains "$README" 'cmd /c rmdir "$env:LOCALAPPDATA\nvim"'
+    if grep -qE 'Remove-Item +\$env:LOCALAPPDATA\\nvim' "$README"; then
+        fail "README에 정션을 Remove-Item으로 지우는 안내가 남아 있음"
+    fi
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then
@@ -54,13 +79,14 @@ check_links() {
     local file="$1" dir link target
     [ -f "$file" ] || fail "파일 없음: $file"
     dir="$(dirname "$file")"
-    for link in $(grep -oE '\]\([^)]+\)' "$file" | sed 's/^](//; s/)$//'); do
+    # while은 파이프 뒤 서브셸에서 돌지만, fail의 exit 1이 파이프라인 종료 코드가 되므로 그대로 전달한다
+    grep -oE '\]\([^)]+\)' "$file" | sed 's/^](//; s/)$//' | while IFS= read -r link; do
         case "$link" in
             http://* | https://* | mailto:* | '#'*) continue ;;
         esac
         target="${link%%#*}"
         [ -e "$dir/$target" ] || fail "$file 의 링크가 존재하지 않는 파일을 가리킴: $link"
-    done
+    done || exit 1
 }
 
 test_relative_links_exist() {
