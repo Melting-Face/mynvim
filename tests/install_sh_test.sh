@@ -634,6 +634,11 @@ make_fake_curl() {
     mkdir -p "$1"
     cat >"$1/curl" <<'FAKE'
 #!/bin/sh
+# FAKE_CURL_SIGNAL이 있으면 부모(sh -c 스크립트)에 그 시그널을 보내고 실패한다 (다운로드 중 중단 흉내)
+if [ -n "${FAKE_CURL_SIGNAL:-}" ]; then
+    kill -s "$FAKE_CURL_SIGNAL" "$PPID"
+    exit 22
+fi
 out=""
 url=""
 while [ $# -gt 0 ]; do
@@ -744,6 +749,43 @@ test_node_tarball_success_extracts_and_cleans_temp() {
     [ -f "$tmp/dest/bin/node" ] || fail "tarball이 풀리지 않음"
     assert_temp_cleaned "$tmp/bin"
     rm -rf "$tmp"
+}
+
+# assert_signal_cleans_temp <script 함수> <시그널> <기대 종료 코드> <sh -c 인자...>
+# 가짜 curl이 다운로드 중 부모 sh에 시그널을 보내도 임시 디렉터리가 지워지는지 확인한다 (dash/POSIX sh 포함)
+assert_signal_cleans_temp() {
+    local script_fn="$1" sig="$2" expected="$3" tmp shell code
+    shift 3
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    for shell in sh dash; do
+        command -v "$shell" >/dev/null 2>&1 || continue
+        tmp="$(mktemp -d)"
+        make_fake_curl "$tmp/bin"
+        mkdir -p "$tmp/dest"
+        code=0
+        PATH="$tmp/bin:$PATH" FAKE_CURL_SIGNAL="$sig" FAKE_SHASUMS="0000  node-v22.0.0-linux-x64.tar.xz" \
+            "$shell" -c "$("$script_fn")" _ "$@" "$tmp/dest" >/dev/null 2>&1 || code=$?
+        [ "$code" -eq "$expected" ] || fail "$shell: $sig 종료 코드 기대 $expected, 실제 $code"
+        assert_temp_cleaned "$tmp/bin"
+        rm -rf "$tmp"
+    done
+}
+
+test_nvim_tarball_term_cleans_temp() {
+    assert_signal_cleans_temp nvim_tarball_script TERM 143 "https://example.invalid/nvim.tar.gz"
+}
+
+test_nvim_tarball_int_cleans_temp() {
+    assert_signal_cleans_temp nvim_tarball_script INT 130 "https://example.invalid/nvim.tar.gz"
+}
+
+test_node_tarball_term_cleans_temp() {
+    assert_signal_cleans_temp node_tarball_script TERM 143 x64
+}
+
+test_node_tarball_int_cleans_temp() {
+    assert_signal_cleans_temp node_tarball_script INT 130 x64
 }
 
 test_choose_components_eof_means_no() {

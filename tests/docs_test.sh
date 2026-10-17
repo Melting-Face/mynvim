@@ -77,6 +77,16 @@ test_readme_toolchain_troubleshooting() {
     done
 }
 
+test_readme_treesitter_pin_documented() {
+    local phrase
+    # nvim-treesitter를 master에 고정한 이유와 main 이전 조건
+    for phrase in '브랜치에 고정된 이유' 'branch = "master"' \
+        'CLI 0.26.1'; do
+        assert_file_contains "$README" "$phrase"
+    done
+    grep -qF 'branch = "master"' "$ROOT/lua/plugins.lua" || fail "plugins.lua에 master 고정이 없음"
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then

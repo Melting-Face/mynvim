@@ -52,6 +52,16 @@ Describe 'install.ps1' {
             ($output | Out-String) | Should -Match 'foo'
         }
 
+        It 'Get-RequestedComponent validates names without prompting' {
+            Mock Test-InteractiveSession { $true }
+            Mock Read-Host { 'y' }
+            { Get-RequestedComponent -With 'rust,foo' } | Should -Throw '*foo*'
+            $result = @(Get-RequestedComponent -With @('lua, rust', 'tmux'))
+            ($result -join ',') | Should -Be 'lua,rust,tmux'
+            @(Get-RequestedComponent).Count | Should -Be 0
+            Should -Invoke Read-Host -Times 0 -Exactly
+        }
+
         It 'All excludes tmux' {
             $result = @(Resolve-Components -All)
             ($result -join ',') | Should -Be 'go,rust,java,lua'
@@ -314,11 +324,55 @@ Describe 'install.ps1' {
             $output = Set-ConfigLink -Source $source -Target $target -DryRun
 
             ($output -join "`n") | Should -Match '\+ New-Item -ItemType Junction'
-            # 백업은 실제로 실행하는 명령([IO.Directory]::Move)을 출력한다
-            ($output -join "`n") | Should -Match ([regex]::Escape("+ [IO.Directory]::Move(`"$target`", `"$target.bak."))
+            # DryRun은 대상의 종류(파일/디렉터리)를 읽지 않으므로 중립적인 move 형식으로 출력한다
+            ($output -join "`n") | Should -Match ([regex]::Escape("+ move `"$target`" -> `"$target.bak."))
+            ($output -join "`n") | Should -Not -Match '\[IO\.'
             ($output -join "`n") | Should -Not -Match 'Move-Item'
             (Get-Item -LiteralPath $target -Force).LinkType | Should -BeNullOrEmpty
             @(Get-ChildItem -LiteralPath $base -Force | Where-Object { $_.Name -like 'nvim.bak.*' }).Count | Should -Be 0
+        }
+    }
+
+    Context 'Set-ConfigLink DryRun (mocked)' {
+        It 'DryRun backup does not read the entry kind of the target' {
+            $base = New-TestBase
+            $source = Join-Path -Path $base -ChildPath 'repo'
+            New-Item -ItemType Directory -Path $source | Out-Null
+            $target = Join-Path -Path $base -ChildPath 'nvim'
+            # 대상은 있는 것으로, 백업 이름은 비어 있는 것으로 흉내 낸다 (실제 파일은 만들지 않음)
+            Mock Get-LinkTargetPath { $null }
+            Mock Test-PathEntry { $true } -ParameterFilter { $Path -eq $target }
+            Mock Test-PathEntry { $false }
+            Mock Get-PathEntryKind { throw 'DryRun에서 호출되면 안 됨' }
+            Mock Move-PathEntry { }
+
+            $output = Set-ConfigLink -Source $source -Target $target -DryRun
+
+            ($output -join "`n") | Should -Match ([regex]::Escape("+ move `"$target`" -> `"$target.bak."))
+            Should -Invoke Get-PathEntryKind -Times 0 -Exactly
+            Should -Invoke Move-PathEntry -Times 0 -Exactly
+        }
+    }
+
+    Context 'Get-NvimConfigTarget' {
+        It 'empty LOCALAPPDATA throws a clear error' {
+            $savedLocalAppData = $env:LOCALAPPDATA
+            try {
+                $env:LOCALAPPDATA = ''
+                { Get-NvimConfigTarget } | Should -Throw '*LOCALAPPDATA*'
+            } finally {
+                $env:LOCALAPPDATA = $savedLocalAppData
+            }
+        }
+
+        It 'returns LOCALAPPDATA\nvim' {
+            $savedLocalAppData = $env:LOCALAPPDATA
+            try {
+                $env:LOCALAPPDATA = $TestDrive
+                Get-NvimConfigTarget | Should -Be (Join-Path -Path $TestDrive -ChildPath 'nvim')
+            } finally {
+                $env:LOCALAPPDATA = $savedLocalAppData
+            }
         }
     }
 
@@ -435,6 +489,62 @@ Describe 'install.ps1' {
                 Should -Invoke Exit-Script -Times 1 -Exactly -ParameterFilter { $Code -eq 1 }
                 Should -Invoke Install-WingetPackage -Times 0 -Exactly
                 Should -Invoke Set-ConfigLink -Times 0 -Exactly
+            } finally {
+                $env:LOCALAPPDATA = $savedLocalAppData
+            }
+        }
+
+        It 'unknown component exits 2 even when the repo is inside the nvim target' {
+            # install.sh와 같은 순서: 인자 검증(exit 2)이 사전 점검(exit 1)보다 먼저다
+            $savedLocalAppData = $env:LOCALAPPDATA
+            try {
+                $env:LOCALAPPDATA = New-TestBase
+                Mock Get-RepoDir { Join-Path -Path (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') -ChildPath 'mynvim' }
+                Mock Exit-Script { throw "exit $Code" }
+                Mock Test-CommandAvailable { $true }
+                Mock Install-WingetPackage { }
+                Mock Set-ConfigLink { }
+
+                { Main -With 'foo' -Yes -DryRun } | Should -Throw 'exit 2'
+
+                Should -Invoke Exit-Script -Times 1 -Exactly -ParameterFilter { $Code -eq 2 }
+                Should -Invoke Exit-Script -Times 0 -Exactly -ParameterFilter { $Code -eq 1 }
+                Should -Invoke Install-WingetPackage -Times 0 -Exactly
+            } finally {
+                $env:LOCALAPPDATA = $savedLocalAppData
+            }
+        }
+
+        It 'repo inside the nvim target exits 1 before prompting' {
+            # 질문을 다 받은 뒤 거절하지 않도록, 대화형 질문은 사전 점검 뒤에 한다
+            $savedLocalAppData = $env:LOCALAPPDATA
+            try {
+                $env:LOCALAPPDATA = New-TestBase
+                Mock Get-RepoDir { Join-Path -Path (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') -ChildPath 'mynvim' }
+                Mock Exit-Script { throw "exit $Code" }
+                Mock Test-InteractiveSession { $true }
+                Mock Read-Host { 'y' }
+
+                { Main -DryRun } | Should -Throw 'exit 1'
+
+                Should -Invoke Read-Host -Times 0 -Exactly
+            } finally {
+                $env:LOCALAPPDATA = $savedLocalAppData
+            }
+        }
+
+        It 'empty LOCALAPPDATA exits 1 with an install.ps1 error' {
+            $savedLocalAppData = $env:LOCALAPPDATA
+            try {
+                $env:LOCALAPPDATA = ''
+                Mock Exit-Script { throw "exit $Code" }
+                Mock Install-WingetPackage { }
+                Mock Set-ConfigLink { }
+
+                { Main -Yes -DryRun } | Should -Throw 'exit 1'
+
+                Should -Invoke Exit-Script -Times 1 -Exactly -ParameterFilter { $Code -eq 1 }
+                Should -Invoke Install-WingetPackage -Times 0 -Exactly
             } finally {
                 $env:LOCALAPPDATA = $savedLocalAppData
             }

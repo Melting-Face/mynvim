@@ -326,10 +326,10 @@ detect_node_version() {
 
 # Node LTS tarball을 받아 푸는 sh 스크립트를 출력한다 (사용: sh -c "$(node_tarball_script)" _ <arch> <설치 디렉터리>)
 # SHASUMS256.txt에서 정확한 파일 이름을 찾아 임시 디렉터리에 받고, 체크섬을 검증한 뒤 푼다
-# 임시 디렉터리는 성공/실패와 관계없이 EXIT trap으로 지운다
+# 임시 디렉터리는 성공/실패와 관계없이 EXIT trap으로 지운다 (INT/TERM은 exit로 바꿔 EXIT trap이 돌게 한다)
 node_tarball_script() {
     # shellcheck disable=SC2016  # $1, $2 등은 sh -c 안에서 확장되어야 한다
-    printf '%s' 'set -e; base=https://nodejs.org/dist/latest-v22.x; tmp=$(mktemp -d); trap "rm -rf \"\$tmp\"" EXIT; curl -fsSL -o "$tmp/SHASUMS256.txt" "$base/SHASUMS256.txt" || { echo "Node SHASUMS256.txt 다운로드 실패: $base/SHASUMS256.txt" >&2; exit 1; }; line=$(grep " node-v[0-9.]*-linux-$1\.tar\.xz$" "$tmp/SHASUMS256.txt" | head -n 1) || true; [ -n "$line" ] || { echo "Node tarball을 찾지 못함" >&2; exit 1; }; file=${line##* }; curl -fsSL -o "$tmp/$file" "$base/$file" || { echo "Node tarball 다운로드 실패: $base/$file" >&2; exit 1; }; (cd "$tmp" && printf "%s\n" "$line" | sha256sum -c -); tar -xJf "$tmp/$file" --strip-components=1 -C "$2"'
+    printf '%s' 'set -e; base=https://nodejs.org/dist/latest-v22.x; tmp=$(mktemp -d); trap "rm -rf \"\$tmp\"" EXIT; trap "exit 130" INT; trap "exit 143" TERM; curl -fsSL -o "$tmp/SHASUMS256.txt" "$base/SHASUMS256.txt" || { echo "Node SHASUMS256.txt 다운로드 실패: $base/SHASUMS256.txt" >&2; exit 1; }; line=$(grep " node-v[0-9.]*-linux-$1\.tar\.xz$" "$tmp/SHASUMS256.txt" | head -n 1) || true; [ -n "$line" ] || { echo "Node tarball을 찾지 못함" >&2; exit 1; }; file=${line##* }; curl -fsSL -o "$tmp/$file" "$base/$file" || { echo "Node tarball 다운로드 실패: $base/$file" >&2; exit 1; }; (cd "$tmp" && printf "%s\n" "$line" | sha256sum -c -); tar -xJf "$tmp/$file" --strip-components=1 -C "$2"'
 }
 
 # Node 18 이상을 보장한다 (spec §6)
@@ -448,9 +448,10 @@ warn_local_bin_shadowed() {
 
 # nvim tarball을 받아 푸는 sh 스크립트를 출력한다 (사용: sh -c "$(nvim_tarball_script)" _ <URL> <설치 디렉터리>)
 # 파이프(curl | tar)는 curl 실패가 가려지므로 임시 파일로 받은 뒤 풀고, 임시 디렉터리는 EXIT trap으로 지운다
+# (INT/TERM은 exit 130/143으로 바꿔 EXIT trap이 돌게 한다)
 nvim_tarball_script() {
     # shellcheck disable=SC2016  # $1, $2 등은 sh -c 안에서 확장되어야 한다
-    printf '%s' 'set -e; tmp=$(mktemp -d); trap "rm -rf \"\$tmp\"" EXIT; curl -fL -o "$tmp/nvim.tar.gz" "$1" || { echo "nvim tarball 다운로드 실패 (curl): $1" >&2; exit 1; }; tar -xzf "$tmp/nvim.tar.gz" --strip-components=1 -C "$2"'
+    printf '%s' 'set -e; tmp=$(mktemp -d); trap "rm -rf \"\$tmp\"" EXIT; trap "exit 130" INT; trap "exit 143" TERM; curl -fL -o "$tmp/nvim.tar.gz" "$1" || { echo "nvim tarball 다운로드 실패 (curl): $1" >&2; exit 1; }; tar -xzf "$tmp/nvim.tar.gz" --strip-components=1 -C "$2"'
 }
 
 ensure_nvim() {

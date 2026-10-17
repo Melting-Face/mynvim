@@ -98,20 +98,24 @@ function Test-InteractiveSession {
     return (-not (Test-NonInteractiveArgument -Arguments ([Environment]::GetCommandLineArgs())))
 }
 
-# 선택 항목을 정해진 순서(go, rust, java, lua)의 배열로 정리한다
+# 선택 항목 이름 목록 (tmux는 Windows에서 경고 후 건너뛴다)
+function Get-KnownComponent {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param()
+    return @('tmux', 'go', 'rust', 'java', 'lua')
+}
+
+# -With 값(쉼표 목록·배열)을 이름 배열로 풀고 검증만 한다 (묻지 않는 순수 함수: Main이 사전 점검 전에 호출)
 # 알 수 없는 이름은 종료 오류(throw)를 낸다. exit 대신 throw를 쓰는 이유: dot-source한 Pester 세션을 죽이지 않기 위해
-function Resolve-Components {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = '작업 명세에 정해진 함수 이름')]
+function Get-RequestedComponent {
     [CmdletBinding()]
     [OutputType([string[]])]
     param(
-        [string[]]$With,
-        [switch]$All,
-        [switch]$Yes
+        [string[]]$With
     )
-    $known = @('tmux', 'go', 'rust', 'java', 'lua')
-    $requested = New-Object System.Collections.Generic.List[string]
-
+    $known = Get-KnownComponent
+    $requested = @()
     foreach ($entry in @($With)) {
         if ([string]::IsNullOrEmpty($entry)) {
             continue
@@ -124,8 +128,28 @@ function Resolve-Components {
             if ($known -cnotcontains $name) {
                 throw "알 수 없는 항목: $name (사용 가능: $($known -join ' '))"
             }
-            $requested.Add($name)
+            $requested += $name
         }
+    }
+    return $requested
+}
+
+# 선택 항목을 정해진 순서(go, rust, java, lua)의 배열로 정리한다
+# 검증은 Get-RequestedComponent가 하고, 선택 항목이 없고 대화형이면 여기서 y/N을 묻는다
+function Resolve-Components {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = '작업 명세에 정해진 함수 이름')]
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param(
+        [string[]]$With,
+        [switch]$All,
+        [switch]$Yes
+    )
+    $known = Get-KnownComponent
+    $requested = New-Object System.Collections.Generic.List[string]
+
+    foreach ($name in @(Get-RequestedComponent -With $With)) {
+        $requested.Add($name)
     }
     $hasWith = $requested.Count -gt 0
 
@@ -517,9 +541,8 @@ function Set-ConfigLink {
             $backup = "$targetFull.bak.$stamp-$n"
         }
         Write-Output "백업: $targetFull -> $backup"
-        # DryRun에도 실제로 실행하는 명령([IO.Directory]::Move 또는 [IO.File]::Move)을 출력한다
-        $entryKind = Get-PathEntryKind -Path $targetFull
-        Invoke-Step -DryRun:$DryRun -Command "[IO.$entryKind]::Move(`"$targetFull`", `"$backup`")" -Action {
+        # 대상 종류(파일/디렉터리)는 실제로 옮길 때만 Move-PathEntry가 읽는다. DryRun은 읽지 않고 중립적인 형식으로 출력한다
+        Invoke-Step -DryRun:$DryRun -Command "move `"$targetFull`" -> `"$backup`"" -Action {
             Move-PathEntry -Path $targetFull -Destination $backup
         }
     }
@@ -576,10 +599,14 @@ function Get-RepoDir {
 }
 
 # nvim 설정 연결 대상 경로 (%LOCALAPPDATA%\nvim)
+# LOCALAPPDATA가 비어 있으면 Join-Path 바인딩 오류 대신 알기 쉬운 오류를 낸다 (Main이 'install.ps1:'을 붙여 exit 1)
 function Get-NvimConfigTarget {
     [CmdletBinding()]
     [OutputType([string])]
     param()
+    if ([string]::IsNullOrEmpty($env:LOCALAPPDATA)) {
+        throw 'LOCALAPPDATA 환경변수가 비어 있어 nvim 설정 경로(%LOCALAPPDATA%\nvim)를 정할 수 없습니다. LOCALAPPDATA를 설정한 뒤 다시 실행하세요'
+    }
     return (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim')
 }
 
@@ -593,14 +620,28 @@ function Main {
     )
     $ErrorActionPreference = 'Stop'
 
+    # 인자 검증: install.sh와 같이 알 수 없는 항목(exit 2)을 사전 점검(exit 1)보다 먼저 확인한다 (묻지 않음)
+    try {
+        [void](Get-RequestedComponent -With $With)
+    } catch {
+        [Console]::Error.WriteLine("install.ps1: $($_.Exception.Message)")
+        Exit-Script -Code 2
+    }
+
     # 사전 점검: 묻거나 설치하기 전에, 레포가 nvim 설정 대상 안에 clone되었으면 바로 중단한다
     $repoDir = Get-RepoDir
-    $nvimTarget = Get-NvimConfigTarget
+    try {
+        $nvimTarget = Get-NvimConfigTarget
+    } catch {
+        [Console]::Error.WriteLine("install.ps1: $($_.Exception.Message)")
+        Exit-Script -Code 1
+    }
     if (Test-RepoInsideTarget -Source $repoDir -Target $nvimTarget) {
         [Console]::Error.WriteLine("install.ps1: $(Get-RepoInsideTargetMessage -Source (Resolve-FullPath -Path $repoDir) -Target (Resolve-FullPath -Path $nvimTarget))")
         Exit-Script -Code 1
     }
 
+    # 대화형 질문은 사전 점검 뒤에 한다 (질문을 다 받은 뒤 거절하지 않도록)
     try {
         $components = @(Resolve-Components -With $With -All:$All -Yes:$Yes)
     } catch {
