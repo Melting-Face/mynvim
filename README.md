@@ -353,6 +353,12 @@ Windows는 새 PowerShell 창을 여세요.
 
 nvim-spectre의 치환은 GNU `sed`를 씁니다. Windows 네이티브에는 없으므로 검색은 되지만 치환 기능이 제한됩니다.
 
+### nvim-treesitter가 `master` 브랜치에 고정된 이유
+
+`lua/plugins.lua`는 nvim-treesitter와 nvim-treesitter-textobjects를 일부러 `branch = "master"`로 고정합니다.
+upstream의 기본 브랜치인 `main`은 설정 API가 완전히 바뀌었고, Neovim 0.12 이상과 `tree-sitter` CLI 0.26.1 이상(패키지 관리자로 설치)을 요구합니다. 그대로 두면 Neovim 0.11 환경에서 설치가 깨집니다.
+`master`는 더 이상 기능이 추가되지 않는 동결 브랜치입니다. 지금 설정이 실제로 깨질 때(예: 새 Neovim 버전에서 오류) `main` API로 옮길 예정입니다.
+
 ## 백업 복구 방법
 
 설치 스크립트가 기존 설정을 백업한 경우, 원래대로 되돌릴 수 있습니다.
