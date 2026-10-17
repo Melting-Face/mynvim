@@ -72,6 +72,7 @@
 | `install.ps1` (신규) | Windows 네이티브 설치 (PowerShell 5.1 이상 호환) |
 | `nvim.sh` (삭제) | `install.sh`로 대체 |
 | `README.md` (재작성) | 한국어 설치·사용 가이드 |
+| `.gitignore` (신규) | `lazy-lock.json` 제외 |
 | `wezterm.lua` (신규) | WezTerm 최소 설정 (OS별 분기: Windows는 pwsh 기본 + WSL 도메인 사용 가능) |
 | `docs/tmux.md` (신규) | tmux·tpm·tmuxinator 사용법 (`tmuxinator.md` 흡수) |
 | `vim.md`, `tmuxinator.md` (삭제) | |
@@ -154,7 +155,7 @@ WSL은 Windows 측 `win32yank.exe`가 PATH에 없으면 안내 메시지 출력.
 ## 5. 내가 판단한 사항 (Claude의 결정)
 
 - 스크립트 이름을 `install.sh` / `install.ps1`로 변경하고 `nvim.sh`는 삭제.
-- 레포 전체를 설정 디렉터리로 연결 (새 파일 추가 시 링크 누락 방지). 이에 따라 `lazy-lock.json`이 레포에 생기며, **커밋하여 버전을 고정**한다(다른 사람도 같은 플러그인 버전으로 재현).
+- 레포 전체를 설정 디렉터리로 연결 (새 파일 추가 시 링크 누락 방지). 이에 따라 `lazy-lock.json`이 레포 안에 생기는데, **커밋하지 않고 `.gitignore`에 추가**한다(사용자 결정).
 - `.claude/`, `.agents/`, `skills-lock.json`은 nvim 동작에 영향이 없으므로 그대로 둔다.
 - Windows 패키지 관리자는 OS 기본 제공인 winget.
 - macOS에서 brew가 없으면 자동 설치하지 않고 안내 후 종료(외부 스크립트 실행 위험 회피).
