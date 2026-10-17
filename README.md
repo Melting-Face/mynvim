@@ -42,16 +42,6 @@ Neovim은 0.11 이상이 필요합니다. 더 낮거나 없으면 스크립트�
 | Windows | `winget install wez.wezterm` |
 | Linux | [공식 설치 문서](https://wezterm.org/install/linux.html)를 따르세요 |
 
-```shell
-# macOS
-brew install --cask wezterm
-```
-
-```powershell
-# Windows
-winget install wez.wezterm
-```
-
 알아둘 점은 다음과 같습니다.
 
 - **폰트 설치는 필요 없습니다.** WezTerm에 JetBrains Mono와 Nerd Font 심볼이 내장되어 있습니다.
@@ -120,7 +110,27 @@ cd $HOME\mynvim
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -DryRun -Yes
 ```
 
-설치가 끝나면 `nvim`을 실행하세요. 플러그인은 설치 중에 이미 동기화됩니다.
+### 설치 확인
+
+설치가 끝나면 **새 터미널**을 열고 `nvim`을 실행하세요. 플러그인은 설치 중에 이미 동기화됩니다.
+처음 실행할 때 mason이 LSP 서버를 백그라운드로 설치하므로 1~2분 정도 기다리세요.
+문제가 있으면 nvim 안에서 `:checkhealth`로 원인을 확인할 수 있습니다.
+
+### 업데이트
+
+```shell
+cd ~/mynvim
+git pull
+./install.sh --yes
+```
+
+```powershell
+cd $HOME\mynvim
+git pull
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -Yes
+```
+
+플러그인만 갱신하려면 nvim 안에서 `:Lazy sync`를 실행하세요.
 
 ## 설치 옵션
 
@@ -211,22 +221,18 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 
 leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Telescope keymaps)나 `which-key`로 확인할 수 있습니다.
 
-### TIP
+### 팁
 
-- `<c-n>`: nvim-cmp auto complete
+- **자동 완성**: 입력 중 `<C-n>`으로 nvim-cmp 후보를 엽니다.
+- **정렬 (Tabular)**: visual 모드에서 `:Tab /:`를 실행하면 `:` 기준으로 정렬합니다. [Tabular cheatsheet](https://devhints.io/tabular)
+- **Git (Fugitive)**: `:G`로 상태 창을 열고 다음 키를 씁니다.
 
-- visual mode => `:Tab /:` => Tabular arrangement `:`
-> [Tabular cheatsheet](https://devhints.io/tabular)
-
-- Fugitive Command
-
-   - s: stage   (git add)
-
-   - u: unstage (git reset)
-
-   - cc: git commit
-
-   - G push: git push
+  | 키 | 동작 |
+  | --- | --- |
+  | `s` | stage (`git add`) |
+  | `u` | unstage (`git reset`) |
+  | `cc` | commit |
+  | `:G push` | push |
 
 ### 자주 쓰는 키
 
@@ -257,87 +263,31 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 [`lua/plugins.lua`](lua/plugins.lua) 기준이며, lazy.nvim이 관리합니다.
 버전 고정 파일(`lazy-lock.json`)은 커밋하지 않습니다.
 
-<details>
-<summary>nvim 플러그인 전체 보기</summary>
+**UI·테마**: [catppuccin](https://github.com/catppuccin/nvim), [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim), [bufferline.nvim](https://github.com/akinsho/bufferline.nvim), [scope.nvim](https://github.com/tiagovla/scope.nvim), [nvim-navic](https://github.com/SmiteshP/nvim-navic), [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim), [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons), [vim-startify](https://github.com/mhinz/vim-startify), [which-key.nvim](https://github.com/folke/which-key.nvim), [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
 
-| 플러그인 | 링크 |
-| --- | --- |
-| nvim-web-devicons | https://github.com/nvim-tree/nvim-web-devicons |
-| plenary.nvim | https://github.com/nvim-lua/plenary.nvim |
-| tabular | https://github.com/godlygeek/tabular |
-| vim-startify | https://github.com/mhinz/vim-startify |
-| vim-visual-multi | https://github.com/mg979/vim-visual-multi |
-| vim-better-whitespace | https://github.com/ntpeters/vim-better-whitespace |
-| undotree | https://github.com/mbbill/undotree |
-| todo-comments.nvim | https://github.com/folke/todo-comments.nvim |
-| tmux.nvim | https://github.com/aserowy/tmux.nvim |
-| hop.nvim | https://github.com/smoka7/hop.nvim |
-| nvim-spectre | https://github.com/nvim-pack/nvim-spectre |
-| telescope.nvim | https://github.com/nvim-telescope/telescope.nvim |
-| text-case.nvim | https://github.com/johmsalas/text-case.nvim |
-| rainbow_csv | https://github.com/mechatroner/rainbow_csv |
-| csv.vim | https://github.com/chrisbra/csv.vim |
-| vim-fugitive | https://github.com/tpope/vim-fugitive |
-| neogit | https://github.com/NeogitOrg/neogit |
-| diffview.nvim | https://github.com/sindrets/diffview.nvim |
-| gitsigns.nvim | https://github.com/lewis6991/gitsigns.nvim |
-| git-conflict.nvim | https://github.com/akinsho/git-conflict.nvim |
-| nvim-bqf | https://github.com/kevinhwang91/nvim-bqf |
-| catppuccin | https://github.com/catppuccin/nvim |
-| nvim-treesitter | https://github.com/nvim-treesitter/nvim-treesitter |
-| nvim-treesitter-textobjects | https://github.com/nvim-treesitter/nvim-treesitter-textobjects |
-| neogen | https://github.com/danymat/neogen |
-| nvim-navic | https://github.com/SmiteshP/nvim-navic |
-| nvim-lspconfig | https://github.com/neovim/nvim-lspconfig |
-| vim-dadbod | https://github.com/tpope/vim-dadbod |
-| vim-dadbod-ui | https://github.com/kristijanhusak/vim-dadbod-ui |
-| vim-dadbod-completion | https://github.com/kristijanhusak/vim-dadbod-completion |
-| mason.nvim | https://github.com/williamboman/mason.nvim |
-| mason-lspconfig.nvim | https://github.com/williamboman/mason-lspconfig.nvim |
-| mason-null-ls.nvim | https://github.com/jayp0521/mason-null-ls.nvim |
-| none-ls.nvim | https://github.com/nvimtools/none-ls.nvim |
-| none-ls-extras.nvim | https://github.com/nvimtools/none-ls-extras.nvim |
-| which-key.nvim | https://github.com/folke/which-key.nvim |
-| indent-blankline.nvim | https://github.com/lukas-reineke/indent-blankline.nvim |
-| bufferline.nvim | https://github.com/akinsho/bufferline.nvim |
-| scope.nvim | https://github.com/tiagovla/scope.nvim |
-| nvim-dap | https://github.com/mfussenegger/nvim-dap |
-| nvim-dap-ui | https://github.com/rcarriga/nvim-dap-ui |
-| nvim-nio | https://github.com/nvim-neotest/nvim-nio |
-| nvim-dap-virtual-text | https://github.com/theHamsta/nvim-dap-virtual-text |
-| nvim-dap-python | https://github.com/mfussenegger/nvim-dap-python |
-| nvim-jdtls | https://github.com/mfussenegger/nvim-jdtls |
-| Comment.nvim | https://github.com/numToStr/Comment.nvim |
-| nvim-surround | https://github.com/kylechui/nvim-surround |
-| nvim-tree.lua | https://github.com/nvim-tree/nvim-tree.lua |
-| lualine.nvim | https://github.com/nvim-lualine/lualine.nvim |
-| rustaceanvim | https://github.com/mrcjkb/rustaceanvim |
-| nvim-cmp | https://github.com/hrsh7th/nvim-cmp |
-| LuaSnip | https://github.com/L3MON4D3/LuaSnip |
-| cmp_luasnip | https://github.com/saadparwaiz1/cmp_luasnip |
-| cmp-nvim-lsp | https://github.com/hrsh7th/cmp-nvim-lsp |
-| cmp-buffer | https://github.com/hrsh7th/cmp-buffer |
-| cmp-path | https://github.com/hrsh7th/cmp-path |
-| cmp-cmdline | https://github.com/hrsh7th/cmp-cmdline |
-| claudecode.nvim | https://github.com/coder/claudecode.nvim |
-| snacks.nvim | https://github.com/folke/snacks.nvim |
+**검색·이동**: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim), [hop.nvim](https://github.com/smoka7/hop.nvim), [nvim-spectre](https://github.com/nvim-pack/nvim-spectre), [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf), [tmux.nvim](https://github.com/aserowy/tmux.nvim)
 
-</details>
+**편집**: [Comment.nvim](https://github.com/numToStr/Comment.nvim), [nvim-surround](https://github.com/kylechui/nvim-surround), [vim-visual-multi](https://github.com/mg979/vim-visual-multi), [tabular](https://github.com/godlygeek/tabular), [text-case.nvim](https://github.com/johmsalas/text-case.nvim), [vim-better-whitespace](https://github.com/ntpeters/vim-better-whitespace), [undotree](https://github.com/mbbill/undotree), [todo-comments.nvim](https://github.com/folke/todo-comments.nvim), [neogen](https://github.com/danymat/neogen)
+
+**Git**: [vim-fugitive](https://github.com/tpope/vim-fugitive), [neogit](https://github.com/NeogitOrg/neogit), [diffview.nvim](https://github.com/sindrets/diffview.nvim), [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim), [git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim)
+
+**LSP·자동 완성**: [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), [mason.nvim](https://github.com/williamboman/mason.nvim), [mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim), [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim), [none-ls-extras.nvim](https://github.com/nvimtools/none-ls-extras.nvim), [mason-null-ls.nvim](https://github.com/jayp0521/mason-null-ls.nvim), [nvim-cmp](https://github.com/hrsh7th/nvim-cmp), [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp), [cmp-buffer](https://github.com/hrsh7th/cmp-buffer), [cmp-path](https://github.com/hrsh7th/cmp-path), [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline), [LuaSnip](https://github.com/L3MON4D3/LuaSnip), [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip), [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects), [rustaceanvim](https://github.com/mrcjkb/rustaceanvim), [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls)
+
+**디버깅 (DAP)**: [nvim-dap](https://github.com/mfussenegger/nvim-dap), [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui), [nvim-dap-virtual-text](https://github.com/theHamsta/nvim-dap-virtual-text), [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python), [nvim-nio](https://github.com/nvim-neotest/nvim-nio)
+
+**데이터·DB**: [vim-dadbod](https://github.com/tpope/vim-dadbod), [vim-dadbod-ui](https://github.com/kristijanhusak/vim-dadbod-ui), [vim-dadbod-completion](https://github.com/kristijanhusak/vim-dadbod-completion), [rainbow_csv](https://github.com/mechatroner/rainbow_csv), [csv.vim](https://github.com/chrisbra/csv.vim)
+
+**기타**: [claudecode.nvim](https://github.com/coder/claudecode.nvim), [snacks.nvim](https://github.com/folke/snacks.nvim), [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 
 ### tmux
 
 tmux는 선택 항목입니다. 사용법과 tpm 플러그인 설치는 [docs/tmux.md](docs/tmux.md)를 보세요.
 
 - [tpm](https://github.com/tmux-plugins/tpm)
-
 - [sensible](https://github.com/tmux-plugins/tmux-sensible)
-
 - [one dark](https://github.com/odedlaz/tmux-onedark-theme)
-
 - [cpu](https://github.com/tmux-plugins/tmux-cpu)
-
 - [battery](https://github.com/tmux-plugins/tmux-battery)
-
 - [prefix highlight](https://github.com/tmux-plugins/tmux-prefix-highlight)
 
 ## 문제 해결
