@@ -179,8 +179,10 @@ return {
   -- nvim-treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    -- configs/compilers API는 master 브랜치에만 있다 (main은 재작성됨)
+    branch = "master",
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
+      { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
     },
     lazy = true,
     build = ":TSUpdate",
