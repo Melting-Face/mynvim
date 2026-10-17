@@ -114,7 +114,7 @@ return {
       "sindrets/diffview.nvim",
       "nvim-telescope/telescope.nvim",
     },
-    config = {
+    opts = {
       integrations = {
         diffview = true,
       },
@@ -131,7 +131,7 @@ return {
   -- gitsigns
   {
     "lewis6991/gitsigns.nvim",
-    config = {
+    opts = {
       current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "eol",
@@ -323,7 +323,7 @@ return {
     "SmiteshP/nvim-navic",
     dependencies = "neovim/nvim-lspconfig",
     lazy = true,
-    config = {
+    opts = {
       highlight = true,
     },
   },
@@ -386,7 +386,7 @@ return {
       "williamboman/mason.nvim",
       "nvimtools/none-ls.nvim",
     },
-    config = {
+    opts = {
       automatic_installation = true,
     },
   },
@@ -420,7 +420,7 @@ return {
     "akinsho/bufferline.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VimEnter",
-    config = {
+    opts = {
       options = {
         separator_style = "padded_slant",
         numbers = function(opts)
@@ -660,7 +660,7 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = "neovim/nvim-lspconfig",
-    config = {
+    opts = {
       ensure_installed = language_servers,
       automatic_installation = true,
     },
@@ -679,7 +679,7 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = {
+    opts = {
       sync_root_with_cwd = true,
       actions = {
         open_file = {
