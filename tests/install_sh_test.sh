@@ -427,6 +427,152 @@ test_ensure_nvim_exports_local_bin_on_path() {
     rm -rf "$tmp"
 }
 
+test_wezterm_missing_prints_note() {
+    local tmp out
+    tmp="$(mktemp -d)"
+    out="$(MYNVIM_ASSUME_MISSING=wezterm run_install "$tmp" "$INSTALL_SH")" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "WezTerm이 감지되지 않아"
+    [ ! -e "$tmp/.wezterm.lua" ] || fail ".wezterm.lua가 생기면 안 됨"
+    rm -rf "$tmp"
+}
+
+# copy_repo <디렉터리> : install.sh가 링크에 쓰는 최소 파일을 복사한다
+copy_repo() {
+    mkdir -p "$1"
+    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$1/"
+}
+
+test_repo_inside_target_aborts_before_mv() {
+    local tmp repo out code mode
+    tmp="$(mktemp -d)"
+    repo="$tmp/.config/nvim/mynvim"
+    copy_repo "$repo"
+    for mode in --dry-run ""; do
+        code=0
+        # shellcheck disable=SC2086  # 빈 값이면 인자를 넘기지 않음
+        out="$(run_install "$tmp" "$repo/install.sh" $mode 2>&1)" || code=$?
+        assert_equals "1" "$code"
+        assert_contains "$out" "안에 있습니다"
+        assert_not_contains "$out" "+ mv"
+    done
+    [ -d "$tmp/.config/nvim" ] && [ ! -L "$tmp/.config/nvim" ] || fail "대상이 바뀌면 안 됨"
+    [ -f "$repo/install.sh" ] || fail "레포가 옮겨지면 안 됨"
+    assert_equals "0" "$(list_baks "$tmp" | wc -l | tr -d ' ')"
+    rm -rf "$tmp"
+}
+
+test_repo_inside_target_physical_path_aborts() {
+    local tmp repo code=0
+    tmp="$(mktemp -d)"
+    # ~/.config가 다른 곳을 가리키는 링크이고, 레포가 그 실제 경로의 nvim 안에 있는 경우
+    mkdir -p "$tmp/home" "$tmp/real"
+    ln -s "$tmp/real" "$tmp/home/.config"
+    repo="$tmp/real/nvim/mynvim"
+    copy_repo "$repo"
+    run_install "$tmp/home" "$repo/install.sh" >/dev/null 2>&1 || code=$?
+    assert_equals "1" "$code"
+    [ -f "$repo/install.sh" ] || fail "레포가 옮겨지면 안 됨"
+    rm -rf "$tmp"
+}
+
+# make_fake_version_cmd <경로> <--version 첫 줄> : 버전만 출력하는 가짜 실행 파일을 만든다
+make_fake_version_cmd() {
+    mkdir -p "$(dirname "$1")"
+    printf '#!/bin/sh\necho "%s"\n' "$2" >"$1"
+    chmod +x "$1"
+}
+
+# dry_run_linux : 임시 HOME에서 linux/apt 기준 --yes --dry-run 출력 (MYNVIM_ARCH 기본 x86_64)
+dry_run_linux() {
+    MYNVIM_ARCH="${MYNVIM_ARCH:-x86_64}" MYNVIM_PLATFORM=linux MYNVIM_PKG=apt \
+        "$INSTALL_SH" --yes --dry-run </dev/null
+}
+
+test_old_node_installs_lts_tarball() {
+    local out
+    out="$(MYNVIM_NODE_VERSION=12.22.9 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "Node 18 이상이 필요합니다 (현재: 12.22.9)"
+    assert_contains "$out" "https://nodejs.org/dist/latest-v22.x"
+    assert_contains "$out" "SHASUMS256.txt"
+    assert_contains "$out" "sha256sum -c"
+    assert_contains "$out" "_ x64 $HOME/.local/opt/node"
+    assert_contains "$out" "+ ln -sf $HOME/.local/opt/node/bin/node $HOME/.local/bin/node"
+    assert_contains "$out" "+ ln -sf $HOME/.local/opt/node/bin/npm $HOME/.local/bin/npm"
+    assert_contains "$out" "+ ln -sf $HOME/.local/opt/node/bin/npx $HOME/.local/bin/npx"
+    [ ! -e "$HOME/.local/opt/node" ] || fail "dry-run이 디렉터리를 만들면 안 됨"
+}
+
+test_missing_node_arm64_installs_tarball() {
+    local out
+    out="$(MYNVIM_NODE_VERSION='' MYNVIM_ARCH=aarch64 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "(현재: 없음)"
+    assert_contains "$out" "_ arm64 $HOME/.local/opt/node"
+}
+
+test_new_node_skips_tarball() {
+    local out
+    out="$(MYNVIM_NODE_VERSION=20.11.0 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_not_contains "$out" "nodejs.org"
+    assert_not_contains "$out" "Node 18 이상이 필요합니다"
+}
+
+test_local_node_preferred_over_old_path_node() {
+    local out
+    make_fake_version_cmd "$HOME/.local/bin/node" "v22.11.0"
+    out="$(MYNVIM_NODE_VERSION=12.22.9 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_not_contains "$out" "nodejs.org"
+}
+
+test_brew_old_node_only_warns() {
+    local out
+    out="$(MYNVIM_NODE_VERSION=12.22.9 MYNVIM_PLATFORM=macos MYNVIM_PKG=brew "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "경고: Node v12.22.9 는 너무 오래되었습니다"
+    assert_not_contains "$out" "nodejs.org"
+}
+
+test_nvim_tarball_paths_are_positional_args() {
+    local out
+    out="$(MYNVIM_NVIM_VERSION=0.9.5 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    # sh -c 스크립트 문자열에는 경로를 넣지 않고 위치 인자로 넘긴다
+    assert_contains "$out" "+ sh -c curl -fsSL \"\$1\" | tar -xz --strip-components=1 -C \"\$2\" _ https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz $HOME/.local/opt/nvim"
+}
+
+test_local_nvim_preferred_over_old_path_nvim() {
+    local out
+    make_fake_version_cmd "$HOME/.local/bin/nvim" "NVIM v0.11.3"
+    out="$(MYNVIM_NVIM_VERSION=0.9.5 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "nvim 0.11.3 확인됨 ($HOME/.local/bin/nvim)"
+    assert_not_contains "$out" "nvim-linux-"
+}
+
+test_old_local_nvim_still_installs_tarball() {
+    local out
+    make_fake_version_cmd "$HOME/.local/bin/nvim" "NVIM v0.10.4"
+    out="$(MYNVIM_NVIM_VERSION=0.9.5 dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "nvim-linux-x86_64"
+}
+
+test_shadowed_nvim_warns_about_path_order() {
+    local out
+    make_fake_version_cmd "$HOME/.local/bin/nvim" "NVIM v0.11.3"
+    # PATH에서 오래된 nvim이 ~/.local/bin보다 먼저 잡히는 경우
+    make_fake_version_cmd "$HOME/oldbin/nvim" "NVIM v0.9.5"
+    out="$(PATH="$HOME/oldbin:$PATH:$HOME/.local/bin" dry_run_linux)" || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "$HOME/oldbin/nvim"
+    assert_contains "$out" "PATH 맨 앞에 두세요"
+    assert_contains "$out" "export PATH=\"\$HOME/.local/bin:\$PATH\""
+}
+
+test_local_bin_first_no_path_warning() {
+    local out
+    make_fake_version_cmd "$HOME/.local/bin/nvim" "NVIM v0.11.3"
+    make_fake_version_cmd "$HOME/oldbin/nvim" "NVIM v0.9.5"
+    out="$(PATH="$HOME/.local/bin:$HOME/oldbin:$PATH" MYNVIM_NODE_VERSION=20.11.0 dry_run_linux)" \
+        || fail "종료 코드가 0이 아님"
+    assert_not_contains "$out" "PATH 맨 앞에"
+}
+
 test_dry_run_old_nvim_has_tarball_then_lazy_sync() {
     local out
     out="$(MYNVIM_SKIP_PACKAGES=0 MYNVIM_NVIM_VERSION=0.9.5 MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
