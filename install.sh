@@ -145,14 +145,20 @@ detect_platform() {
     fi
 }
 
+# 표준 입력이 터미널(TTY)이면 0 (테스트에서 바꿔 끼우기 위한 함수)
+is_interactive() {
+    [ -t 0 ]
+}
+
 # 선택 항목이 없고 대화형(TTY)일 때만 항목별로 y/N을 묻는다
 choose_components() {
     local c answer
-    if [ -n "$WITH" ] || [ "$ASSUME_YES" -eq 1 ] || [ ! -t 0 ]; then
+    if [ -n "$WITH" ] || [ "$ASSUME_YES" -eq 1 ] || ! is_interactive; then
         return 0
     fi
     for c in $ALL_COMPONENTS; do
-        read -r -p "$c 을(를) 설치할까요? [y/N] " answer
+        # EOF(입력 없음)면 read가 실패하므로 set -e로 조용히 종료되지 않도록 N으로 처리한다
+        read -r -p "$c 을(를) 설치할까요? [y/N] " answer || answer=""
         case "$answer" in
             y | Y | yes | YES) add_component "$c" ;;
         esac
@@ -318,6 +324,14 @@ detect_node_version() {
     echo "${v#v}"
 }
 
+# Node LTS tarball을 받아 푸는 sh 스크립트를 출력한다 (사용: sh -c "$(node_tarball_script)" _ <arch> <설치 디렉터리>)
+# SHASUMS256.txt에서 정확한 파일 이름을 찾아 임시 디렉터리에 받고, 체크섬을 검증한 뒤 푼다
+# 임시 디렉터리는 성공/실패와 관계없이 EXIT trap으로 지운다
+node_tarball_script() {
+    # shellcheck disable=SC2016  # $1, $2 등은 sh -c 안에서 확장되어야 한다
+    printf '%s' 'set -e; base=https://nodejs.org/dist/latest-v22.x; tmp=$(mktemp -d); trap "rm -rf \"\$tmp\"" EXIT; curl -fsSL -o "$tmp/SHASUMS256.txt" "$base/SHASUMS256.txt" || { echo "Node SHASUMS256.txt 다운로드 실패: $base/SHASUMS256.txt" >&2; exit 1; }; line=$(grep " node-v[0-9.]*-linux-$1\.tar\.xz$" "$tmp/SHASUMS256.txt" | head -n 1) || true; [ -n "$line" ] || { echo "Node tarball을 찾지 못함" >&2; exit 1; }; file=${line##* }; curl -fsSL -o "$tmp/$file" "$base/$file" || { echo "Node tarball 다운로드 실패: $base/$file" >&2; exit 1; }; (cd "$tmp" && printf "%s\n" "$line" | sha256sum -c -); tar -xJf "$tmp/$file" --strip-components=1 -C "$2"'
+}
+
 # Node 18 이상을 보장한다 (spec §6)
 # brew는 경고만 하고, 그 밖에는 공식 LTS(v22) tarball을 ~/.local/opt/node에 풀고 ~/.local/bin에 링크한다
 ensure_node() {
@@ -343,9 +357,8 @@ ensure_node() {
     esac
     dir="$HOME/.local/opt/node"
     run mkdir -p "$dir" "$HOME/.local/bin"
-    # SHASUMS256.txt에서 정확한 파일 이름을 찾아 받고, 체크섬을 검증한 뒤 푼다 (경로는 위치 인자로 전달)
-    # shellcheck disable=SC2016  # $1, $2 등은 sh -c 안에서 확장되어야 한다
-    run sh -c 'set -e; base=https://nodejs.org/dist/latest-v22.x; line=$(curl -fsSL "$base/SHASUMS256.txt" | grep " node-v[0-9.]*-linux-$1\.tar\.xz$" | head -n 1); [ -n "$line" ] || { echo "Node tarball을 찾지 못함" >&2; exit 1; }; file=${line##* }; tmp=$(mktemp -d); curl -fsSL -o "$tmp/$file" "$base/$file"; (cd "$tmp" && printf "%s\n" "$line" | sha256sum -c -); tar -xJf "$tmp/$file" --strip-components=1 -C "$2"; rm -rf "$tmp"' _ "$arch" "$dir"
+    # 경로는 sh -c 문자열에 끼워 넣지 않고 위치 인자로 전달한다
+    run sh -c "$(node_tarball_script)" _ "$arch" "$dir"
     for b in node npm npx; do
         run ln -sf "$dir/bin/$b" "$HOME/.local/bin/$b"
     done
@@ -433,6 +446,13 @@ warn_local_bin_shadowed() {
     fi
 }
 
+# nvim tarball을 받아 푸는 sh 스크립트를 출력한다 (사용: sh -c "$(nvim_tarball_script)" _ <URL> <설치 디렉터리>)
+# 파이프(curl | tar)는 curl 실패가 가려지므로 임시 파일로 받은 뒤 풀고, 임시 디렉터리는 EXIT trap으로 지운다
+nvim_tarball_script() {
+    # shellcheck disable=SC2016  # $1, $2 등은 sh -c 안에서 확장되어야 한다
+    printf '%s' 'set -e; tmp=$(mktemp -d); trap "rm -rf \"\$tmp\"" EXIT; curl -fL -o "$tmp/nvim.tar.gz" "$1" || { echo "nvim tarball 다운로드 실패 (curl): $1" >&2; exit 1; }; tar -xzf "$tmp/nvim.tar.gz" --strip-components=1 -C "$2"'
+}
+
 ensure_nvim() {
     local v arch local_nvim="$HOME/.local/bin/nvim"
     # 이전 실행에서 설치한 ~/.local/bin/nvim이 0.11 이상이면 다시 받지 않는다 (PATH에 오래된 nvim이 먼저 있어도)
@@ -465,8 +485,7 @@ ensure_nvim() {
     esac
     run mkdir -p "$HOME/.local/opt/nvim" "$HOME/.local/bin"
     # 경로는 sh -c 문자열에 끼워 넣지 않고 위치 인자로 전달한다
-    # shellcheck disable=SC2016  # $1, $2는 sh -c 안에서 확장되어야 한다
-    run sh -c 'curl -fsSL "$1" | tar -xz --strip-components=1 -C "$2"' _ \
+    run sh -c "$(nvim_tarball_script)" _ \
         "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz" "$HOME/.local/opt/nvim"
     run ln -sf "$HOME/.local/opt/nvim/bin/nvim" "$local_nvim"
     # 이후 단계(Lazy 동기화)에서 방금 설치한 nvim을 찾도록 이 스크립트의 PATH에 추가
@@ -509,6 +528,29 @@ is_inside() {
     return 1
 }
 
+# 레포 src가 연결 대상 dst 안에 있으면 0 (같은 경로는 안이 아님)
+# 대상이 심볼릭 링크면 mv는 링크만 옮기므로 물리 경로 비교는 실제 디렉터리일 때만 한다
+repo_inside_target() {
+    local src="$1" dst="$2" src_phys
+    is_inside "$src" "$dst" && return 0
+    [ -L "$dst" ] && return 1
+    src_phys="$(physical_path "$src" 2>/dev/null || true)"
+    is_inside "$src_phys" "$(physical_path "$dst" 2>/dev/null || true)"
+}
+
+# 레포가 연결 대상 안에 있으면 오류를 출력하고 종료한다 (exit 1)
+assert_repo_outside() {
+    if repo_inside_target "$1" "$2"; then
+        err "레포($1)가 연결 대상($2) 안에 있습니다. 레포를 다른 곳(예: ~/mynvim)에 clone한 뒤 다시 실행하세요"
+        exit 1
+    fi
+}
+
+# nvim 설정 연결 대상 경로를 출력한다
+nvim_target() {
+    echo "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+}
+
 # dst를 src로 향하는 심볼릭 링크로 만든다. 기존 대상은 지우지 않고 백업한다
 link_path() {
     local src="$1" dst="$2" src_phys bak stamp n
@@ -518,12 +560,8 @@ link_path() {
         return 0
     fi
     # 레포가 대상 안에 clone된 경우: 대상을 백업(mv)하면 레포까지 옮겨지므로 아무것도 바꾸지 않고 중단한다
-    # (대상이 심볼릭 링크면 mv는 링크만 옮기므로 물리 경로 비교는 실제 디렉터리일 때만 한다)
-    if is_inside "$src" "$dst" \
-        || { [ ! -L "$dst" ] && is_inside "$src_phys" "$(physical_path "$dst" 2>/dev/null || true)"; }; then
-        err "레포($src)가 연결 대상($dst) 안에 있습니다. 레포를 다른 곳(예: ~/mynvim)에 clone한 뒤 다시 실행하세요"
-        exit 1
-    fi
+    # (main의 사전 점검과 같은 검사를 한 번 더 하는 방어 코드)
+    assert_repo_outside "$src" "$dst"
     run mkdir -p "$(dirname "$dst")"
     if [ -e "$dst" ] || [ -L "$dst" ]; then
         stamp="$(date +%Y%m%d-%H%M%S)"
@@ -541,7 +579,7 @@ link_path() {
 
 # nvim 설정과 선택한 항목의 설정 파일을 연결한다
 link_configs() {
-    link_path "$REPO_DIR" "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+    link_path "$REPO_DIR" "$(nvim_target)"
     case " $WITH " in
         *" tmux "*) link_path "$REPO_DIR/tmux.conf" "$HOME/.tmux.conf" ;;
     esac
@@ -558,6 +596,8 @@ main() {
     set -euo pipefail
     parse_args "$@"
     detect_platform
+    # 사전 점검: 패키지 설치 전에, 레포가 nvim 설정 대상 안에 clone되었으면 바로 중단한다
+    assert_repo_outside "$REPO_DIR" "$(nvim_target)"
     choose_components
 
     echo "플랫폼: $PLATFORM"
