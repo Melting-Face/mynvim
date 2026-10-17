@@ -18,4 +18,17 @@ function M.exe(path)
   return path
 end
 
+-- 파이썬 실행 파일의 전체 경로 (없으면 빈 문자열)
+-- Windows의 python3는 Microsoft Store 별칭(스텁)일 수 있으므로 python을 먼저 찾는다
+function M.python()
+  local names = M.is_windows() and { "python", "python3" } or { "python3", "python" }
+  for _, name in ipairs(names) do
+    local found = vim.fn.exepath(name)
+    if found ~= "" then
+      return found
+    end
+  end
+  return ""
+end
+
 return M

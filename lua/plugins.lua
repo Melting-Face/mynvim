@@ -609,10 +609,7 @@ return {
     dependencies = "mfussenegger/nvim-dap",
     ft = "python",
     config = function()
-      local py = vim.fn.exepath("python3")
-      if py == "" then
-        py = vim.fn.exepath("python")
-      end
+      local py = require("configs.paths").python()
       if py ~= "" then
         -- debugpy가 설치되어 있을 때만 설정
         if vim.system({ py, "-c", "import debugpy" }):wait().code == 0 then
