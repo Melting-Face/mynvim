@@ -329,7 +329,7 @@ test_backup_name_collision_never_overwrites() {
     echo "mine" >"$tmp/.config/nvim/init.lua"
     # shellcheck source=/dev/null
     source "$INSTALL_SH"
-    # shellcheck disable=SC2329  # link_path가 호출하는 date를 고정
+    # shellcheck disable=SC2317,SC2329  # link_path가 호출하는 date를 고정
     date() { echo "20260101-000000"; }
     mkdir -p "$tmp/.config/nvim.bak.20260101-000000"
     echo "old" >"$tmp/.config/nvim.bak.20260101-000000/keep"
@@ -405,7 +405,9 @@ test_dry_run_link_changes_nothing() {
     out="$(run_install "$tmp" "$INSTALL_SH" --dry-run)" || fail "종료 코드가 0이 아님"
     assert_contains "$out" "+ mv"
     assert_contains "$out" "+ ln -s"
-    [ -d "$tmp/.config/nvim" ] && [ ! -L "$tmp/.config/nvim" ] || fail "dry-run이 변경함"
+    if [ ! -d "$tmp/.config/nvim" ] || [ -L "$tmp/.config/nvim" ]; then
+        fail "dry-run이 변경함"
+    fi
     rm -rf "$tmp"
 }
 
@@ -417,7 +419,7 @@ test_ensure_nvim_exports_local_bin_on_path() {
     HOME="$tmp"
     PKG=apt
     export MYNVIM_NVIM_VERSION=0.9.5 MYNVIM_ARCH=x86_64
-    # shellcheck disable=SC2329  # ensure_nvim이 호출하는 run을 무력화
+    # shellcheck disable=SC2317,SC2329  # ensure_nvim이 호출하는 run을 무력화
     run() { :; }
     ensure_nvim >/dev/null
     case ":$PATH:" in
@@ -455,7 +457,9 @@ test_repo_inside_target_aborts_before_mv() {
         assert_contains "$out" "안에 있습니다"
         assert_not_contains "$out" "+ mv"
     done
-    [ -d "$tmp/.config/nvim" ] && [ ! -L "$tmp/.config/nvim" ] || fail "대상이 바뀌면 안 됨"
+    if [ ! -d "$tmp/.config/nvim" ] || [ -L "$tmp/.config/nvim" ]; then
+        fail "대상이 바뀌면 안 됨"
+    fi
     [ -f "$repo/install.sh" ] || fail "레포가 옮겨지면 안 됨"
     assert_equals "0" "$(list_baks "$tmp" | wc -l | tr -d ' ')"
     rm -rf "$tmp"
