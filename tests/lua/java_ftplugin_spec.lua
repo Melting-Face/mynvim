@@ -21,9 +21,21 @@ assert(#notes == 1, "안내가 한 번 있어야 함")
 assert(notes[1].level == vim.log.levels.WARN, "WARN 수준이어야 함")
 assert(notes[1].msg:find("jdtls", 1, true), "안내에 jdtls가 있어야 함")
 
+-- mason 경로는 모두 configs.paths.mason_package로 만들어야 한다
+local paths = require("configs.paths")
+local original_mason_package = paths.mason_package
+local requested = {}
+paths.mason_package = function(name)
+  table.insert(requested, name)
+  return original_mason_package(name)
+end
+
 vim.fn.executable = function()
   return 1
 end
 dofile("ftplugin/java.lua")
 assert(started == 1, "jdtls가 있으면 start_or_attach가 호출되어야 함")
+local joined = table.concat(requested, ",")
+assert(joined == "jdtls,java-debug-adapter,java-test", "mason 경로를 paths.mason_package로 만들어야 함: " .. joined)
+paths.mason_package = original_mason_package
 os.exit(0)

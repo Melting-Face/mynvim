@@ -548,7 +548,12 @@ test_nvim_tarball_paths_are_positional_args() {
     local out
     out="$(MYNVIM_NVIM_VERSION=0.9.5 dry_run_linux)" || fail "종료 코드가 0이 아님"
     # sh -c 스크립트 문자열에는 경로를 넣지 않고 위치 인자로 넘긴다
-    assert_contains "$out" "+ sh -c curl -fsSL \"\$1\" | tar -xz --strip-components=1 -C \"\$2\" _ https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz $HOME/.local/opt/nvim"
+    assert_contains "$out" "_ https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz $HOME/.local/opt/nvim"
+    # 파이프(curl | tar) 대신 임시 파일로 받은 뒤 푼다
+    assert_contains "$out" "curl -fL -o"
+    assert_not_contains "$out" "| tar"
+    assert_not_contains "$out" "sh -c curl"
+    [ ! -e "$HOME/.local/opt/nvim" ] || fail "dry-run이 디렉터리를 만들면 안 됨"
 }
 
 test_local_nvim_preferred_over_old_path_nvim() {
@@ -592,6 +597,187 @@ test_dry_run_old_nvim_has_tarball_then_lazy_sync() {
         || fail "종료 코드가 0이 아님"
     assert_contains "$out" "nvim-linux-"
     assert_contains "$out" "+ nvim --headless +Lazy! sync +qa"
+}
+
+# ---------------------------------------------------------------- 사전 점검 / tarball / 대화형
+
+test_repo_inside_target_preflight_before_packages() {
+    local tmp repo out code=0
+    tmp="$(mktemp -d)"
+    repo="$tmp/.config/nvim/mynvim"
+    copy_repo "$repo"
+    # dry-run은 MYNVIM_SKIP_PACKAGES를 무시하므로, 사전 점검이 없으면 패키지 단계가 출력된다
+    out="$(MYNVIM_PLATFORM=linux run_install "$tmp" "$repo/install.sh" --dry-run 2>&1)" || code=$?
+    assert_equals "1" "$code"
+    assert_contains "$out" "안에 있습니다"
+    assert_not_contains "$out" "apt-get"
+    assert_not_contains "$out" "+ "
+    rm -rf "$tmp"
+}
+
+test_repo_inside_target_preflight_brew() {
+    local tmp repo out code=0
+    tmp="$(mktemp -d)"
+    repo="$tmp/.config/nvim/mynvim"
+    copy_repo "$repo"
+    out="$(env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_PLATFORM=macos MYNVIM_PKG=brew \
+        /bin/bash "$repo/install.sh" --yes --dry-run 2>&1 </dev/null)" || code=$?
+    assert_equals "1" "$code"
+    assert_contains "$out" "안에 있습니다"
+    assert_not_contains "$out" "+ brew"
+    rm -rf "$tmp"
+}
+
+# make_fake_curl <디렉터리> : -o 지정 시 FAKE_TARBALL을 복사하고, SHASUMS256.txt 요청에는 FAKE_SHASUMS를 출력한다
+# FAKE_TARBALL이 없으면 다운로드 실패(exit 22)를 흉내 낸다
+make_fake_curl() {
+    mkdir -p "$1"
+    cat >"$1/curl" <<'FAKE'
+#!/bin/sh
+out=""
+url=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -o) out="$2"; shift 2 ;;
+        -*) shift ;;
+        *) url="$1"; shift ;;
+    esac
+done
+case "$url" in
+    *SHASUMS256.txt)
+        [ -n "${FAKE_SHASUMS:-}" ] || exit 22
+        if [ -n "$out" ]; then
+            printf '%s\n' "$FAKE_SHASUMS" >"$out"
+        else
+            printf '%s\n' "$FAKE_SHASUMS"
+        fi
+        exit 0
+        ;;
+esac
+if [ -n "${FAKE_TARBALL:-}" ] && [ -n "$out" ]; then
+    cp "$FAKE_TARBALL" "$out"
+    exit 0
+fi
+echo "curl: (22) fake failure: $url" >&2
+exit 22
+FAKE
+    chmod +x "$1/curl"
+    # mktemp -d가 만든 임시 디렉터리를 <디렉터리>/../t 아래에 두고 경로를 t.log에 남긴다
+    # (macOS mktemp는 환경에 따라 TMPDIR을 따르지 않으므로 가짜로 고정한다)
+    cat >"$1/mktemp" <<FAKE
+#!/bin/sh
+d="$1/../t/tmp.\$\$"
+mkdir -p "\$d"
+echo "\$d" >>"$1/../t.log"
+echo "\$d"
+FAKE
+    chmod +x "$1/mktemp"
+}
+
+# assert_temp_cleaned <make_fake_curl에 준 디렉터리> : 임시 디렉터리가 만들어졌다가 지워졌는지 확인한다
+assert_temp_cleaned() {
+    [ -s "$1/../t.log" ] || fail "임시 디렉터리가 만들어지지 않음"
+    [ -z "$(ls -A "$1/../t" 2>/dev/null)" ] || fail "임시 디렉터리가 남아 있음: $(ls -A "$1/../t")"
+}
+
+test_nvim_tarball_download_failure_cleans_temp() {
+    local tmp out code=0
+    tmp="$(mktemp -d)"
+    make_fake_curl "$tmp/bin"
+    mkdir -p "$tmp/dest"
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    out="$(PATH="$tmp/bin:$PATH" sh -c "$(nvim_tarball_script)" _ \
+        "https://example.invalid/nvim.tar.gz" "$tmp/dest" 2>&1)" || code=$?
+    [ "$code" -ne 0 ] || fail "다운로드 실패인데 종료 코드가 0"
+    assert_contains "$out" "다운로드 실패"
+    assert_temp_cleaned "$tmp/bin"
+    rm -rf "$tmp"
+}
+
+test_nvim_tarball_success_extracts_and_cleans_temp() {
+    local tmp code=0
+    tmp="$(mktemp -d)"
+    make_fake_curl "$tmp/bin"
+    mkdir -p "$tmp/dest" "$tmp/src/nvim-linux-x86_64/bin"
+    echo "fake" >"$tmp/src/nvim-linux-x86_64/bin/nvim"
+    tar -czf "$tmp/nvim.tar.gz" -C "$tmp/src" nvim-linux-x86_64
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    PATH="$tmp/bin:$PATH" FAKE_TARBALL="$tmp/nvim.tar.gz" \
+        sh -c "$(nvim_tarball_script)" _ "https://example.invalid/nvim.tar.gz" "$tmp/dest" >/dev/null 2>&1 || code=$?
+    assert_equals "0" "$code"
+    [ -f "$tmp/dest/bin/nvim" ] || fail "tarball이 풀리지 않음"
+    assert_temp_cleaned "$tmp/bin"
+    rm -rf "$tmp"
+}
+
+test_node_tarball_download_failure_cleans_temp() {
+    local tmp code=0
+    tmp="$(mktemp -d)"
+    make_fake_curl "$tmp/bin"
+    mkdir -p "$tmp/dest"
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    # SHASUMS256.txt는 받지만 tarball 다운로드는 실패하는 경우
+    PATH="$tmp/bin:$PATH" \
+        FAKE_SHASUMS="0000  node-v22.0.0-linux-x64.tar.xz" \
+        sh -c "$(node_tarball_script)" _ x64 "$tmp/dest" >/dev/null 2>&1 || code=$?
+    [ "$code" -ne 0 ] || fail "다운로드 실패인데 종료 코드가 0"
+    assert_temp_cleaned "$tmp/bin"
+    rm -rf "$tmp"
+}
+
+test_node_tarball_success_extracts_and_cleans_temp() {
+    local tmp code=0 file="node-v22.0.0-linux-x64.tar.xz" sum
+    tmp="$(mktemp -d)"
+    make_fake_curl "$tmp/bin"
+    mkdir -p "$tmp/dest" "$tmp/src/node-v22.0.0-linux-x64/bin"
+    echo "fake" >"$tmp/src/node-v22.0.0-linux-x64/bin/node"
+    tar -cJf "$tmp/$file" -C "$tmp/src" node-v22.0.0-linux-x64
+    sum="$(cd "$tmp" && sha256sum "$file" | cut -d' ' -f1)"
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    PATH="$tmp/bin:$PATH" FAKE_TARBALL="$tmp/$file" FAKE_SHASUMS="$sum  $file" \
+        sh -c "$(node_tarball_script)" _ x64 "$tmp/dest" >/dev/null 2>&1 || code=$?
+    assert_equals "0" "$code"
+    [ -f "$tmp/dest/bin/node" ] || fail "tarball이 풀리지 않음"
+    assert_temp_cleaned "$tmp/bin"
+    rm -rf "$tmp"
+}
+
+test_choose_components_eof_means_no() {
+    local out
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    WITH=""
+    ASSUME_YES=0
+    # shellcheck disable=SC2317,SC2329  # TTY 확인을 대화형으로 고정
+    is_interactive() { return 0; }
+    # set -e 아래에서 EOF(입력 없음)여도 조용히 종료되지 않고 N으로 처리되어야 한다
+    out="$(
+        set -euo pipefail
+        choose_components </dev/null 2>/dev/null
+        echo "rc=$? WITH=[$WITH]"
+    )"
+    assert_equals "rc=0 WITH=[]" "$out"
+}
+
+test_choose_components_reads_answers() {
+    local out
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    WITH=""
+    ASSUME_YES=0
+    # shellcheck disable=SC2317,SC2329
+    is_interactive() { return 0; }
+    out="$(
+        set -euo pipefail
+        # 파이프는 서브셸에서 돌아 WITH가 전달되지 않으므로 리다이렉트로 입력한다 (마지막 두 질문은 EOF)
+        choose_components 2>/dev/null <<<"$(printf 'y\nn\nY')"
+        echo "WITH=[$WITH]"
+    )"
+    assert_equals "WITH=[tmux rust]" "$out"
 }
 
 # ---------------------------------------------------------------- 실행기

@@ -67,6 +67,16 @@ test_readme_junction_removed_safely() {
     fi
 }
 
+# shellcheck disable=SC2016  # $HOME은 README 문구 그대로 찾는다
+test_readme_toolchain_troubleshooting() {
+    local phrase
+    # apt의 golang-go가 gopls에 너무 오래된 경우, rustup 설치 후 새 셸이 필요한 경우
+    for phrase in 'golang-go' 'https://go.dev/dl/' 'gopls' \
+        'source "$HOME/.cargo/env"' 'rust_analyzer' '새 셸'; do
+        assert_file_contains "$README" "$phrase"
+    done
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then

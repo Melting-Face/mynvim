@@ -92,6 +92,23 @@ Describe 'install.ps1' {
         }
     }
 
+    Context 'Test-NonInteractiveArgument' {
+        It 'detects -NonInteractive and its abbreviations case-insensitively' {
+            Test-NonInteractiveArgument -Arguments @('powershell.exe', '-NonInteractive', '-File', 'install.ps1') | Should -BeTrue
+            Test-NonInteractiveArgument -Arguments @('pwsh', '-noni', '-File', 'install.ps1') | Should -BeTrue
+            Test-NonInteractiveArgument -Arguments @('pwsh', '-NONINTERACTIVE') | Should -BeTrue
+            Test-NonInteractiveArgument -Arguments @('pwsh', '-NonInter') | Should -BeTrue
+        }
+
+        It 'ignores other flags and arguments passed to the script' {
+            Test-NonInteractiveArgument -Arguments @('powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'install.ps1') | Should -BeFalse
+            Test-NonInteractiveArgument -Arguments @('pwsh', '-NoLogo', '-non') | Should -BeFalse
+            # -File 뒤는 스크립트 인자이므로 보지 않는다
+            Test-NonInteractiveArgument -Arguments @('pwsh', '-File', 'install.ps1', '-NonInteractive') | Should -BeFalse
+            Test-NonInteractiveArgument -Arguments @() | Should -BeFalse
+        }
+    }
+
     Context 'Invoke-Step' {
         It 'DryRun prints the command and does not run the action' {
             $state = @{ Ran = $false }
@@ -297,8 +314,24 @@ Describe 'install.ps1' {
             $output = Set-ConfigLink -Source $source -Target $target -DryRun
 
             ($output -join "`n") | Should -Match '\+ New-Item -ItemType Junction'
+            # 백업은 실제로 실행하는 명령([IO.Directory]::Move)을 출력한다
+            ($output -join "`n") | Should -Match ([regex]::Escape("+ [IO.Directory]::Move(`"$target`", `"$target.bak."))
+            ($output -join "`n") | Should -Not -Match 'Move-Item'
             (Get-Item -LiteralPath $target -Force).LinkType | Should -BeNullOrEmpty
             @(Get-ChildItem -LiteralPath $base -Force | Where-Object { $_.Name -like 'nvim.bak.*' }).Count | Should -Be 0
+        }
+    }
+
+    Context 'Get-LinkTargetPath' {
+        It 'returns $null when reading Target throws' {
+            Mock Get-Item {
+                $item = [pscustomobject]@{ LinkType = 'Junction' }
+                $item | Add-Member -MemberType ScriptProperty -Name Target -Value { throw 'Target 읽기 실패' }
+                $item
+            }
+            # -ErrorAction Stop: Target 읽기 오류가 새어 나오면 이 It이 실패한다
+            $result = Get-LinkTargetPath -Path 'C:\nowhere\nvim' -ErrorAction Stop
+            $result | Should -BeNullOrEmpty
         }
     }
 
@@ -324,6 +357,20 @@ Describe 'install.ps1' {
             $output = Update-OutdatedNvim -DryRun
             ($output -join "`n") | Should -Match ([regex]::Escape('+ winget upgrade --id Neovim.Neovim -e --accept-source-agreements --accept-package-agreements'))
             Should -Invoke Invoke-Winget -Times 0 -Exactly
+        }
+
+        It 'warns and continues when winget upgrade fails (nvim installed outside winget)' {
+            Mock Get-NvimVersion { [version]'0.10.2' }
+            Mock Update-SessionPath { }
+            # -1978335212(0x8A150014): winget이 설치된 패키지를 찾지 못함
+            Mock Invoke-Winget { $global:LASTEXITCODE = -1978335212 }
+            # 예외가 나면 이 It이 실패한다 (경고 스트림은 3>&1로 받는다)
+            $output = Update-OutdatedNvim 3>&1
+            $warnings = @($output | Where-Object { $_ -is [System.Management.Automation.WarningRecord] })
+            $warnings.Count | Should -Be 1
+            $warnings[0].Message | Should -Match ([regex]::Escape('winget upgrade --id Neovim.Neovim'))
+            $warnings[0].Message | Should -Match '직접 0\.11 이상으로 올리세요'
+            Should -Invoke Update-SessionPath -Times 1 -Exactly
         }
 
         It 'does not upgrade nvim 0.12.0' {
@@ -370,6 +417,27 @@ Describe 'install.ps1' {
             Should -Invoke Invoke-Winget -Times 0 -Exactly
             Should -Invoke Set-ConfigLink -Times 1 -Exactly -ParameterFilter { $DryRun }
             Should -Invoke Set-UserEnvironmentVariable -Times 0 -Exactly
+        }
+
+        It 'repo inside the nvim target exits 1 before installing anything' {
+            $savedLocalAppData = $env:LOCALAPPDATA
+            try {
+                $env:LOCALAPPDATA = New-TestBase
+                # 레포가 %LOCALAPPDATA%\nvim\mynvim 에 clone된 상황
+                Mock Get-RepoDir { Join-Path -Path (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'nvim') -ChildPath 'mynvim' }
+                Mock Exit-Script { throw "exit $Code" }
+                Mock Test-CommandAvailable { $true }
+                Mock Install-WingetPackage { }
+                Mock Set-ConfigLink { }
+
+                { Main -Yes -DryRun } | Should -Throw 'exit 1'
+
+                Should -Invoke Exit-Script -Times 1 -Exactly -ParameterFilter { $Code -eq 1 }
+                Should -Invoke Install-WingetPackage -Times 0 -Exactly
+                Should -Invoke Set-ConfigLink -Times 0 -Exactly
+            } finally {
+                $env:LOCALAPPDATA = $savedLocalAppData
+            }
         }
 
         It 'missing winget exits 1' -Skip:$NotWindows {

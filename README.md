@@ -333,6 +333,22 @@ export PATH="$HOME/.local/bin:$PATH"
 Debian 12(bookworm) 저장소에는 `openjdk-21-jdk`가 없습니다. `java` 항목 설치가 실패하면 JDK 21을 직접 설치하세요.
 예를 들어 [Eclipse Temurin](https://adoptium.net/temurin/releases/?version=21)을 받아 설치합니다.
 
+### Go 도구(`gopls` 등) 설치가 실패함 (Debian/Ubuntu)
+
+Mason은 `gopls` 같은 Go 도구를 `go install ...@latest`로 빌드합니다. apt의 `golang-go`는 배포판에 따라 너무 오래되어 최신 도구가 요구하는 Go 버전을 맞추지 못할 수 있습니다.
+`go version`으로 확인하고, 낮으면 공식 다운로드 페이지([https://go.dev/dl/](https://go.dev/dl/))에서 최신 Go를 받아 설치한 뒤 다시 시도하세요.
+
+### `rust` 설치 후 `cargo`나 rust_analyzer를 찾지 못함
+
+rustup은 `~/.cargo/bin`을 셸 설정에 추가하지만, 이미 열려 있는 셸에는 반영되지 않습니다.
+새 셸(터미널 창)을 열거나 현재 셸에서 다음을 실행한 뒤 Neovim을 다시 시작하세요. Neovim은 `cargo`가 PATH에 있을 때만 rust_analyzer를 설치·설정합니다.
+
+```shell
+source "$HOME/.cargo/env"
+```
+
+Windows는 새 PowerShell 창을 여세요.
+
 ### Windows에서 nvim-spectre 치환이 제한됨
 
 nvim-spectre의 치환은 GNU `sed`를 씁니다. Windows 네이티브에는 없으므로 검색은 되지만 치환 기능이 제한됩니다.
