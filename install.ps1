@@ -3,7 +3,7 @@
     mynvim 설치 스크립트 (Windows 네이티브, winget 사용)
 
 .DESCRIPTION
-    필수 패키지(Neovim, Git, ripgrep, Node.js LTS, Python 3.12, zig)와 선택 항목을 winget으로 설치하고,
+    필수 패키지(Neovim, Git, ripgrep, Node.js LTS, Python 3.12, zig, PowerShell 7)와 선택 항목을 winget으로 설치하고,
     %LOCALAPPDATA%\nvim 을 이 레포로 향하는 디렉터리 정션으로 연결한 뒤 플러그인을 동기화한다.
     관리자 권한이 필요하지 않다 (winget의 UAC 창은 뜰 수 있음). Windows PowerShell 5.1에서 동작한다.
 
@@ -144,7 +144,9 @@ function Get-CorePackageId {
         'BurntSushi.ripgrep.MSVC',
         'OpenJS.NodeJS.LTS',
         'Python.Python.3.12',
-        'zig.zig'
+        'zig.zig',
+        # wezterm.lua의 Windows 기본 셸이 pwsh.exe이므로 PowerShell 7도 필수로 설치한다
+        'Microsoft.PowerShell'
     )
 }
 
@@ -311,6 +313,27 @@ function Test-SamePath {
     return [string]::Equals($Left, $Right, [System.StringComparison]::OrdinalIgnoreCase)
 }
 
+# Path가 Parent 디렉터리의 하위 경로인지 대소문자 구분 없이 확인한다 (같은 경로는 하위가 아님)
+function Test-PathInside {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]$Path,
+        [AllowNull()]
+        [AllowEmptyString()]
+        [string]$Parent
+    )
+    if ([string]::IsNullOrEmpty($Path) -or [string]::IsNullOrEmpty($Parent)) {
+        return $false
+    }
+    # 구분자를 '\'로 통일해 비교한다
+    $normalizedPath = $Path.Replace('/', '\')
+    $prefix = $Parent.Replace('/', '\').TrimEnd('\') + '\'
+    return ($normalizedPath.Length -gt $prefix.Length) -and $normalizedPath.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
 # 경로에 무언가(깨진 정션 포함)가 있는지 확인한다. 링크를 따라가지 않는다
 function Test-PathEntry {
     [CmdletBinding()]
@@ -394,6 +417,11 @@ function Set-ConfigLink {
     if ((Test-SamePath -Left $targetFull -Right $sourceFull) -or (Test-SamePath -Left $linkTarget -Right $sourceFull)) {
         Write-Output "already linked: $targetFull"
         return
+    }
+
+    # 레포가 대상 안에 clone된 경우: 대상을 백업(이동)하면 레포 경로가 바뀌므로 아무것도 바꾸지 않고 중단한다
+    if (Test-PathInside -Path $sourceFull -Parent $targetFull) {
+        throw "레포($sourceFull)가 연결 대상($targetFull) 안에 있습니다. 레포를 다른 곳(예: `$HOME\mynvim)에 clone한 뒤 다시 실행하세요"
     }
 
     $parent = Split-Path -Parent $targetFull

@@ -107,6 +107,29 @@ Describe 'install.ps1' {
         }
     }
 
+    Context 'Get-CorePackageId' {
+        It 'lists the core winget ids including PowerShell 7' {
+            # wezterm.lua의 Windows 기본 셸이 pwsh.exe이므로 Microsoft.PowerShell이 필수에 있어야 한다
+            $ids = @(Get-CorePackageId)
+            ($ids -join ',') | Should -Be 'Neovim.Neovim,Git.Git,BurntSushi.ripgrep.MSVC,OpenJS.NodeJS.LTS,Python.Python.3.12,zig.zig,Microsoft.PowerShell'
+        }
+    }
+
+    Context 'Test-PathInside' {
+        It 'detects a path under the parent (case-insensitive, either separator)' {
+            Test-PathInside -Path 'C:\Users\me\AppData\Local\nvim\mynvim' -Parent 'C:\Users\me\AppData\Local\nvim' | Should -BeTrue
+            Test-PathInside -Path 'c:\users\me\appdata\local\NVIM\mynvim' -Parent 'C:\Users\me\AppData\Local\nvim\' | Should -BeTrue
+            Test-PathInside -Path 'C:/a/nvim/mynvim' -Parent 'C:\a\nvim' | Should -BeTrue
+        }
+
+        It 'does not treat the same path or a sibling prefix as inside' {
+            Test-PathInside -Path 'C:\a\nvim' -Parent 'C:\a\nvim' | Should -BeFalse
+            Test-PathInside -Path 'C:\a\nvim2\mynvim' -Parent 'C:\a\nvim' | Should -BeFalse
+            Test-PathInside -Path 'C:\Users\me\mynvim' -Parent 'C:\Users\me\AppData\Local\nvim' | Should -BeFalse
+            Test-PathInside -Path '' -Parent 'C:\a' | Should -BeFalse
+        }
+    }
+
     Context 'Install-WingetPackage' {
         It 'DryRun only prints the winget command' {
             $output = Install-WingetPackage -Id 'zig.zig' -DryRun
@@ -249,6 +272,21 @@ Describe 'install.ps1' {
             (Get-Item -LiteralPath $target -Force).LinkType | Should -Be 'Junction'
         }
 
+        It 'repo cloned inside the target throws before moving anything' -Skip:$NotWindows {
+            $base = New-TestBase
+            $target = Join-Path -Path $base -ChildPath 'nvim'
+            $source = Join-Path -Path $target -ChildPath 'mynvim'
+            New-Item -ItemType Directory -Path $source -Force | Out-Null
+            Set-Content -LiteralPath (Join-Path -Path $source -ChildPath 'init.lua') -Value 'repo'
+
+            { Set-ConfigLink -Source $source -Target $target -DryRun } | Should -Throw '*안에 있습니다*'
+            { Set-ConfigLink -Source $source -Target $target } | Should -Throw '*안에 있습니다*'
+
+            (Get-Item -LiteralPath $target -Force).LinkType | Should -BeNullOrEmpty
+            Test-Path -LiteralPath (Join-Path -Path $source -ChildPath 'init.lua') | Should -BeTrue
+            @(Get-ChildItem -LiteralPath $base -Force | Where-Object { $_.Name -like 'nvim.bak.*' }).Count | Should -Be 0
+        }
+
         It 'DryRun changes nothing' -Skip:$NotWindows {
             $base = New-TestBase
             $source = Join-Path -Path $base -ChildPath 'repo'
@@ -326,6 +364,7 @@ Describe 'install.ps1' {
             $text | Should -Match 'Rustlang\.Rustup'
             $text | Should -Match 'zig\.zig'
             $text | Should -Match 'Neovim\.Neovim'
+            $text | Should -Match 'Microsoft\.PowerShell'
             $text | Should -Not -Match 'GoLang\.Go'
             $text | Should -Match ([regex]::Escape('+ nvim --headless "+Lazy! sync" +qa'))
             Should -Invoke Invoke-Winget -Times 0 -Exactly
