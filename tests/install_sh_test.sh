@@ -6,6 +6,18 @@
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 INSTALL_SH="$ROOT/install.sh"
 
+# ---------------------------------------------------------------- 안전 가드
+# 모든 테스트는 패키지 설치를 건너뛰고, 임시 HOME에서, XDG_CONFIG_HOME 없이 실행된다.
+# 호스트를 건드릴 수 있는 명령은 가짜(FORBIDDEN, exit 99)로 가려 실수가 즉시 실패로 드러나게 한다.
+export MYNVIM_SKIP_PACKAGES=1
+unset XDG_CONFIG_HOME
+FORBIDDEN_BIN="$(mktemp -d)"
+for forbidden_cmd in sudo apt-get dnf pacman brew curl; do
+    printf '#!/bin/sh\necho "FORBIDDEN %s" >&2\nexit 99\n' "$forbidden_cmd" >"$FORBIDDEN_BIN/$forbidden_cmd"
+    chmod +x "$FORBIDDEN_BIN/$forbidden_cmd"
+done
+export PATH="$FORBIDDEN_BIN:$PATH"
+
 # 실패 시 서브셸(테스트 하나)을 즉시 종료한다
 fail() {
     echo "    FAIL: $*" >&2
@@ -240,12 +252,14 @@ test_nvim_version_ok_compare() {
 # ---------------------------------------------------------------- 링크 테스트
 # 실제 링크를 만들므로 항상 임시 HOME에서, XDG_CONFIG_HOME 없이, 패키지 단계 생략으로 실행한다.
 
-# run_install <HOME> [env 인자...] -- [install.sh 인자...] : 격리된 환경에서 install.sh 실행
+# run_install <HOME> <script> [install.sh 인자...] : 격리된 환경에서 install.sh 실행
+# 패키지 설치 생략·패키지 관리자·XDG 해제는 호출자가 바꿀 수 없다 (MYNVIM_PLATFORM, PATH는 허용)
 run_install() {
-    local home="$1" script="$INSTALL_SH"
-    shift
-    env -u XDG_CONFIG_HOME HOME="$home" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
-        "$@" /bin/bash "$script" --yes </dev/null
+    local home="$1" script="$2"
+    shift 2
+    env -u XDG_CONFIG_HOME HOME="$home" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt \
+        MYNVIM_PLATFORM="${MYNVIM_PLATFORM:-linux}" \
+        /bin/bash "$script" --yes "$@" </dev/null
 }
 
 # list_baks <HOME> : nvim 백업 항목 경로를 한 줄씩 출력한다
@@ -263,7 +277,7 @@ make_fake_wezterm() {
 test_link_creates_symlink() {
     local tmp
     tmp="$(mktemp -d)"
-    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    run_install "$tmp" "$INSTALL_SH" >/dev/null || fail "종료 코드가 0이 아님"
     [ -L "$tmp/.config/nvim" ] || fail "nvim 링크가 없음"
     assert_equals "$ROOT" "$(readlink "$tmp/.config/nvim")"
     rm -rf "$tmp"
@@ -274,7 +288,7 @@ test_existing_dir_backed_up() {
     tmp="$(mktemp -d)"
     mkdir -p "$tmp/.config/nvim"
     echo "mine" >"$tmp/.config/nvim/init.lua"
-    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    run_install "$tmp" "$INSTALL_SH" >/dev/null || fail "종료 코드가 0이 아님"
     [ -L "$tmp/.config/nvim" ] || fail "nvim 링크가 없음"
     bak="$(list_baks "$tmp" | head -n 1)"
     [ -n "$bak" ] || fail "백업이 없음"
@@ -286,8 +300,8 @@ test_rerun_no_new_backup() {
     local tmp out count
     tmp="$(mktemp -d)"
     mkdir -p "$tmp/.config/nvim"
-    run_install "$tmp" >/dev/null || fail "1회차 실패"
-    out="$(run_install "$tmp")" || fail "2회차 실패"
+    run_install "$tmp" "$INSTALL_SH" >/dev/null || fail "1회차 실패"
+    out="$(run_install "$tmp" "$INSTALL_SH")" || fail "2회차 실패"
     assert_contains "$out" "already linked"
     count="$(list_baks "$tmp" | wc -l | tr -d ' ')"
     assert_equals "1" "$count"
@@ -299,7 +313,7 @@ test_dangling_symlink_backed_up() {
     tmp="$(mktemp -d)"
     mkdir -p "$tmp/.config"
     ln -s "$tmp/nowhere" "$tmp/.config/nvim"
-    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    run_install "$tmp" "$INSTALL_SH" >/dev/null || fail "종료 코드가 0이 아님"
     assert_equals "$ROOT" "$(readlink "$tmp/.config/nvim")"
     bak="$(list_baks "$tmp" | head -n 1)"
     [ -L "$bak" ] || fail "깨진 링크가 백업되지 않음"
@@ -332,8 +346,7 @@ test_repo_path_with_spaces() {
     mkdir -p "$repo"
     cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$repo/"
     mkdir -p "$tmp/home"
-    env -u XDG_CONFIG_HOME HOME="$tmp/home" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
-        /bin/bash "$repo/install.sh" --yes </dev/null >/dev/null || fail "종료 코드가 0이 아님"
+    run_install "$tmp/home" "$repo/install.sh" >/dev/null || fail "종료 코드가 0이 아님"
     assert_equals "$repo" "$(readlink "$tmp/home/.config/nvim")"
     [ -f "$tmp/home/.config/nvim/init.lua" ] || fail "링크를 통해 init.lua가 보이지 않음"
     rm -rf "$tmp"
@@ -344,7 +357,7 @@ test_wsl_skips_wezterm_even_if_on_path() {
     tmp="$(mktemp -d)"
     make_fake_wezterm "$tmp/bin"
     mkdir -p "$tmp/home"
-    out="$(run_install "$tmp/home" MYNVIM_PLATFORM=wsl PATH="$tmp/bin:$PATH")" || fail "종료 코드가 0이 아님"
+    out="$(MYNVIM_PLATFORM=wsl PATH="$tmp/bin:$PATH" run_install "$tmp/home" "$INSTALL_SH")" || fail "종료 코드가 0이 아님"
     [ ! -e "$tmp/home/.wezterm.lua" ] || fail "WSL에서 .wezterm.lua가 생기면 안 됨"
     assert_contains "$out" "Windows"
     rm -rf "$tmp"
@@ -355,7 +368,7 @@ test_wezterm_linked_when_present() {
     tmp="$(mktemp -d)"
     make_fake_wezterm "$tmp/bin"
     mkdir -p "$tmp/home"
-    run_install "$tmp/home" MYNVIM_PLATFORM=linux PATH="$tmp/bin:$PATH" >/dev/null || fail "종료 코드가 0이 아님"
+    MYNVIM_PLATFORM=linux PATH="$tmp/bin:$PATH" run_install "$tmp/home" "$INSTALL_SH" >/dev/null || fail "종료 코드가 0이 아님"
     assert_equals "$ROOT/wezterm.lua" "$(readlink "$tmp/home/.wezterm.lua")"
     rm -rf "$tmp"
 }
@@ -363,12 +376,11 @@ test_wezterm_linked_when_present() {
 test_tmux_conf_linked_only_when_selected() {
     local tmp
     tmp="$(mktemp -d)"
-    run_install "$tmp" >/dev/null || fail "종료 코드가 0이 아님"
+    run_install "$tmp" "$INSTALL_SH" >/dev/null || fail "종료 코드가 0이 아님"
     [ ! -e "$tmp/.tmux.conf" ] || fail "tmux 미선택인데 링크됨"
     rm -rf "$tmp"
     tmp="$(mktemp -d)"
-    env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
-        /bin/bash "$INSTALL_SH" --with tmux </dev/null >/dev/null || fail "종료 코드가 0이 아님"
+    run_install "$tmp" "$INSTALL_SH" --with tmux >/dev/null || fail "종료 코드가 0이 아님"
     assert_equals "$ROOT/tmux.conf" "$(readlink "$tmp/.tmux.conf")"
     rm -rf "$tmp"
 }
@@ -379,8 +391,7 @@ test_clone_into_config_dir_skips() {
     repo="$tmp/.config/nvim"
     mkdir -p "$repo"
     cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$repo/"
-    out="$(env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
-        /bin/bash "$repo/install.sh" --yes </dev/null)" || fail "종료 코드가 0이 아님"
+    out="$(run_install "$tmp" "$repo/install.sh")" || fail "종료 코드가 0이 아님"
     assert_contains "$out" "already linked"
     [ ! -L "$repo" ] || fail "링크로 바뀌면 안 됨"
     assert_equals "0" "$(list_baks "$tmp" | wc -l | tr -d ' ')"
@@ -391,28 +402,55 @@ test_dry_run_link_changes_nothing() {
     local tmp out
     tmp="$(mktemp -d)"
     mkdir -p "$tmp/.config/nvim"
-    out="$(env -u XDG_CONFIG_HOME HOME="$tmp" MYNVIM_SKIP_PACKAGES=1 MYNVIM_PKG=apt MYNVIM_PLATFORM=linux \
-        /bin/bash "$INSTALL_SH" --yes --dry-run </dev/null)" || fail "종료 코드가 0이 아님"
+    out="$(run_install "$tmp" "$INSTALL_SH" --dry-run)" || fail "종료 코드가 0이 아님"
     assert_contains "$out" "+ mv"
     assert_contains "$out" "+ ln -s"
     [ -d "$tmp/.config/nvim" ] && [ ! -L "$tmp/.config/nvim" ] || fail "dry-run이 변경함"
     rm -rf "$tmp"
 }
 
+test_ensure_nvim_exports_local_bin_on_path() {
+    local tmp
+    tmp="$(mktemp -d)"
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    HOME="$tmp"
+    PKG=apt
+    export MYNVIM_NVIM_VERSION=0.9.5 MYNVIM_ARCH=x86_64
+    # shellcheck disable=SC2329  # ensure_nvim이 호출하는 run을 무력화
+    run() { :; }
+    ensure_nvim >/dev/null
+    case ":$PATH:" in
+        *":$tmp/.local/bin:"*) ;;
+        *) fail "PATH에 \$HOME/.local/bin이 추가되지 않음: $PATH" ;;
+    esac
+    rm -rf "$tmp"
+}
+
+test_dry_run_old_nvim_has_tarball_then_lazy_sync() {
+    local out
+    out="$(MYNVIM_SKIP_PACKAGES=0 MYNVIM_NVIM_VERSION=0.9.5 MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --yes --dry-run </dev/null)" \
+        || fail "종료 코드가 0이 아님"
+    assert_contains "$out" "nvim-linux-"
+    assert_contains "$out" "+ nvim --headless +Lazy! sync +qa"
+}
+
 # ---------------------------------------------------------------- 실행기
 
 main() {
-    local passed=0 failed=0 name
+    local passed=0 failed=0 name test_home
     local names
     names="$(declare -F | awk '{print $3}' | grep '^test_' || true)"
     for name in $names; do
-        if ( "$name" ); then
+        test_home="$(mktemp -d)"
+        if ( export HOME="$test_home"; "$name" ); then
             echo "PASS $name"
             passed=$((passed + 1))
         else
             echo "FAIL $name"
             failed=$((failed + 1))
         fi
+        rm -rf "$test_home"
     done
     echo "결과: 통과 $passed, 실패 $failed"
     [ "$failed" -eq 0 ]

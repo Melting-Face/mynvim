@@ -374,6 +374,8 @@ ensure_nvim() {
         *":$HOME/.local/bin:"*) ;;
         *) echo "안내: $HOME/.local/bin 이 PATH에 없습니다. 셸 설정에 export PATH=\"\$HOME/.local/bin:\$PATH\" 를 추가하세요" ;;
     esac
+    # 이후 단계(Lazy 동기화)에서 방금 설치한 nvim을 찾도록 이 스크립트의 PATH에 추가
+    export PATH="$HOME/.local/bin:$PATH"
 }
 
 # 경로의 물리 경로를 출력한다 (디렉터리는 cd -P, 파일은 부모 디렉터리만 해석; bash 3.2 호환)
@@ -450,8 +452,13 @@ main() {
     echo "패키지 관리자: $PKG"
     echo "선택 항목: ${WITH:-없음 (필수만)}"
     [ "$DRY_RUN" -eq 1 ] && echo "(dry-run: 변경 없음)"
-    # 1) 패키지 설치 (MYNVIM_SKIP_PACKAGES=1이면 건너뜀: 테스트용)
-    if [ "${MYNVIM_SKIP_PACKAGES:-}" != "1" ]; then
+    # MYNVIM_SKIP_PACKAGES=1이면 패키지 설치와 Lazy 동기화를 건너뜀 (테스트용, dry-run은 출력만 하므로 무시)
+    local do_packages=1
+    if [ "${MYNVIM_SKIP_PACKAGES:-}" = "1" ] && [ "$DRY_RUN" -eq 0 ]; then
+        do_packages=0
+    fi
+    # 1) 패키지 설치
+    if [ "$do_packages" -eq 1 ]; then
         install_core
         local c
         for c in $WITH; do
@@ -462,7 +469,7 @@ main() {
     # 2) 설정 연결 (기존 대상은 백업)
     link_configs
     # 3) 플러그인 동기화
-    if [ "${MYNVIM_SKIP_PACKAGES:-}" != "1" ]; then
+    if [ "$do_packages" -eq 1 ]; then
         run nvim --headless "+Lazy! sync" +qa
     fi
     return 0
