@@ -32,6 +32,9 @@ local ok, err = pcall(function()
   local messages = vim.api.nvim_exec2("messages", { output = true }).output
   assert(not messages:find("E%d+:") and not messages:find("Error"), "messages: " .. messages)
   assert(vim.api.nvim_buf_get_name(buf):find("smoke.c", 1, true), "픽스처 파일이 열려 있지 않음")
+  -- headless 기본 폭(80칸)에서는 %< 로 잘리므로 넉넉한 폭으로 평가한다
+  local statusline = vim.api.nvim_eval_statusline(vim.o.statusline, { maxwidth = 200 }).str
+  assert(statusline:find("smoke.c", 1, true), "상태줄에 파일명이 없음: " .. statusline)
 end)
 if not ok then
   fail(tostring(err))
