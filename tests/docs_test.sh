@@ -87,6 +87,16 @@ test_readme_treesitter_pin_documented() {
     grep -qF 'branch = "master"' "$ROOT/lua/plugins.lua" || fail "plugins.lua에 master 고정이 없음"
 }
 
+test_tmux_doc_windows_wezterm_keys() {
+    local phrase
+    # Windows 네이티브용 WezTerm 대체 키 안내와 실제 설정이 함께 있어야 한다
+    for phrase in 'Windows 네이티브: WezTerm 멀티플렉서' 'prefix` + `"` / `%`' 'C-a`를 두 번'; do
+        assert_file_contains "$TMUX_DOC" "$phrase"
+    done
+    assert_file_contains "$README" 'docs/tmux.md#windows-네이티브-wezterm-멀티플렉서'
+    grep -qF 'config.leader = { key = "a", mods = "CTRL"' "$ROOT/wezterm.lua" || fail "wezterm.lua에 C-a leader가 없음"
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then
