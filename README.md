@@ -164,7 +164,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 
 | 항목 | 설치 내용 |
 | --- | --- |
-| `tmux` | tmux, 플러그인 관리자 tpm(`~/.tmux/plugins/tpm`), `~/.tmux.conf` 링크. **Windows 네이티브는 지원하지 않습니다** |
+| `tmux` | tmux, 플러그인 관리자 tpm(`~/.tmux/plugins/tpm`), `~/.tmux.conf` 링크. **Windows 네이티브는 지원하지 않습니다** (대신 WezTerm이 tmux와 같은 키로 패널·탭을 제공합니다. [docs/tmux.md](docs/tmux.md#windows-네이티브-wezterm-멀티플렉서) 참고) |
 | `go` | Go 툴체인 |
 | `rust` | macOS, Linux, WSL: rustup (공식 설치 스크립트). Windows: `Rustlang.Rustup` |
 | `java` | JDK 21 |
