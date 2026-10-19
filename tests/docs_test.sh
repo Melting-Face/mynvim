@@ -87,6 +87,7 @@ test_readme_treesitter_pin_documented() {
     grep -qF 'branch = "master"' "$ROOT/lua/plugins.lua" || fail "plugins.lua에 master 고정이 없음"
 }
 
+# shellcheck disable=SC2016  # 마크다운 백틱은 문서 문구 그대로 찾는다
 test_tmux_doc_windows_wezterm_keys() {
     local phrase
     # Windows 네이티브용 WezTerm 대체 키 안내와 실제 설정이 함께 있어야 한다
