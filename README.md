@@ -225,6 +225,8 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 
 - **자동 완성**: 입력 중 `<C-n>`으로 nvim-cmp 후보를 엽니다.
 - **정렬 (Tabular)**: visual 모드에서 `:Tab /:`를 실행하면 `:` 기준으로 정렬합니다. [Tabular cheatsheet](https://devhints.io/tabular)
+- **undo 기록**: 파일을 닫았다 다시 열어도 undo 기록이 남습니다(`undofile`). `;u`로 undo tree를 열어 이전 상태로 돌아갈 수 있습니다.
+- **한글 인코딩**: cp949(euc-kr)로 저장된 파일도 자동으로 감지해 엽니다. 저장할 때는 원래 인코딩을 유지하며, UTF-8로 바꾸려면 `:set fileencoding=utf-8`을 실행한 뒤 저장합니다.
 - **Git (Fugitive)**: `:G`로 상태 창을 열고 다음 키를 씁니다.
 
   | 키 | 동작 |

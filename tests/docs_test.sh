@@ -98,6 +98,14 @@ test_tmux_doc_windows_wezterm_keys() {
     grep -qF 'config.leader = { key = "a", mods = "CTRL"' "$ROOT/wezterm.lua" || fail "wezterm.lua에 C-a leader가 없음"
 }
 
+test_readme_editing_tips() {
+    local phrase
+    # undo 기록 보존과 cp949 파일 감지 안내
+    for phrase in 'undofile' 'cp949' ':set fileencoding=utf-8'; do
+        assert_file_contains "$README" "$phrase"
+    done
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then
