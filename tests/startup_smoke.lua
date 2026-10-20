@@ -27,7 +27,10 @@ vim.wait(2000)
 local buf = vim.api.nvim_get_current_buf()
 local ok, err = pcall(function()
   -- 검사 목록
-  assert(vim.v.vim_did_enter == 1, "VimEnter 전에 검사가 실행됨 (VimEnter에서 로드되는 플러그인이 검사되지 않음)")
+  assert(
+    vim.v.vim_did_enter == 1,
+    "VimEnter 전에 검사가 실행됨 (VimEnter에서 로드되는 플러그인이 검사되지 않음)"
+  )
   assert(vim.v.errmsg == "", "errmsg: " .. vim.v.errmsg)
   local messages = vim.api.nvim_exec2("messages", { output = true }).output
   assert(not messages:find("E%d+:") and not messages:find("Error"), "messages: " .. messages)
@@ -45,7 +48,10 @@ local ok, err = pcall(function()
   assert(vim.fn.maparg(",dc", "n") == "", "c 버퍼에 ,dc가 있음")
   vim.cmd.edit("tests/fixtures/smoke.py")
   vim.wait(500)
-  assert(vim.fn.maparg(",dc", "n", false, true).desc == "python test class", "python 버퍼의 ,dc가 dap-python이 아님")
+  assert(
+    vim.fn.maparg(",dc", "n", false, true).desc == "python test class",
+    "python 버퍼의 ,dc가 dap-python이 아님"
+  )
 end)
 if not ok then
   fail(tostring(err))

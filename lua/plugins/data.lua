@@ -15,8 +15,8 @@ return {
       "tpope/vim-dadbod",
     },
     keys = {
-      { "<localleader>d", "<cmd>DBUIToggle<CR>",        desc = "db ui" },
-      { "<leader>da",     "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
+      { "<localleader>d", "<cmd>DBUIToggle<CR>", desc = "db ui" },
+      { "<leader>da", "<cmd>DBUIAddConnection<CR>", desc = "add connection" },
     },
   },
 }

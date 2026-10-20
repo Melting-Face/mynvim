@@ -36,7 +36,10 @@ end
 dofile("ftplugin/java.lua")
 assert(started == 1, "jdtls가 있으면 start_or_attach가 호출되어야 함")
 local joined = table.concat(requested, ",")
-assert(joined == "jdtls,java-debug-adapter,java-test", "mason 경로를 paths.mason_package로 만들어야 함: " .. joined)
+assert(
+  joined == "jdtls,java-debug-adapter,java-test",
+  "mason 경로를 paths.mason_package로 만들어야 함: " .. joined
+)
 paths.mason_package = original_mason_package
 
 -- jdtls 실행 파일: Windows는 mason이 만드는 packages/jdtls/jdtls.cmd 래퍼
@@ -46,7 +49,10 @@ package.loaded["jdtls"].start_or_attach = function(config)
   last_config = config
 end
 local original_is_windows = paths.is_windows
-for _, case in ipairs({ { windows = true, suffix = "/jdtls/jdtls.cmd" }, { windows = false, suffix = "/jdtls/bin/jdtls" } }) do
+for _, case in ipairs({
+  { windows = true, suffix = "/jdtls/jdtls.cmd" },
+  { windows = false, suffix = "/jdtls/bin/jdtls" },
+}) do
   paths.is_windows = function()
     return case.windows
   end
