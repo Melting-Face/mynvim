@@ -257,7 +257,7 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 | `[t`, `]t` | 이전, 다음 탭 |
 | `<space>bx` | 버퍼 닫기 |
 | `<space>tn`, `<space>tx` | 새 탭, 탭 닫기 |
-| `gd`, `gr`, `K` | 정의로 이동, 참조 보기, 문서 보기 (LSP) |
+| `gd`, `grr`, `K` | 정의로 이동, 참조 보기, 문서 보기 (LSP) |
 | `,ca` | 코드 액션 |
 | `,ac` | Claude Code 토글 |
 

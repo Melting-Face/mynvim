@@ -41,6 +41,11 @@ local ok, err = pcall(function()
   assert(vim.fn.maparg(",a", "n", false, true).buffer ~= 1, ",a가 버퍼 로컬 swap으로 덮여 있음")
   assert((vim.fn.maparg("]d", "n", false, true).desc or ""):lower():find("diagnostic"), "]d가 진단 이동이 아님")
   assert(vim.fn.maparg("]i", "n") ~= "", "]i(조건문 이동) 키가 없음")
+  -- 언어별 테스트 키: c 버퍼에는 없고 python 버퍼에서는 dap-python 키
+  assert(vim.fn.maparg(",dc", "n") == "", "c 버퍼에 ,dc가 있음")
+  vim.cmd.edit("tests/fixtures/smoke.py")
+  vim.wait(500)
+  assert(vim.fn.maparg(",dc", "n", false, true).desc == "python test class", "python 버퍼의 ,dc가 dap-python이 아님")
 end)
 if not ok then
   fail(tostring(err))
