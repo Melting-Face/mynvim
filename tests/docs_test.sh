@@ -141,6 +141,15 @@ test_readme_plugin_repos_renamed() {
     assert_file_contains "$README" 'Origin has changed'
 }
 
+test_keymaps_doc_marks_overridden_defaults() {
+    local doc="$ROOT/docs/keymaps.md" key
+    # nvim 기본 키를 덮어쓰는 텍스트 오브젝트 키는 문서에 그 사실을 적는다
+    for key in '\]s' '\]z' '\[i'; do
+        grep -E "^\| \`[^|]*${key}" "$doc" | grep -qF '덮어씀' \
+            || fail "keymaps.md의 ${key} 줄에 기본 키를 덮어쓴다는 표기가 없음"
+    done
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then
