@@ -185,7 +185,8 @@ return {
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
     },
-    lazy = true,
+    -- 모든 파일에서 하이라이트와 텍스트 오브젝트가 동작하도록 파일을 열 때 로드한다
+    event = { "BufReadPost", "BufNewFile" },
     build = ":TSUpdate",
     config = function()
       -- Windows에서는 MSVC 대신 zig/gcc/clang으로 파서를 컴파일한다
@@ -193,7 +194,10 @@ return {
         require("nvim-treesitter.install").compilers = { "zig", "gcc", "clang" }
       end
       require("nvim-treesitter.configs").setup({
-        sync_install = true,
+        sync_install = false,
+        highlight = {
+          enable = true,
+        },
         indent = {
           enable = true,
         },
@@ -255,20 +259,22 @@ return {
               ["[M"] = "@function.outer",
               ["[]"] = "@class.outer",
             },
+            -- ]d/[d는 nvim 기본 진단 이동이므로 조건문 이동은 ]i/[i(if)를 쓴다
             goto_next = {
-              ["]d"] = "@conditional.outer",
+              ["]i"] = "@conditional.outer",
             },
             goto_previous = {
-              ["[d"] = "@conditional.outer",
+              ["[i"] = "@conditional.outer",
             },
           },
           swap = {
             enable = true,
+            -- <leader>a는 Claude Code 키 그룹이므로 swap은 <leader>s(n/p)를 쓴다
             swap_next = {
-              ["<leader>a"] = "@parameter.inner",
+              ["<leader>sn"] = "@parameter.inner",
             },
             swap_previous = {
-              ["<leader>A"] = "@parameter.inner",
+              ["<leader>sp"] = "@parameter.inner",
             },
           },
         },

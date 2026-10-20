@@ -106,6 +106,16 @@ test_readme_editing_tips() {
     done
 }
 
+# shellcheck disable=SC2016  # 마크다운 백틱은 문서 문구 그대로 찾는다
+test_keymaps_doc() {
+    local doc="$ROOT/docs/keymaps.md" phrase
+    # 전체 키맵은 별도 문서에 두고 README에서 링크한다
+    assert_file_contains "$README" '(docs/keymaps.md)'
+    for phrase in '`,sn`' '`,sp`' '`]i`' '`[i`' '`]d`' '`,ac`' '`,ff`'; do
+        assert_file_contains "$doc" "$phrase"
+    done
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then
@@ -131,6 +141,7 @@ check_links() {
 test_relative_links_exist() {
     check_links "$README"
     check_links "$TMUX_DOC"
+    check_links "$ROOT/docs/keymaps.md"
 }
 
 test_legacy_files_removed() {

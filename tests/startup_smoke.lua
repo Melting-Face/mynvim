@@ -35,6 +35,12 @@ local ok, err = pcall(function()
   -- headless 기본 폭(80칸)에서는 %< 로 잘리므로 넉넉한 폭으로 평가한다
   local statusline = vim.api.nvim_eval_statusline(vim.o.statusline, { maxwidth = 200 }).str
   assert(statusline:find("smoke.c", 1, true), "상태줄에 파일명이 없음: " .. statusline)
+  -- treesitter: 모든 파일에서 하이라이트, 텍스트 오브젝트 키가 기본 키와 겹치지 않음
+  assert(vim.treesitter.highlighter.active[buf], "treesitter 하이라이트가 꺼져 있음")
+  assert(vim.fn.maparg(",sn", "n") ~= "", ",sn(파라미터 swap) 키가 없음")
+  assert(vim.fn.maparg(",a", "n", false, true).buffer ~= 1, ",a가 버퍼 로컬 swap으로 덮여 있음")
+  assert((vim.fn.maparg("]d", "n", false, true).desc or ""):lower():find("diagnostic"), "]d가 진단 이동이 아님")
+  assert(vim.fn.maparg("]i", "n") ~= "", "]i(조건문 이동) 키가 없음")
 end)
 if not ok then
   fail(tostring(err))
