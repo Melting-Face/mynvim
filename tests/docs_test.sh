@@ -114,6 +114,12 @@ test_keymaps_doc() {
     for phrase in '`,sn`' '`,sp`' '`]i`' '`[i`' '`]d`' '`,ac`' '`,ff`'; do
         assert_file_contains "$doc" "$phrase"
     done
+    # LSP 참조는 nvim 0.11 기본 키 grr을 쓴다
+    assert_file_contains "$README" '`grr`'
+    assert_file_contains "$doc" '`grr`'
+    if grep -qF '`,tc`' "$doc" "$README"; then
+        fail "삭제된 ,tc 키가 문서에 남아 있음"
+    fi
 }
 
 test_readme_has_no_legacy_script() {

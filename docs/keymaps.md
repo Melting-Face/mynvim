@@ -45,10 +45,10 @@
 | `<space>bx` | n | 현재 버퍼 닫기 | 기본 설정 |
 | `<space>ba` | n | 모든 버퍼 닫기 | 기본 설정 |
 | `<space>tn` | n | 새 탭 | 기본 설정 |
-| `<space>tx`, `,tc` | n | 탭 닫기 | 기본 설정 |
+| `<space>tx` | n | 탭 닫기 | 기본 설정 |
 | `f` | n, v | 한 글자로 점프 | hop |
 | `F` | n, v | 두 글자로 점프 | hop |
-| `j`, `k` | n | 줄바꿈된 화면 줄 단위로 이동 | 기본 설정 |
+| `j`, `k` | n | 줄바꿈된 화면 줄 단위로 이동 (`5j`처럼 횟수를 주면 실제 줄 단위) | 기본 설정 |
 | `C-h/j/k/l` | n | nvim 창, tmux 패널 사이 이동 | tmux.nvim |
 
 ## 편집
@@ -73,8 +73,12 @@ LSP가 붙은 버퍼에서만 동작합니다.
 | `gd` | n | 정의로 이동 |
 | `gD` | n | 선언으로 이동 |
 | `gi` | n | 구현으로 이동 |
-| `gr` | n | 참조 보기 |
-| `K` | n | 문서 보기 (hover) |
+| `grr` | n | 참조 보기 (nvim 기본) |
+| `gri` | n | 구현 목록 보기 (nvim 기본) |
+| `grn` | n | 이름 바꾸기 (nvim 기본) |
+| `gra` | n, v | 코드 액션 (nvim 기본) |
+| `gO` | n | 문서 심볼 목록 (nvim 기본) |
+| `K` | n | 문서 보기 (hover, nvim 기본) |
 | `<space>D` | n | 타입 정의로 이동 |
 | `<space>q` | n | 진단 목록을 location list로 |
 | `,ca` | n, v | 코드 액션 |
@@ -133,9 +137,9 @@ treesitter 파서가 있는 모든 파일에서 동작합니다.
 | `,df` | n | 호출 스택(frames) 창 |
 | `,ds` | n | 스코프(scopes) 창 |
 | `,dt` | n | DAP UI 토글 |
-| `,dc` | n | 테스트 클래스 실행 (python: dap-python, java: jdtls) |
-| `,dm` | n | 테스트 메서드 실행 (python: dap-python, java: jdtls) |
-| `,dd` | n | 선택 영역 디버그 (python) |
+| `,dc` | n | 테스트 클래스 실행 (python 버퍼: dap-python, java 버퍼: jdtls) |
+| `,dm` | n | 테스트 메서드 실행 (python 버퍼: dap-python, java 버퍼: jdtls) |
+| `,dd` | n | 선택 영역 디버그 (python 버퍼에서만) |
 
 ## DB
 

@@ -609,15 +609,22 @@ return {
         function()
           require("dap-python").test_class()
         end,
-        desc = "test class",
+        desc = "python test class",
+        ft = "python",
       },
-      { "<leader>dd", '<ESC>:lua require("dap-python").debug_selection()<CR>', desc = "python debug select" },
+      {
+        "<leader>dd",
+        '<ESC>:lua require("dap-python").debug_selection()<CR>',
+        desc = "python debug select",
+        ft = "python",
+      },
       {
         "<leader>dm",
         function()
           require("dap-python").test_method()
         end,
-        desc = "test method",
+        desc = "python test method",
+        ft = "python",
       },
     },
   },
@@ -631,14 +638,16 @@ return {
         function()
           require("jdtls").test_class()
         end,
-        desc = "test class",
+        desc = "java test class",
+        ft = "java",
       },
       {
         "<leader>dm",
         function()
           require("jdtls").test_nearest_method()
         end,
-        desc = "test nearest method",
+        desc = "java test nearest method",
+        ft = "java",
       },
     },
   },
