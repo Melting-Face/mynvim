@@ -76,6 +76,15 @@ jobs:
         if: runner.os == 'Linux'
         run: ./install.sh --yes --with tmux,go,lua
 
+      # tmux-256color terminfo가 있는 환경에서는 tmux.conf가 그것을 기본 터미널로 써야 한다
+      - name: tmux 기본 터미널 확인
+        if: runner.os == 'Linux'
+        run: |
+          infocmp tmux-256color >/dev/null
+          term="$(tmux -f tmux.conf start-server \; show -gv default-terminal | tail -n 1)"
+          echo "default-terminal=$term"
+          [ "$term" = "tmux-256color" ]
+
   # Fedora(dnf), Arch(pacman)를 깨끗한 컨테이너에서 실제 설치로 검증
   distros:
     runs-on: ubuntu-latest

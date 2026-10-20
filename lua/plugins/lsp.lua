@@ -99,11 +99,12 @@ return {
         vim.lsp.config(name, cfg)
       end
       -- winbar 위치 표시(navic)는 document symbol을 지원하는 서버에만 붙인다
+      -- 한 버퍼에 그런 서버가 둘 이상이면 처음 붙은 서버만 쓴다 (두 번째 attach는 navic이 경고를 띄움)
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserNavic", {}),
         callback = function(ev)
           local client = vim.lsp.get_client_by_id(ev.data.client_id)
-          if client and client.server_capabilities.documentSymbolProvider then
+          if client and client.server_capabilities.documentSymbolProvider and vim.b[ev.buf].navic_client_id == nil then
             require("nvim-navic").attach(client, ev.buf)
           end
         end,
