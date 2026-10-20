@@ -291,30 +291,10 @@ return {
       "typescript",
       "typescriptreact",
     },
-    config = function()
-      local lang_doc_map = {
-        lua = "ldoc",
-        java = "javadoc",
-        javascript = "jsdoc",
-        javascriptreact = "jsdoc",
-        python = "google_docstrings",
-        sh = "google_bash",
-        typescript = "tsdoc",
-        typescriptreact = "tsdoc",
-      }
-
-      local languages = {}
-
-      for lang, doc in ipairs(lang_doc_map) do
-        languages[lang]["template"]["annotation_convention"] = doc
-      end
-
-      require("neogen").setup({
-        enabled = true,
-        snippet_engine = "luasnip",
-        languages = languages,
-      })
-    end,
+    opts = {
+      enabled = true,
+      snippet_engine = "luasnip",
+    },
     keys = {
       { "<leader>nn", "<cmd>Neogen<CR>", desc = "Neogen" },
     },
@@ -352,7 +332,6 @@ return {
       null_ls.setup({
         diagnostics_format = "[#{c}] #{m} (#{s})",
         sources = {
-          null_ls.builtins.code_actions.refactoring,
           null_ls.builtins.code_actions.gitsigns,
 
           null_ls.builtins.diagnostics.sqruff,
@@ -368,7 +347,6 @@ return {
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvimtools/none-ls-extras.nvim",
     },
     keys = {
       {
@@ -757,7 +735,8 @@ return {
             },
           },
         },
-        sections = { lualine_c = { "lsp_progress" }, lualine_x = { "tabnine" } },
+        -- lualine_c는 기본값(파일명)을 그대로 두고, 오른쪽에 LSP 상태를 붙인다
+        sections = { lualine_x = { "lsp_status", "encoding", "fileformat", "filetype" } },
         extensions = {
           "fugitive",
           "nvim-dap-ui",
@@ -880,14 +859,6 @@ return {
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "vim-dadbod-completion" },
-        }, {
-          { name = "buffer" },
-        }),
-      })
-
-      cmp.setup.filetype("gitcommit", {
-        sources = cmp.config.sources({
-          { name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
         }, {
           { name = "buffer" },
         }),
