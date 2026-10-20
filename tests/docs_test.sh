@@ -100,8 +100,8 @@ test_tmux_doc_windows_wezterm_keys() {
 
 test_readme_editing_tips() {
     local phrase
-    # undo 기록 보존과 cp949 파일 감지 안내
-    for phrase in 'undofile' 'cp949' ':set fileencoding=utf-8'; do
+    # undo 기록 보존, cp949 파일 감지, ruff 규칙 안내
+    for phrase in 'undofile' 'cp949' ':set fileencoding=utf-8' 'extendSelect'; do
         assert_file_contains "$README" "$phrase"
     done
 }

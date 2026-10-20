@@ -1,4 +1,5 @@
-local language_servers = require("configs.lsp_servers").list()
+local servers = require("configs.lsp_servers")
+local language_servers = servers.list()
 
 local filetypes = {
   "c",
@@ -659,11 +660,38 @@ return {
   -- mason lsp
   {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = "neovim/nvim-lspconfig",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "neovim/nvim-lspconfig",
+      "hrsh7th/cmp-nvim-lsp",
+      "SmiteshP/nvim-navic",
+    },
     opts = {
       ensure_installed = language_servers,
-      automatic_installation = true,
+      automatic_enable = {
+        exclude = servers.automatic_enable_exclude,
+      },
     },
+    config = function(_, opts)
+      -- 모든 서버에 nvim-cmp 자동완성 capabilities를 넘긴다
+      vim.lsp.config("*", {
+        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      })
+      for name, cfg in pairs(servers.settings) do
+        vim.lsp.config(name, cfg)
+      end
+      -- winbar 위치 표시(navic)는 document symbol을 지원하는 서버에만 붙인다
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("UserNavic", {}),
+        callback = function(ev)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          if client and client.server_capabilities.documentSymbolProvider then
+            require("nvim-navic").attach(client, ev.buf)
+          end
+        end,
+      })
+      require("mason-lspconfig").setup(opts)
+    end,
   },
   -- comment
   {
@@ -830,18 +858,10 @@ return {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
-      "neovim/nvim-lspconfig",
-      "SmiteshP/nvim-navic",
       "kristijanhusak/vim-dadbod-completion",
     },
     config = function()
       local cmp = require("cmp")
-      local navic = require("nvim-navic")
-      local on_attach = function(client, bufnr)
-        if client.server_capabilities.documentSymbolProvider then
-          navic.attach(client, bufnr)
-        end
-      end
 
       cmp.setup({
         snippet = {
@@ -888,159 +908,6 @@ return {
           { name = "cmdline" },
         }),
       })
-
-      -- Setup lspconfig.
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-      local languages = language_servers
-
-      if vim.version.cmp(vim.version(), { 0, 11, 0 }) >= 0 then
-        for _, language in ipairs(languages) do
-          if language == "lua_ls" then
-            vim.lsp.config(language, {
-              settings = {
-                Lua = {
-                  diagnostics = {
-                    globals = {
-                      "vim",
-                    },
-                  },
-                },
-              },
-            })
-          elseif language == "pyright" then
-            vim.lsp.config(language, {
-              settings = {
-                python = {
-                  analysis = {
-                    diagnosticMode = "openFilesOnly",
-                    typeCheckingMode = "off",
-                  },
-                },
-              },
-            })
-          elseif language == "ruff" then
-            vim.lsp.config(language, {
-              init_options = {
-                settings = {
-                  args = {
-                    "--extend-select",
-                    "AIR,B,C4,C90,E,F,FURB,G,I,LOG,NPY,PD,Q,SIM,T20,UP",
-                    "--extend-ignore",
-                    "PD901",
-                  },
-                },
-              },
-            })
-          elseif language == "yamlls" then
-            vim.lsp.config(language, {
-              settings = {
-                yaml = {
-                  schemas = {
-                    kubernetes = {
-                      "*config*.yml",
-                      "*deployment*.yml",
-                      "*secret*.yml",
-                      "*service*.yml",
-                      "*value*.yml",
-                    },
-                    ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
-                    "*gitlab*.yml",
-                    ["https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json"] = {
-                      "*dbt_project.yml",
-                      "*packages.yml",
-                      "*profiles.yml",
-                      "*schema.yml",
-                      "*source.yml",
-                      "*model.yml",
-                    },
-                  },
-                },
-              },
-            })
-          else
-            vim.lsp.enable(language)
-          end
-        end
-      else
-        local lspconfig = require("lspconfig")
-        for _, language in ipairs(languages) do
-          if language == "lua_ls" then
-            lspconfig[language].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                Lua = {
-                  diagnostics = {
-                    globals = {
-                      "vim",
-                    },
-                  },
-                },
-              },
-            })
-          elseif language == "pyright" then
-            lspconfig[language].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                python = {
-                  analysis = {
-                    diagnosticMode = "openFilesOnly",
-                    typeCheckingMode = "off",
-                  },
-                },
-              },
-            })
-          elseif language == "ruff" then
-            lspconfig[language].setup({
-              on_attach = on_attach,
-              init_options = {
-                settings = {
-                  args = {
-                    "--extend-select",
-                    "AIR,B,C4,C90,E,F,FURB,G,I,LOG,NPY,PD,Q,SIM,T20,UP",
-                    "--extend-ignore",
-                    "PD901",
-                  },
-                },
-              },
-            })
-          elseif language == "yamlls" then
-            lspconfig[language].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                yaml = {
-                  schemas = {
-                    kubernetes = {
-                      "*config*.yml",
-                      "*deployment*.yml",
-                      "*secret*.yml",
-                      "*service*.yml",
-                      "*value*.yml",
-                    },
-                    ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
-                    "*gitlab*.yml",
-                    ["https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json"] = {
-                      "*dbt_project.yml",
-                      "*packages.yml",
-                      "*profiles.yml",
-                      "*schema.yml",
-                      "*source.yml",
-                      "*model.yml",
-                    },
-                  },
-                },
-              },
-            })
-          else
-            lspconfig[language].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-            })
-          end
-        end
-      end
     end,
   },
   {
