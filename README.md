@@ -131,6 +131,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Yes
 ```
 
 플러그인만 갱신하려면 nvim 안에서 `:Lazy sync`를 실행하세요.
+플러그인 저장소 주소가 바뀌면(예: mason 계열이 `mason-org`로 이전) `:Lazy check`에 `Origin has changed`가 표시됩니다. 이때 `:Lazy sync`를 실행하면 같은 이름으로 새 주소에서 다시 받습니다.
 
 ## 설치 옵션
 
@@ -276,7 +277,7 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 
 **Git**: [vim-fugitive](https://github.com/tpope/vim-fugitive), [neogit](https://github.com/NeogitOrg/neogit), [diffview.nvim](https://github.com/sindrets/diffview.nvim), [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim), [git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim)
 
-**LSP·자동 완성**: [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), [mason.nvim](https://github.com/williamboman/mason.nvim), [mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim), [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim), [mason-null-ls.nvim](https://github.com/jayp0521/mason-null-ls.nvim), [nvim-cmp](https://github.com/hrsh7th/nvim-cmp), [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp), [cmp-buffer](https://github.com/hrsh7th/cmp-buffer), [cmp-path](https://github.com/hrsh7th/cmp-path), [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline), [LuaSnip](https://github.com/L3MON4D3/LuaSnip), [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip), [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects), [rustaceanvim](https://github.com/mrcjkb/rustaceanvim), [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls)
+**LSP·자동 완성**: [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), [mason.nvim](https://github.com/mason-org/mason.nvim), [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim), [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim), [mason-null-ls.nvim](https://github.com/jay-babu/mason-null-ls.nvim), [nvim-cmp](https://github.com/hrsh7th/nvim-cmp), [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp), [cmp-buffer](https://github.com/hrsh7th/cmp-buffer), [cmp-path](https://github.com/hrsh7th/cmp-path), [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline), [LuaSnip](https://github.com/L3MON4D3/LuaSnip), [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip), [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects), [rustaceanvim](https://github.com/mrcjkb/rustaceanvim), [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls)
 
 **디버깅 (DAP)**: [nvim-dap](https://github.com/mfussenegger/nvim-dap), [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui), [nvim-dap-virtual-text](https://github.com/theHamsta/nvim-dap-virtual-text), [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python), [nvim-nio](https://github.com/nvim-neotest/nvim-nio)
 
