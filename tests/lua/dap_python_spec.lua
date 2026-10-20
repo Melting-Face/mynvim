@@ -72,6 +72,8 @@ end
 local project = vim.fn.tempname()
 vim.fn.mkdir(project, "p")
 vim.fn.chdir(project)
+-- macOS의 /var는 /private/var 링크라서 getcwd()와 비교하려면 실제 경로를 쓴다
+project = vim.fn.getcwd()
 assert(
   dap_python.resolve_python() == "/usr/bin/python3",
   "venv가 없을 때: " .. tostring(dap_python.resolve_python())
