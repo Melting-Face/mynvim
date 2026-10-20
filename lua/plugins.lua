@@ -194,7 +194,8 @@ return {
         require("nvim-treesitter.install").compilers = { "zig", "gcc", "clang" }
       end
       require("nvim-treesitter.configs").setup({
-        sync_install = false,
+        -- 설치 스크립트·CI(headless)에서는 파서를 동기로 설치하고, 일반 실행에서는 UI를 멈추지 않게 비동기로 설치한다
+        sync_install = #vim.api.nvim_list_uis() == 0,
         highlight = {
           enable = true,
         },
