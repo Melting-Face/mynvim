@@ -156,6 +156,14 @@ test_tmux_doc_terminal_setting() {
     assert_file_contains "$TMUX_DOC" 'screen-256color'
 }
 
+test_readme_debugger_docs() {
+    local phrase
+    # 디버그 어댑터 자동 설치(첫 일반 실행 때)와 설치가 끊겼을 때의 복구 안내
+    for phrase in 'debugpy' 'codelldb' '디버그 어댑터' ':MasonInstall --force debugpy' '### 디버거가 시작되지 않음' 'mason-nvim-dap' 'LSP 서버, 포매터·린터, 디버그 어댑터는 설치 스크립트 단계가 아니라'; do
+        assert_file_contains "$README" "$phrase"
+    done
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then

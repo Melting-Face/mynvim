@@ -49,7 +49,8 @@ return {
       "nvimtools/none-ls.nvim",
     },
     opts = {
-      automatic_installation = true,
+      -- headless(설치 스크립트, CI)에서는 설치를 시작하지 않는다 (+qa로 끊기면 mason이 반쪽 설치를 설치됨으로 봄)
+      automatic_installation = #vim.api.nvim_list_uis() > 0,
     },
   },
   -- nvim-jdtls
@@ -85,7 +86,8 @@ return {
       "SmiteshP/nvim-navic",
     },
     opts = {
-      ensure_installed = language_servers,
+      -- headless에서는 설치하지 않는다 (위 mason-null-ls와 같은 이유, 첫 일반 실행 때 설치)
+      ensure_installed = #vim.api.nvim_list_uis() == 0 and {} or language_servers,
       automatic_enable = {
         exclude = servers.automatic_enable_exclude,
       },

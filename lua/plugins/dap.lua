@@ -167,18 +167,54 @@ return {
     config = true,
     ft = filetypes,
   },
+  -- 디버그 어댑터 설치 (설치만 맡기고 어댑터 설정은 아래에서 직접 한다)
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = {
+      "mason-org/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    opts = {
+      -- headless(설치 스크립트, CI)에서는 설치를 시작하지 않는다: +qa로 끝나며 설치가 끊기면
+      -- mason이 반쪽 디렉터리를 설치됨으로 판단해 다시 설치하지 않는다. 첫 일반 실행 때 설치된다
+      ensure_installed = #vim.api.nvim_list_uis() == 0 and {} or require("configs.dap_adapters").list(),
+      automatic_installation = false,
+    },
+  },
   -- nvim-dap-python
   {
     "mfussenegger/nvim-dap-python",
     dependencies = "mfussenegger/nvim-dap",
     ft = "python",
     config = function()
-      local py = require("configs.paths").python()
-      if py ~= "" then
-        -- debugpy가 설치되어 있을 때만 설정
-        if vim.system({ py, "-c", "import debugpy" }):wait().code == 0 then
-          require("dap-python").setup(py)
+      local paths = require("configs.paths")
+      local dap_python = require("dap-python")
+      -- 어댑터는 mason이 설치한 debugpy 전용 venv의 python으로 실행한다
+      -- mason은 디렉터리만 있으면 설치됨으로 보므로, 설치 완료는 영수증(mason-receipt.json)으로 판단한다
+      local debugpy = paths.mason_package("debugpy")
+      local adapter_python = paths.is_windows() and (debugpy .. "/venv/Scripts/python.exe")
+        or (debugpy .. "/venv/bin/python")
+      if not (vim.uv.fs_stat(debugpy .. "/mason-receipt.json") and vim.uv.fs_stat(adapter_python)) then
+        vim.notify_once(
+          "debugpy가 설치되지 않았거나 설치가 끝나지 않아 Python 디버깅을 쓸 수 없습니다"
+            .. " (설치 중이면 잠시 후 nvim을 다시 열고, 계속되면 :MasonInstall --force debugpy)",
+          vim.log.levels.WARN
+        )
+        return
+      end
+      dap_python.setup(adapter_python)
+      -- 디버그 대상 프로그램은 프로젝트 venv(.venv, venv)의 python, 없으면 시스템 python으로 실행한다
+      -- (resolve_python을 지정하면 dap-python의 venv 자동 탐지를 건너뛰므로 여기서 직접 찾는다)
+      dap_python.resolve_python = function()
+        for _, name in ipairs({ ".venv", "venv" }) do
+          local dir = vim.fn.getcwd() .. "/" .. name
+          local exe = paths.is_windows() and (dir .. "/Scripts/python.exe") or (dir .. "/bin/python")
+          if vim.uv.fs_stat(exe) then
+            return exe
+          end
         end
+        local py = paths.python()
+        return py ~= "" and py or nil
       end
     end,
     keys = {

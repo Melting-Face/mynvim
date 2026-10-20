@@ -113,7 +113,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -DryRun -Yes
 ### 설치 확인
 
 설치가 끝나면 **새 터미널**을 열고 `nvim`을 실행하세요. 플러그인은 설치 중에 이미 동기화됩니다.
-처음 실행할 때 mason이 LSP 서버를 백그라운드로 설치하므로 1~2분 정도 기다리세요.
+처음 실행할 때 mason이 LSP 서버와 디버그 어댑터(`debugpy`, `codelldb`, `java`가 있으면 `java-debug-adapter`, `java-test`)를 백그라운드로 설치하므로 1~2분 정도 기다리세요. LSP 서버, 포매터·린터, 디버그 어댑터는 설치 스크립트 단계가 아니라 첫 일반 실행 때 받습니다(설치 스크립트의 headless 실행이 끝나면서 설치가 끊기면 반쪽 설치가 남기 때문입니다).
 문제가 있으면 nvim 안에서 `:checkhealth`로 원인을 확인할 수 있습니다.
 
 ### 업데이트
@@ -279,7 +279,7 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 
 **LSP·자동 완성**: [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), [mason.nvim](https://github.com/mason-org/mason.nvim), [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim), [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim), [mason-null-ls.nvim](https://github.com/jay-babu/mason-null-ls.nvim), [nvim-cmp](https://github.com/hrsh7th/nvim-cmp), [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp), [cmp-buffer](https://github.com/hrsh7th/cmp-buffer), [cmp-path](https://github.com/hrsh7th/cmp-path), [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline), [LuaSnip](https://github.com/L3MON4D3/LuaSnip), [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip), [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects), [rustaceanvim](https://github.com/mrcjkb/rustaceanvim), [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls)
 
-**디버깅 (DAP)**: [nvim-dap](https://github.com/mfussenegger/nvim-dap), [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui), [nvim-dap-virtual-text](https://github.com/theHamsta/nvim-dap-virtual-text), [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python), [nvim-nio](https://github.com/nvim-neotest/nvim-nio)
+**디버깅 (DAP)**: [nvim-dap](https://github.com/mfussenegger/nvim-dap), [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui), [nvim-dap-virtual-text](https://github.com/theHamsta/nvim-dap-virtual-text), [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python), [mason-nvim-dap.nvim](https://github.com/jay-babu/mason-nvim-dap.nvim), [nvim-nio](https://github.com/nvim-neotest/nvim-nio)
 
 **데이터·DB**: [vim-dadbod](https://github.com/tpope/vim-dadbod), [vim-dadbod-ui](https://github.com/kristijanhusak/vim-dadbod-ui), [vim-dadbod-completion](https://github.com/kristijanhusak/vim-dadbod-completion), [rainbow_csv](https://github.com/mechatroner/rainbow_csv), [csv.vim](https://github.com/chrisbra/csv.vim)
 
@@ -354,6 +354,10 @@ source "$HOME/.cargo/env"
 ```
 
 Windows는 새 PowerShell 창을 여세요.
+
+### 디버거가 시작되지 않음
+
+`:Mason`에서 디버그 어댑터(`debugpy`, `codelldb` 등)가 설치되었는지 확인하세요. nvim을 설치 도중에 닫아 설치가 끊기면 mason이 반쪽 설치를 설치된 것으로 보고 다시 받지 않습니다. 이때는 `:MasonInstall --force debugpy`처럼 `--force`로 다시 설치합니다. Python은 프로젝트의 `.venv`(또는 `venv`)가 있으면 그 Python으로, 없으면 시스템 Python으로 프로그램을 실행합니다.
 
 ### Windows에서 nvim-spectre 치환이 제한됨
 
