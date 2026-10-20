@@ -10,7 +10,7 @@ package.loaded["nvim-treesitter.configs"] = {
 package.loaded["nvim-treesitter.install"] = {}
 
 local spec
-for _, entry in ipairs(dofile("lua/plugins.lua")) do
+for _, entry in ipairs(dofile("lua/plugins/treesitter.lua")) do
   if type(entry) == "table" and entry[1] == "nvim-treesitter/nvim-treesitter" then
     spec = entry
   end

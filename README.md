@@ -265,7 +265,7 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 
 ### nvim
 
-[`lua/plugins.lua`](lua/plugins.lua) 기준이며, lazy.nvim이 관리합니다.
+[`lua/plugins/`](lua/plugins/) 기준이며, lazy.nvim이 관리합니다. 파일은 용도별로 나뉘어 있습니다(`editor`, `ui`, `git`, `data`, `treesitter`, `lsp`, `dap`, `ai`).
 버전 고정 파일(`lazy-lock.json`)은 커밋하지 않습니다.
 
 **UI·테마**: [catppuccin](https://github.com/catppuccin/nvim), [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim), [bufferline.nvim](https://github.com/akinsho/bufferline.nvim), [scope.nvim](https://github.com/tiagovla/scope.nvim), [nvim-navic](https://github.com/SmiteshP/nvim-navic), [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim), [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons), [vim-startify](https://github.com/mhinz/vim-startify), [which-key.nvim](https://github.com/folke/which-key.nvim), [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
@@ -360,7 +360,7 @@ nvim-spectre의 치환은 GNU `sed`를 씁니다. Windows 네이티브에는 없
 
 ### nvim-treesitter가 `master` 브랜치에 고정된 이유
 
-`lua/plugins.lua`는 nvim-treesitter와 nvim-treesitter-textobjects를 일부러 `branch = "master"`로 고정합니다.
+`lua/plugins/treesitter.lua`는 nvim-treesitter와 nvim-treesitter-textobjects를 일부러 `branch = "master"`로 고정합니다.
 upstream의 기본 브랜치인 `main`은 설정 API가 완전히 바뀌었고, Neovim 0.12 이상과 `tree-sitter` CLI 0.26.1 이상(패키지 관리자로 설치)을 요구합니다. 그대로 두면 Neovim 0.11 환경에서 설치가 깨집니다.
 `master`는 더 이상 기능이 추가되지 않는 동결 브랜치입니다. 지금 설정이 실제로 깨질 때(예: 새 Neovim 버전에서 오류) `main` API로 옮길 예정입니다.
 

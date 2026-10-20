@@ -5,6 +5,7 @@
 - leader 키는 `,`, localleader 키는 `;`입니다. 아래 표의 `,ff`는 `<leader>ff`, `;n`은 `<localleader>n`을 뜻합니다.
 - `<space>`로 시작하는 키는 leader가 아니라 스페이스바 그대로입니다.
 - 실행 중에는 `,fk`(Telescope keymaps)나 which-key 팝업으로 현재 등록된 키를 확인할 수 있습니다.
+- 키 정의 위치: 플러그인 키는 [`lua/plugins/`](../lua/plugins/)의 각 플러그인 `keys`, 그 밖의 키는 [`lua/configs/keymaps.lua`](../lua/configs/keymaps.lua)에 있습니다.
 - 모드 표기: `n` 노멀, `v` 비주얼, `o` 연산자 대기(예: `d`, `y` 다음).
 
 ## 목차

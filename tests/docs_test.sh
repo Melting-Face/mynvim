@@ -84,7 +84,7 @@ test_readme_treesitter_pin_documented() {
         'CLI 0.26.1'; do
         assert_file_contains "$README" "$phrase"
     done
-    grep -qF 'branch = "master"' "$ROOT/lua/plugins.lua" || fail "plugins.lua에 master 고정이 없음"
+    grep -qF 'branch = "master"' "$ROOT/lua/plugins/treesitter.lua" || fail "treesitter.lua에 master 고정이 없음"
 }
 
 # shellcheck disable=SC2016  # 마크다운 백틱은 문서 문구 그대로 찾는다
@@ -120,6 +120,16 @@ test_keymaps_doc() {
     if grep -qF '`,tc`' "$doc" "$README"; then
         fail "삭제된 ,tc 키가 문서에 남아 있음"
     fi
+}
+
+test_plugin_spec_dir_documented() {
+    # 플러그인 설정은 lua/plugins/ 디렉터리로 나뉘어 있고 문서도 그 위치를 가리킨다
+    [ ! -e "$ROOT/lua/plugins.lua" ] || fail "lua/plugins.lua가 아직 있음"
+    if grep -qF 'lua/plugins.lua' "$README" "$ROOT/docs/keymaps.md"; then
+        fail "문서에 lua/plugins.lua 참조가 남아 있음"
+    fi
+    assert_file_contains "$README" '(lua/plugins/)'
+    assert_file_contains "$ROOT/docs/keymaps.md" '(../lua/plugins/)'
 }
 
 test_readme_has_no_legacy_script() {
