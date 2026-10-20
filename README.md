@@ -113,7 +113,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -DryRun -Yes
 ### 설치 확인
 
 설치가 끝나면 **새 터미널**을 열고 `nvim`을 실행하세요. 플러그인은 설치 중에 이미 동기화됩니다.
-처음 실행할 때 mason이 LSP 서버와 디버그 어댑터(`debugpy`, `codelldb`, `java`가 있으면 `java-debug-adapter`, `java-test`)를 백그라운드로 설치하므로 1~2분 정도 기다리세요. 디버그 어댑터는 설치 스크립트 단계가 아니라 첫 일반 실행 때 받습니다.
+처음 실행할 때 mason이 LSP 서버와 디버그 어댑터(`debugpy`, `codelldb`, `java`가 있으면 `java-debug-adapter`, `java-test`)를 백그라운드로 설치하므로 1~2분 정도 기다리세요. LSP 서버, 포매터·린터, 디버그 어댑터는 설치 스크립트 단계가 아니라 첫 일반 실행 때 받습니다(설치 스크립트의 headless 실행이 끝나면서 설치가 끊기면 반쪽 설치가 남기 때문입니다).
 문제가 있으면 nvim 안에서 `:checkhealth`로 원인을 확인할 수 있습니다.
 
 ### 업데이트
