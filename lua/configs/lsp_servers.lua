@@ -95,7 +95,8 @@ M.settings = {
 }
 
 -- mason-lspconfig가 자동으로 켜지 않을 서버
--- jdtls는 ftplugin/java.lua(nvim-jdtls), rust_analyzer는 rustaceanvim이 띄우고, stylua는 none-ls 포매터로 쓴다
-M.automatic_enable_exclude = { "jdtls", "rust_analyzer", "stylua" }
+-- jdtls는 ftplugin/java.lua(nvim-jdtls), rust_analyzer는 rustaceanvim이 띄우고,
+-- stylua와 sqruff는 none-ls 포매터·진단으로 쓴다 (LSP로도 켜면 포맷과 진단이 두 번 실행됨)
+M.automatic_enable_exclude = { "jdtls", "rust_analyzer", "stylua", "sqruff" }
 
 return M
