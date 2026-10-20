@@ -41,10 +41,36 @@ local function fail(msg)
   vim.cmd("cquit 1")
 end
 
--- 언어별 launch 설정 (Task 2, 3에서 c, java를 추가한다)
+-- 언어별 launch 설정
 local launch_configs = {
   python = function()
     return { type = "python", request = "launch", name = "dap e2e", program = file, console = "internalConsole" }
+  end,
+  -- 픽스처를 디버그 정보와 함께 컴파일한 뒤 codelldb로 실행한다 (cc, gcc, clang, zig cc 중 처음 찾은 것)
+  c = function()
+    local out = vim.fn.tempname() .. (vim.fn.has("win32") == 1 and ".exe" or "")
+    local cmd
+    for _, cc in ipairs({ "cc", "gcc", "clang" }) do
+      if vim.fn.executable(cc) == 1 then
+        cmd = { cc }
+        break
+      end
+    end
+    cmd = cmd or (vim.fn.executable("zig") == 1 and { "zig", "cc" })
+    assert(cmd, "C 컴파일러(cc, gcc, clang, zig)를 찾을 수 없음")
+    vim.list_extend(cmd, { "-g", "-O0", "-o", out, file })
+    -- zig는 처음 쓸 때 libc를 빌드해 캐시하므로 1~2분 걸릴 수 있다 (상한 5분)
+    local result = vim.system(cmd):wait(300000)
+    assert(result.code == 0, "컴파일 실패: " .. (result.stderr or ""))
+    -- headless에서는 통합 터미널(터미널 버퍼)을 열지 않도록 출력은 디버그 콘솔로 보낸다
+    return {
+      type = "codelldb",
+      request = "launch",
+      name = "dap e2e",
+      program = out,
+      cwd = vim.fs.dirname(file),
+      terminal = "console",
+    }
   end,
 }
 

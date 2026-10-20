@@ -24,9 +24,10 @@ return {
 
       local paths = require("configs.paths")
 
+      -- mason codelldb 패키지의 실행 파일은 extension/adapter 아래에 있다 (Windows는 .exe)
       dap.adapters.codelldb = {
         type = "executable",
-        command = paths.exe(paths.mason_package("codelldb") .. "/codelldb"),
+        command = paths.exe(paths.mason_package("codelldb") .. "/extension/adapter/codelldb"),
       }
 
       dap.configurations.rust = {
