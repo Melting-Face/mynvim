@@ -185,7 +185,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 | Python | `python` | `python3`, `python3-pip`, `python3-venv` | `python3`, `python3-pip` | `python`, `python-pip` | `Python.Python.3.12` |
 | C 컴파일러 (treesitter용) | Xcode CLT (`xcode-select --install`) | `build-essential` | `gcc`, `make` | `base-devel` | `zig.zig` |
 | PowerShell 7 (WezTerm 기본 셸) | | | | | `Microsoft.PowerShell` |
-| 기타 | `gnu-sed` | `curl`, `unzip`, `xz-utils` | `curl`, `unzip` | `curl`, `unzip` | |
+| 기타 | `gnu-sed` | `curl`, `unzip`, `xz-utils` | `curl`, `unzip`, `glibc-gconv-extra` (cp949 등 문자셋 변환) | `curl`, `unzip` | |
 | 클립보드 | 기본 제공 | `xclip` 또는 `wl-clipboard` | 같음 | 같음 | 기본 제공 |
 
 - Linux에서 Neovim이 0.11 미만이면 공식 tarball을 `~/.local/opt/nvim`에 풀고 `~/.local/bin/nvim`으로 링크합니다.

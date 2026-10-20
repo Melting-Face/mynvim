@@ -171,6 +171,13 @@ test_core_apt_has_build_essential() {
     assert_not_contains "$out" "tmux"
 }
 
+test_core_dnf_has_gconv_extra() {
+    local out
+    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=dnf "$INSTALL_SH" --yes --dry-run </dev/null)"         || fail "종료 코드가 0이 아님"
+    # Fedora는 CP949 등 추가 문자셋 변환 모듈을 glibc-gconv-extra로 분리했다 (nvim의 cp949 감지에 필요)
+    assert_contains "$out" "glibc-gconv-extra"
+}
+
 test_pacman_first_install_syncs_db() {
     local out
     out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=pacman "$INSTALL_SH" --with tmux --yes --dry-run </dev/null)" \
