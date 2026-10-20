@@ -24,28 +24,25 @@ vim.o.hlsearch = true
 vim.o.ignorecase = true
 vim.o.nu = true
 vim.o.autoindent = true
-vim.o.cindent = true
-vim.o.ts = 2
 vim.o.sts = 2
 vim.o.shiftwidth = 2
 vim.o.tabstop = 2
 vim.o.expandtab = true
-vim.o.shiftwidth = 2
 vim.o.smartcase = true
 vim.o.smarttab = true
-vim.o.smartindent = true
 vim.o.cursorline = false
 vim.o.showmatch = true
 vim.o.ruler = true
 vim.o.clipboard="unnamedplus"
-vim.o.fileencodings = 'utf8'
-vim.o.encoding='UTF-8'
+-- BOM, UTF-8 순으로 시도하고 실패하면 cp949(euc-kr)로 연다
+vim.o.fileencodings = 'ucs-bom,utf-8,cp949,latin1'
 vim.o.updatetime=100
 vim.o.timeoutlen=2500
 local undodir = vim.fn.stdpath("state") .. "/undo"
 vim.fn.mkdir(undodir, "p")
 vim.o.undodir = undodir
--- mouse option is 'all'
+vim.o.undofile = true
+-- mouse는 hit-enter/more 프롬프트에서만 사용
 vim.o.mouse = 'r'
 -- termguicolor option is true
 vim.o.termguicolors = true

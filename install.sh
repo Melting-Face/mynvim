@@ -201,7 +201,7 @@ pkg_names() {
             case "$PKG" in
                 brew) echo "git ripgrep node python gnu-sed" ;;
                 apt) echo "git ripgrep nodejs npm python3 python3-pip python3-venv build-essential curl unzip xz-utils $(clipboard_pkg)" ;;
-                dnf) echo "git ripgrep nodejs python3 python3-pip gcc make curl unzip $(clipboard_pkg)" ;;
+                dnf) echo "git ripgrep nodejs python3 python3-pip gcc make curl unzip glibc-gconv-extra $(clipboard_pkg)" ;;
                 pacman) echo "git ripgrep nodejs npm python python-pip base-devel curl unzip $(clipboard_pkg)" ;;
             esac
             ;;
