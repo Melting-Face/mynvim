@@ -221,6 +221,8 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 
 leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Telescope keymaps)나 `which-key`로 확인할 수 있습니다.
 
+전체 키바인딩은 [키맵 전체 목록](docs/keymaps.md)에 용도별로 정리되어 있습니다. 아래는 자주 쓰는 키만 추렸습니다.
+
 ### 팁
 
 - **자동 완성**: 입력 중 `<C-n>`으로 nvim-cmp 후보를 엽니다.
