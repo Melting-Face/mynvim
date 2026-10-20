@@ -101,7 +101,7 @@ test_tmux_doc_windows_wezterm_keys() {
 test_readme_editing_tips() {
     local phrase
     # undo 기록 보존, cp949 파일 감지, ruff 규칙 안내
-    for phrase in 'undofile' 'cp949' ':set fileencoding=utf-8' 'extendSelect'; do
+    for phrase in 'undofile' 'cp949' ':set fileencoding=utf-8' 'extendSelect' ':e ++enc=latin1'; do
         assert_file_contains "$README" "$phrase"
     done
 }
@@ -148,6 +148,12 @@ test_keymaps_doc_marks_overridden_defaults() {
         grep -E "^\| \`[^|]*${key}" "$doc" | grep -qF '덮어씀' \
             || fail "keymaps.md의 ${key} 줄에 기본 키를 덮어쓴다는 표기가 없음"
     done
+}
+
+test_tmux_doc_terminal_setting() {
+    # tmux 기본 터미널(terminfo가 있으면 tmux-256color, 없으면 screen-256color) 안내
+    assert_file_contains "$TMUX_DOC" 'tmux-256color'
+    assert_file_contains "$TMUX_DOC" 'screen-256color'
 }
 
 test_readme_has_no_legacy_script() {

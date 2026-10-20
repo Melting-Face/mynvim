@@ -23,6 +23,7 @@ prefix는 `C-a`입니다(기본값 `C-b`에서 바꿨습니다). 아래 `prefix`
 - 마우스 사용 켜짐
 - 복사 모드는 vi 키
 - 히스토리 50000줄
+- 터미널: `tmux-256color` terminfo가 있으면 그것을 쓰고(italic 지원), 없으면 `screen-256color`를 씁니다. 두 경우 모두 nvim 트루컬러가 tmux 안에서도 보입니다.
 
 ## 플러그인
 
