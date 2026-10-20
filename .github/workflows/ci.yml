@@ -72,6 +72,13 @@ jobs:
       - name: 시작 스모크
         run: nvim --headless tests/fixtures/smoke.c "+luafile tests/startup_smoke.lua"
 
+      # headless에서는 자동 설치를 하지 않으므로 끝날 때까지 기다리는 MasonInstall로 설치한다
+      - name: 디버그 어댑터 설치
+        run: nvim --headless "+MasonInstall debugpy" +qa
+
+      - name: Python 디버거 E2E
+        run: nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
+
       - name: 설치 (tmux,go,lua 선택)
         if: runner.os == 'Linux'
         run: ./install.sh --yes --with tmux,go,lua
@@ -117,6 +124,13 @@ jobs:
 
       - name: 시작 스모크
         run: nvim --headless tests/fixtures/smoke.c "+luafile tests/startup_smoke.lua"
+
+      # headless에서는 자동 설치를 하지 않으므로 끝날 때까지 기다리는 MasonInstall로 설치한다
+      - name: 디버그 어댑터 설치
+        run: nvim --headless "+MasonInstall debugpy" +qa
+
+      - name: Python 디버거 E2E
+        run: nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
 
   windows:
     runs-on: windows-latest
@@ -195,4 +209,13 @@ jobs:
       - name: 시작 스모크
         run: |
           nvim --headless tests/fixtures/smoke.c "+luafile tests/startup_smoke.lua"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      # headless에서는 자동 설치를 하지 않으므로 끝날 때까지 기다리는 MasonInstall로 설치한다
+      - name: 디버그 어댑터 설치
+        run: nvim --headless "+MasonInstall debugpy" +qa
+
+      - name: Python 디버거 E2E
+        run: |
+          nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
           if ($LASTEXITCODE -ne 0) { exit 1 }
