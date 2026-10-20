@@ -63,13 +63,13 @@ return {
     tag = "0.1.5",
     config = true,
     keys = {
-      { "<leader>ff",  ":Telescope find_files<CR>",   desc = "find files" },
+      { "<leader>ff", ":Telescope find_files<CR>", desc = "find files" },
       { "<leader>fgc", ":Telescope git_bcommits<CR>", desc = "git commit log (buffer)" },
-      { "<leader>fgt", ":Telescope git_commits<CR>",  desc = "git commit log (project)" },
-      { "<leader>fk",  ":Telescope keymaps<cr>",      desc = "keymaps" },
-      { "<leader>fq",  ":Telescope quickfix<cr>",     desc = "quickfix" },
-      { "<leader>fr",  ":Telescope registers<cr>",    desc = "registers" },
-      { "<leader>fs",  ":Telescope live_grep<CR>",    desc = "search" },
+      { "<leader>fgt", ":Telescope git_commits<CR>", desc = "git commit log (project)" },
+      { "<leader>fk", ":Telescope keymaps<cr>", desc = "keymaps" },
+      { "<leader>fq", ":Telescope quickfix<cr>", desc = "quickfix" },
+      { "<leader>fr", ":Telescope registers<cr>", desc = "registers" },
+      { "<leader>fs", ":Telescope live_grep<CR>", desc = "search" },
     },
   },
   -- text case
@@ -143,8 +143,8 @@ return {
       },
     },
     keys = {
-      { "<localleader>n", "<cmd>NvimTreeToggle<CR>",   desc = "nvim tree" },
-      { "<leader>nf",     "<cmd>NvimTreeFindFile<CR>", desc = "find files(nvim-tree)" },
+      { "<localleader>n", "<cmd>NvimTreeToggle<CR>", desc = "nvim tree" },
+      { "<leader>nf", "<cmd>NvimTreeFindFile<CR>", desc = "find files(nvim-tree)" },
     },
   },
 }

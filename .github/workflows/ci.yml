@@ -9,6 +9,26 @@ permissions:
   contents: read
 
 jobs:
+  # Lua 정적 검사와 포맷 검사 (OS와 무관하므로 ubuntu에서 한 번만)
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: luacheck 설치
+        run: sudo apt-get update && sudo apt-get install -y lua-check
+
+      - name: luacheck
+        run: luacheck init.lua lua ftplugin tests wezterm.lua
+
+      - name: stylua
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: 2.6.0
+          args: --check .
+
   unix:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30

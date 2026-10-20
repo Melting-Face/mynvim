@@ -60,7 +60,22 @@ M.settings = {
       settings = {
         lint = {
           extendSelect = {
-            "AIR", "B", "C4", "C90", "E", "F", "FURB", "G", "I", "LOG", "NPY", "PD", "Q", "SIM", "T20", "UP",
+            "AIR",
+            "B",
+            "C4",
+            "C90",
+            "E",
+            "F",
+            "FURB",
+            "G",
+            "I",
+            "LOG",
+            "NPY",
+            "PD",
+            "Q",
+            "SIM",
+            "T20",
+            "UP",
           },
           ignore = { "PD901" },
         },
@@ -78,8 +93,7 @@ M.settings = {
             "*service*.yml",
             "*value*.yml",
           },
-          ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] =
-          "*gitlab*.yml",
+          ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = "*gitlab*.yml",
           ["https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json"] = {
             "*dbt_project.yml",
             "*packages.yml",

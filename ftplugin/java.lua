@@ -11,7 +11,8 @@ local config = {
 -- jdtls가 아직 설치되지 않았으면 LSP를 시작하지 않고 한 번만 안내한다
 if vim.fn.executable(config.cmd[1]) ~= 1 then
   vim.notify_once(
-    "jdtls를 찾을 수 없어 Java LSP를 시작하지 않습니다 (:MasonInstall jdtls 로 설치하세요): " .. config.cmd[1],
+    "jdtls를 찾을 수 없어 Java LSP를 시작하지 않습니다 (:MasonInstall jdtls 로 설치하세요): "
+      .. config.cmd[1],
     vim.log.levels.WARN
   )
   return

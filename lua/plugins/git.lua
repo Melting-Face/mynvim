@@ -37,10 +37,10 @@ return {
     event = "BufRead",
     keys = {
       { "<leader>hb", "<cmd>Gitsigns toggle_current_line_blame<cr>", desc = "curret line blame" },
-      { "<leader>hd", "<cmd>Gitsigns toggle_deleted<cr>",            desc = "deleted" },
-      { "<leader>ht", "<cmd>Gitsigns diffthis<cr>",                  desc = "diff this" },
-      { "[h",         "<cmd>Gitsigns prev_hunk<cr>",                 desc = "prev hunk" },
-      { "]h",         "<cmd>Gitsigns next_hunk<cr>",                 desc = "next hunk" },
+      { "<leader>hd", "<cmd>Gitsigns toggle_deleted<cr>", desc = "deleted" },
+      { "<leader>ht", "<cmd>Gitsigns diffthis<cr>", desc = "diff this" },
+      { "[h", "<cmd>Gitsigns prev_hunk<cr>", desc = "prev hunk" },
+      { "]h", "<cmd>Gitsigns next_hunk<cr>", desc = "next hunk" },
     },
   },
   -- git congflict

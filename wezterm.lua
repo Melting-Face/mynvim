@@ -74,7 +74,7 @@ if wezterm.target_triple:find("windows") then
   end
   -- 기본 키 설정처럼 Shift가 필요한 문자는 SHIFT를 붙인 조합도 등록해 키보드 배열과 상관없이 동작하게 한다
   for _, binding in ipairs({ table.unpack(config.keys) }) do
-    if binding.mods == "LEADER" and binding.key:match("^[%u\"%%&]$") then
+    if binding.mods == "LEADER" and binding.key:match('^[%u"%%&]$') then
       table.insert(config.keys, { key = binding.key, mods = "LEADER|SHIFT", action = binding.action })
     end
   end
