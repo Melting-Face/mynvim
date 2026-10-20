@@ -132,6 +132,15 @@ test_plugin_spec_dir_documented() {
     assert_file_contains "$ROOT/docs/keymaps.md" '(../lua/plugins/)'
 }
 
+test_readme_plugin_repos_renamed() {
+    # mason 계열 저장소는 mason-org, mason-null-ls는 jay-babu로 이전되었다
+    if grep -qE 'github.com/(williamboman|jayp0521)/' "$README"; then
+        fail "README에 이전 저장소 주소가 남아 있음"
+    fi
+    # 저장소 주소가 바뀐 플러그인을 다시 받는 방법 안내
+    assert_file_contains "$README" 'Origin has changed'
+}
+
 test_readme_has_no_legacy_script() {
     [ -f "$README" ] || fail "README.md 없음"
     if grep -qF 'nvim.sh' "$README"; then

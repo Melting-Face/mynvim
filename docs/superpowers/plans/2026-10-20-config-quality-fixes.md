@@ -253,7 +253,9 @@
   - `README.md` 링크 3곳
   - `tmux.conf`: `default-terminal "screen-256color"`, `set -ga terminal-overrides ",*256col*:Tc"`
 - Test: `tests/lua/dead_refs_spec.lua`에 금지 문자열 `williamboman/`, `jayp0521/` 추가
+- Modify (실행 중 추가): `ftplugin/java.lua`, Test: `tests/lua/java_ftplugin_spec.lua`
 
+- [ ] **Step 0 (실행 중 추가 발견): Windows jdtls 경로.** `ftplugin/java.lua`가 Windows에서 없는 파일 `packages/jdtls/bin/jdtls.cmd`를 찾아 Java LSP가 시작되지 않는다. mason이 만드는 래퍼는 `packages/jdtls/jdtls.cmd`이고, `bin/jdtls.bat`에는 `pause`가 있어 쓸 수 없다. `java_ftplugin_spec.lua`에 다음 검사를 먼저 추가해 FAIL을 확인한 뒤 고친다: Windows이면 `cmd[1]`이 `/jdtls.cmd`로 끝나고 `/bin/`을 포함하지 않으며, 그 밖의 OS이면 `/bin/jdtls`로 끝난다.
 - [ ] **Step 1: spec에 금지 문자열 추가 → FAIL 확인**
 - [ ] **Step 2: 수정 → run_lua PASS**
 - [ ] **Step 3: 로컬 실측.** `XDG_CONFIG_HOME=... nvim --headless "+Lazy! sync" +qa`를 실행한 뒤 다음을 확인한다.

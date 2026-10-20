@@ -38,4 +38,22 @@ assert(started == 1, "jdtls가 있으면 start_or_attach가 호출되어야 함"
 local joined = table.concat(requested, ",")
 assert(joined == "jdtls,java-debug-adapter,java-test", "mason 경로를 paths.mason_package로 만들어야 함: " .. joined)
 paths.mason_package = original_mason_package
+
+-- jdtls 실행 파일: Windows는 mason이 만드는 packages/jdtls/jdtls.cmd 래퍼
+-- (bin/jdtls.bat는 끝에 pause가 있어 LSP로 쓸 수 없음), 그 밖의 OS는 bin/jdtls
+local last_config
+package.loaded["jdtls"].start_or_attach = function(config)
+  last_config = config
+end
+local original_is_windows = paths.is_windows
+for _, case in ipairs({ { windows = true, suffix = "/jdtls/jdtls.cmd" }, { windows = false, suffix = "/jdtls/bin/jdtls" } }) do
+  paths.is_windows = function()
+    return case.windows
+  end
+  last_config = nil
+  dofile("ftplugin/java.lua")
+  local cmd = last_config and last_config.cmd[1] or ""
+  assert(cmd:sub(-#case.suffix) == case.suffix, "windows=" .. tostring(case.windows) .. " cmd=" .. cmd)
+end
+paths.is_windows = original_is_windows
 os.exit(0)

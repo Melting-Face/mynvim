@@ -7,6 +7,9 @@ local patterns = {
   "code_actions.refactoring",
   "none-ls-extras",
   "ipairs(lang_doc_map)",
+  -- 이름이 바뀐 저장소 (mason-org, jay-babu로 이전)
+  "williamboman/",
+  "jayp0521/",
 }
 local files = {}
 for _, dir in ipairs({ "lua", "ftplugin" }) do

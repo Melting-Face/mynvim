@@ -4,7 +4,7 @@ local language_servers = servers.list()
 return {
   -- mason
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     config = true,
   },
   -- null_ls
@@ -43,9 +43,9 @@ return {
   },
   -- mason null-ls
   {
-    "jayp0521/mason-null-ls.nvim",
+    "jay-babu/mason-null-ls.nvim",
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       "nvimtools/none-ls.nvim",
     },
     opts = {
@@ -77,9 +77,9 @@ return {
   },
   -- mason lsp
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       "neovim/nvim-lspconfig",
       "hrsh7th/cmp-nvim-lsp",
       "SmiteshP/nvim-navic",

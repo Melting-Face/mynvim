@@ -1,10 +1,10 @@
 local paths = require("configs.paths")
 local jdtls_path = paths.mason_package("jdtls")
--- Windows에서는 jdtls.cmd 래퍼를 사용한다
-local jdtls_bin = paths.is_windows() and "jdtls.cmd" or "jdtls"
+-- Windows에서는 mason이 만드는 jdtls.cmd 래퍼를 사용한다 (bin/jdtls.bat는 끝에 pause가 있어 LSP로 쓸 수 없음)
+local jdtls_cmd = paths.is_windows() and (jdtls_path .. "/jdtls.cmd") or (jdtls_path .. "/bin/jdtls")
 
 local config = {
-  cmd = { jdtls_path .. "/bin/" .. jdtls_bin },
+  cmd = { jdtls_cmd },
   root_dir = vim.fs.dirname(vim.fs.find({ "gradlew", ".git", "mvnw" }, { upward = true })[1]),
 }
 
