@@ -1,0 +1,2 @@
+# Lua는 stylua(line_endings = "Unix") 검사와 맞추기 위해 OS와 관계없이 LF로 체크아웃한다
+*.lua text eol=lf
