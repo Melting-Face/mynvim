@@ -68,25 +68,25 @@ test_help_exits_0() {
     assert_contains "$out" "--with"
 }
 
-test_all_expands_to_five() {
+test_all_expands_to_four() {
     # shellcheck source=/dev/null
     source "$INSTALL_SH"
     parse_args --all
-    assert_equals "tmux go rust java lua" "$WITH"
+    assert_equals "go rust java lua" "$WITH"
 }
 
 test_with_list_parsed() {
     # shellcheck source=/dev/null
     source "$INSTALL_SH"
-    parse_args --with tmux,rust
-    assert_equals "tmux rust" "$WITH"
+    parse_args --with go,rust
+    assert_equals "go rust" "$WITH"
 }
 
 test_with_and_all_union_dedup() {
     # shellcheck source=/dev/null
     source "$INSTALL_SH"
     parse_args --with rust,rust --all
-    assert_equals "tmux go rust java lua" "$WITH"
+    assert_equals "go rust java lua" "$WITH"
 }
 
 test_flags_set_globals() {
@@ -107,9 +107,9 @@ test_non_tty_no_args_core_only() {
 
 test_main_summary_with_components() {
     local out
-    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --with tmux --dry-run </dev/null)" \
+    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --with go --dry-run </dev/null)" \
         || fail "종료 코드가 0이 아님"
-    assert_contains "$out" "tmux"
+    assert_contains "$out" "golang-go"
     assert_contains "$out" "apt"
 }
 
@@ -180,20 +180,43 @@ test_core_dnf_has_gconv_extra() {
 
 test_pacman_first_install_syncs_db() {
     local out
-    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=pacman "$INSTALL_SH" --with tmux --yes --dry-run </dev/null)" \
+    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=pacman "$INSTALL_SH" --with go --yes --dry-run </dev/null)" \
         || fail "종료 코드가 0이 아님"
     # 첫 설치만 -Syu로 DB를 동기화하고, 이후 설치는 -S
     assert_equals "1" "$(printf '%s\n' "$out" | grep -c 'pacman -Syu ')"
-    assert_contains "$out" "pacman -S --noconfirm --needed tmux"
+    assert_contains "$out" "pacman -S --noconfirm --needed go"
 }
 
-test_with_tmux_installs_tmux_and_tpm() {
-    local out home
-    home="$(mktemp -d)"
-    out="$(HOME="$home" MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --with tmux --dry-run </dev/null)" \
+# tmux는 더 이상 설치하지 않는다 (WezTerm 멀티플렉서). --with tmux는 실패시키지 않고 경고 후 건너뛴다
+test_with_tmux_warns_and_skips() {
+    local out
+    out="$(MYNVIM_PLATFORM=linux MYNVIM_PKG=apt "$INSTALL_SH" --with tmux,rust --dry-run </dev/null 2>&1)" \
         || fail "종료 코드가 0이 아님"
-    assert_contains "$out" "apt-get install -y tmux"
-    assert_contains "$out" "tmux-plugins/tpm"
+    assert_contains "$out" "tmux는 더 이상 설치하지 않아"
+    assert_contains "$out" "docs/wezterm.md"
+    assert_not_contains "$out" "tmux-plugins/tpm"
+    assert_not_contains "$out" "apt-get install -y tmux"
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    parse_args --with tmux,rust 2>/dev/null
+    assert_equals "rust" "$WITH"
+}
+
+test_with_only_tmux_skips_prompt() {
+    local out
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    # shellcheck disable=SC2317,SC2329  # TTY 확인을 대화형으로 고정
+    is_interactive() { return 0; }
+    # --with로 이미 답했으므로 tmux를 빼서 비어도 다시 묻지 않는다
+    out="$(
+        set -euo pipefail
+        parse_args --with tmux 2>/dev/null
+        choose_components </dev/null 2>&1
+        echo "WITH=[$WITH]"
+    )"
+    assert_not_contains "$out" "설치할까요"
+    assert_equals "WITH=[]" "$out"
 }
 
 test_rust_uses_rustup_noninteractive() {
@@ -360,7 +383,7 @@ test_repo_path_with_spaces() {
     tmp="$(mktemp -d)"
     repo="$tmp/my repos/mynvim"
     mkdir -p "$repo"
-    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$repo/"
+    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$repo/"
     mkdir -p "$tmp/home"
     run_install "$tmp/home" "$repo/install.sh" >/dev/null || fail "종료 코드가 0이 아님"
     assert_equals "$repo" "$(readlink "$tmp/home/.config/nvim")"
@@ -389,15 +412,17 @@ test_wezterm_linked_when_present() {
     rm -rf "$tmp"
 }
 
-test_tmux_conf_linked_only_when_selected() {
+# 이미 설치된 PC의 tmux 파일은 지우지도, 백업으로 옮기지도 않는다
+test_tmux_files_never_touched() {
     local tmp
     tmp="$(mktemp -d)"
-    run_install "$tmp" "$INSTALL_SH" >/dev/null || fail "종료 코드가 0이 아님"
-    [ ! -e "$tmp/.tmux.conf" ] || fail "tmux 미선택인데 링크됨"
-    rm -rf "$tmp"
-    tmp="$(mktemp -d)"
-    run_install "$tmp" "$INSTALL_SH" --with tmux >/dev/null || fail "종료 코드가 0이 아님"
-    assert_equals "$ROOT/tmux.conf" "$(readlink "$tmp/.tmux.conf")"
+    printf 'keep\n' >"$tmp/.tmux.conf"
+    mkdir -p "$tmp/.tmux/plugins/tpm"
+    : >"$tmp/.tmux/plugins/tpm/x"
+    run_install "$tmp" "$INSTALL_SH" --with tmux >/dev/null 2>&1 || fail "종료 코드가 0이 아님"
+    assert_equals "keep" "$(cat "$tmp/.tmux.conf")"
+    [ -f "$tmp/.tmux/plugins/tpm/x" ] || fail ".tmux/plugins가 지워짐"
+    [ -z "$(find "$tmp" -maxdepth 1 -name '.tmux.conf.bak.*')" ] || fail ".tmux.conf가 백업으로 옮겨짐"
     rm -rf "$tmp"
 }
 
@@ -406,7 +431,7 @@ test_clone_into_config_dir_skips() {
     tmp="$(mktemp -d)"
     repo="$tmp/.config/nvim"
     mkdir -p "$repo"
-    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$repo/"
+    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$repo/"
     out="$(run_install "$tmp" "$repo/install.sh")" || fail "종료 코드가 0이 아님"
     assert_contains "$out" "already linked"
     [ ! -L "$repo" ] || fail "링크로 바뀌면 안 됨"
@@ -457,7 +482,7 @@ test_wezterm_missing_prints_note() {
 # copy_repo <디렉터리> : install.sh가 링크에 쓰는 최소 파일을 복사한다
 copy_repo() {
     mkdir -p "$1"
-    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$ROOT/tmux.conf" "$1/"
+    cp "$ROOT/install.sh" "$ROOT/init.lua" "$ROOT/wezterm.lua" "$1/"
 }
 
 test_repo_inside_target_aborts_before_mv() {
@@ -826,7 +851,7 @@ test_choose_components_reads_answers() {
         choose_components 2>/dev/null <<<"$(printf 'y\nn\nY')"
         echo "WITH=[$WITH]"
     )"
-    assert_equals "WITH=[tmux rust]" "$out"
+    assert_equals "WITH=[go java]" "$out"
 }
 
 # ---------------------------------------------------------------- 실행기

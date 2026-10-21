@@ -9,10 +9,10 @@
 
 .PARAMETER With
     선택 항목 (go, rust, java, lua). 'rust,lua' 같은 쉼표 목록과 배열을 모두 받는다.
-    tmux는 Windows에서 지원하지 않으므로 경고 후 건너뛴다.
+    tmux는 더 이상 설치하지 않으므로(WezTerm 멀티플렉서 사용) 경고 후 건너뛴다.
 
 .PARAMETER All
-    모든 선택 항목 설치 (tmux 제외)
+    모든 선택 항목 설치
 
 .PARAMETER Yes
     대화형 질문 없이 진행 (선택 항목 미지정 시 필수만 설치)
@@ -98,12 +98,12 @@ function Test-InteractiveSession {
     return (-not (Test-NonInteractiveArgument -Arguments ([Environment]::GetCommandLineArgs())))
 }
 
-# 선택 항목 이름 목록 (tmux는 Windows에서 경고 후 건너뛴다)
+# 선택 항목 이름 목록
 function Get-KnownComponent {
     [CmdletBinding()]
     [OutputType([string[]])]
     param()
-    return @('tmux', 'go', 'rust', 'java', 'lua')
+    return @('go', 'rust', 'java', 'lua')
 }
 
 # -With 값(쉼표 목록·배열)을 이름 배열로 풀고 검증만 한다 (묻지 않는 순수 함수: Main이 사전 점검 전에 호출)
@@ -125,7 +125,8 @@ function Get-RequestedComponent {
             if ($name -eq '') {
                 continue
             }
-            if ($known -cnotcontains $name) {
+            # tmux는 예전 선택 항목이라 오류로 끝내지 않고 Resolve-Components가 경고 후 뺀다
+            if ($name -cne 'tmux' -and $known -cnotcontains $name) {
                 throw "알 수 없는 항목: $name (사용 가능: $($known -join ' '))"
             }
             $requested += $name
@@ -155,18 +156,13 @@ function Resolve-Components {
 
     if ($All) {
         foreach ($name in $known) {
-            if ($name -ne 'tmux') {
-                $requested.Add($name)
-            }
+            $requested.Add($name)
         }
     }
 
     # 선택 항목이 없고 대화형일 때만 항목별로 y/N을 묻는다
     if (-not $hasWith -and -not $All -and -not $Yes -and (Test-InteractiveSession)) {
         foreach ($name in $known) {
-            if ($name -eq 'tmux') {
-                continue
-            }
             $answer = Read-Host -Prompt "$name 을(를) 설치할까요? [y/N]"
             if ($answer -match '^(y|yes)$') {
                 $requested.Add($name)
@@ -175,12 +171,12 @@ function Resolve-Components {
     }
 
     if ($requested -ccontains 'tmux') {
-        Write-Warning 'tmux는 Windows에서 지원하지 않아 건너뜁니다'
+        Write-Warning 'tmux는 더 이상 설치하지 않아 건너뜁니다 (WezTerm 멀티플렉서를 씁니다. docs/wezterm.md 참고)'
     }
 
     $result = @()
     foreach ($name in $known) {
-        if ($name -ne 'tmux' -and $requested -ccontains $name) {
+        if ($requested -ccontains $name) {
             $result += $name
         }
     }

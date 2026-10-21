@@ -79,18 +79,9 @@ jobs:
       - name: Python 디버거 E2E
         run: nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
 
-      - name: 설치 (tmux,go,lua 선택)
+      - name: 설치 (go,lua 선택)
         if: runner.os == 'Linux'
-        run: ./install.sh --yes --with tmux,go,lua
-
-      # tmux-256color terminfo가 있는 환경에서는 tmux.conf가 그것을 기본 터미널로 써야 한다
-      - name: tmux 기본 터미널 확인
-        if: runner.os == 'Linux'
-        run: |
-          infocmp tmux-256color >/dev/null
-          term="$(tmux -f tmux.conf start-server \; show -gv default-terminal | tail -n 1)"
-          echo "default-terminal=$term"
-          [ "$term" = "tmux-256color" ]
+        run: ./install.sh --yes --with go,lua
 
   # Fedora(dnf), Arch(pacman)를 깨끗한 컨테이너에서 실제 설치로 검증
   distros:
