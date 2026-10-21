@@ -313,4 +313,14 @@ os.exit(0)
 
 ## 스파이크 결과
 
-(Task 1 Step 5에서 채운다)
+2026-10-21, 로컬 Windows WezTerm `20240203-110809-5046fc22`. 사용자 GUI와 분리하려고 별도 설정(`spike.lua`)과 별도 소켓을 썼다.
+
+| Step | 결과 | 관찰 |
+| --- | --- | --- |
+| 1 mux 연결 | 통과 | GUI가 `wezterm-mux-server.exe --daemonize`를 띄우고 연결(domain=spike). 서버에는 설정 파일 인자를 넘기지 않으므로, 서버는 `WEZTERM_CONFIG_FILE` 또는 기본 위치에서 설정을 찾는다. 소켓 경로가 길면 `path must be shorter than SUN_LEN`으로 실패한다(기본 경로는 문제없음) |
+| 2 X 버튼 | 통과 | 창에 X 버튼과 같은 WM_CLOSE(`CloseMainWindow`)를 보냈다. GUI만 종료되고, mux 서버의 nvim·`ping -t`는 계속 실행됐다(ping 출력 10→14줄). 다시 `connect`하면 같은 패널 두 개에 붙었다. 추가 설정 불필요 |
+| 3 user var | 통과 | mux 패널의 nvim에서 `nvim_chan_send(vim.v.stderr, OSC 1337 SetUserVar)`를 보내자 GUI의 `pane:get_user_vars().IS_NVIM`이 `true`, 빈 값으로 지우면 빈 값. `io.stdout:write`도 동작. → `nvim_chan_send(vim.v.stderr, ...)` 채택 |
+| 4 cli 포커스 | 통과 | 오른쪽 패널(`WEZTERM_PANE`)에서 `wezterm cli activate-pane-direction Left` → GUI 활성 패널이 왼쪽으로 바뀜. `adjust-pane-size --amount 6 Right` → 39→45열. → Task 3은 `M.cli` 방식 그대로 |
+
+참고: GUI가 보는 패널 id와 서버의 패널 id는 다르다(GUI 1·2, 서버 0·1). 패널 안의 `WEZTERM_PANE`은 서버 id이고 `wezterm cli`도 서버에 붙으므로 연동에는 영향이 없다.
+스파이크는 확인 창 없이(`window_close_confirmation = "NeverPrompt"`) 닫았다. 기본 설정(확인 창 있음)에서의 X 버튼은 Task 6 수동 확인에서 다시 본다.
