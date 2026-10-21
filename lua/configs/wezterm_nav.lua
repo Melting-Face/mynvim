@@ -66,11 +66,11 @@ function M.setup()
       M.resize(key)
     end, { desc = "창 크기 조절" })
   end
-  if not in_wezterm() then
-    return
-  end
+  -- user var는 WEZTERM_PANE 조건 없이 보낸다: WezTerm 패널에서 SSH로 접속한 원격 nvim도 키를 받아야 한다
+  -- (모르는 OSC는 다른 터미널이 무시한다). 패널을 떼었다 다시 붙으면 GUI가 값을 모르므로
+  -- 포커스를 얻을 때도 다시 보낸다
   local group = vim.api.nvim_create_augroup("WeztermNav", { clear = true })
-  vim.api.nvim_create_autocmd({ "VimEnter", "VimResume" }, {
+  vim.api.nvim_create_autocmd({ "VimEnter", "VimResume", "FocusGained" }, {
     group = group,
     callback = function()
       set_user_var("IS_NVIM", "true")

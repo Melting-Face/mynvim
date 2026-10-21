@@ -6,8 +6,25 @@ nav.cli = function(args)
   table.insert(calls, table.concat(args, " "))
 end
 
--- WezTerm 밖(WEZTERM_PANE 없음): 창 하나여도 wezterm cli를 부르지 않는다
+-- WEZTERM_PANE이 없어도(SSH 원격 nvim 등) IS_NVIM은 알린다. 다시 붙은 GUI를 위해 포커스를 얻을 때도 다시 보낸다
 vim.env.WEZTERM_PANE = nil
+nav.setup()
+local sent = {}
+local real_chan_send = vim.api.nvim_chan_send
+vim.api.nvim_chan_send = function(_, data)
+  table.insert(sent, data)
+end
+for _, event in ipairs({ "VimEnter", "FocusGained" }) do
+  sent = {}
+  vim.api.nvim_exec_autocmds(event, { group = "WeztermNav" })
+  assert(
+    sent[1] == "\027]1337;SetUserVar=IS_NVIM=" .. vim.base64.encode("true") .. "\007",
+    event .. " 때 IS_NVIM 안 보냄"
+  )
+end
+vim.api.nvim_chan_send = real_chan_send
+
+-- WezTerm 밖(WEZTERM_PANE 없음): 창 하나여도 wezterm cli를 부르지 않는다
 nav.navigate("h")
 nav.resize("l")
 assert(#calls == 0, "WezTerm 밖에서 cli 호출됨")

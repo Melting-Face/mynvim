@@ -51,9 +51,12 @@ prefix가 눌려 있으면 오른쪽 상태줄에 `PREFIX`가 표시됩니다.
 
 - nvim 안에서는 nvim 창 사이를 먼저 움직이고, 그 방향에 nvim 창이 없으면 `wezterm cli`로 옆 WezTerm 패널로 넘어갑니다.
 - 셸 패널에서는 WezTerm이 키를 받아 패널을 움직입니다. 그래서 셸의 `C-l`(화면 지우기)은 `prefix` + `C-l`로 보냅니다.
-- nvim은 시작할 때 user var `IS_NVIM`을 알리고 종료·일시 중지(`C-z`) 때 지웁니다. WezTerm은 이 값으로 키를 nvim에 넘길지 정합니다.
+- nvim은 시작할 때와 포커스를 얻을 때(떼었다 다시 붙은 경우 포함) user var `IS_NVIM`을 알리고, 종료·일시 중지(`C-z`) 때 지웁니다.
+  WezTerm은 이 값으로 키를 nvim에 넘길지 정합니다. 다시 붙은 직후 nvim 패널에서 키가 패널 이동으로 처리되면 그 패널을 한 번 클릭해 포커스를 주세요.
   nvim이 비정상 종료해 값이 남으면 그 패널에서 `C-h` 등이 셸로 갑니다. 이때는 `prefix` + `h/j/k/l`로 이동하세요.
-- WezTerm 밖(다른 터미널, SSH)의 nvim에서는 nvim 창 안에서만 동작합니다.
+- WezTerm 패널에서 SSH로 접속한 원격 nvim도 이 설정을 쓰면 값을 알리므로 키를 받습니다. 다만 원격 nvim 창 끝에서 옆 WezTerm 패널로 넘어가지는 않습니다(`prefix` + `h/j/k/l` 사용).
+  이 설정이 없는 nvim(`nvim --clean`, 원격의 다른 설정)에서는 WezTerm이 키를 먼저 가져가므로 nvim 창 이동은 `C-w h` 등 nvim 기본 키를 쓰세요.
+- 다른 터미널의 nvim에서는 nvim 창 안에서만 동작합니다.
 
 연동은 [`lua/configs/wezterm_nav.lua`](../lua/configs/wezterm_nav.lua)와 `wezterm.lua`에 있습니다. 플러그인을 받지 않으므로 오프라인에서도 동작합니다.
 
