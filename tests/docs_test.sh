@@ -96,6 +96,10 @@ test_tmux_doc_windows_wezterm_keys() {
     done
     assert_file_contains "$README" 'docs/tmux.md#windows-네이티브-wezterm-멀티플렉서'
     grep -qF 'config.leader = { key = "a", mods = "CTRL"' "$ROOT/wezterm.lua" || fail "wezterm.lua에 C-a leader가 없음"
+    # prefix + 숫자(ActivateTab, 0부터)와 탭 바에 보이는 번호가 같아야 한다
+    grep -qF 'config.tab_and_split_indices_are_zero_based = true' "$ROOT/wezterm.lua" ||
+        fail "wezterm.lua 탭 바 번호가 0부터가 아님"
+    assert_file_contains "$TMUX_DOC" '탭 바에 보이는 번호'
 }
 
 test_readme_editing_tips() {
