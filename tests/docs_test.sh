@@ -170,6 +170,7 @@ test_keymaps_doc_marks_overridden_defaults() {
     done
 }
 
+# shellcheck disable=SC2088  # README 문구의 ~를 그대로 찾는다
 test_no_tmux_leftovers() {
     local phrase
     # tmux는 레포에서 빠졌다. 남은 것은 예전 PC를 위한 수동 정리 안내뿐이다
