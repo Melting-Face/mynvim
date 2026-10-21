@@ -15,6 +15,8 @@ if wezterm.target_triple:find("windows") then
   -- macOS/Linux/WSL은 진짜 tmux가 C-a를 받아야 하므로 적용하지 않는다
   config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
   config.scrollback_lines = 50000
+  -- 탭 바 번호를 tmux 창 번호처럼 0부터 표시한다 (기본은 1부터라 prefix + 숫자와 한 칸 어긋난다)
+  config.tab_and_split_indices_are_zero_based = true
 
   -- prefix + H/J/K/L 뒤 0.5초 안에 다시 누르면 prefix 없이 반복 (tmux bind -r, repeat-time 500ms)
   local resize_mode = act.ActivateKeyTable({
