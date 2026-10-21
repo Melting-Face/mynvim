@@ -77,7 +77,31 @@ config.keys = {
   { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
   -- mux 서버에서 떼어 낸다 (셸과 작업은 계속 실행, WezTerm을 다시 열면 이어짐)
   { key = "d", mods = "LEADER", action = act.DetachDomain("CurrentPaneDomain") },
+  -- C-l은 패널 이동에 쓰므로, 셸 화면 지우기는 prefix + C-l로 보낸다
+  { key = "l", mods = "LEADER|CTRL", action = act.SendKey({ key = "l", mods = "CTRL" }) },
 }
+
+-- C-h/j/k/l 패널 이동, A-h/j/k/l 크기 조절. nvim 패널이면 키를 nvim에 넘긴다
+-- nvim(configs.wezterm_nav)이 user var IS_NVIM을 알리고, nvim 창 끝에서는 wezterm cli로 패널을 움직인다
+local directions = { h = "Left", j = "Down", k = "Up", l = "Right" }
+for key, direction in pairs(directions) do
+  for mods, pane_action in pairs({
+    CTRL = act.ActivatePaneDirection(direction),
+    META = act.AdjustPaneSize({ direction, 2 }),
+  }) do
+    table.insert(config.keys, {
+      key = key,
+      mods = mods,
+      action = wezterm.action_callback(function(window, pane)
+        if pane:get_user_vars().IS_NVIM == "true" then
+          window:perform_action(act.SendKey({ key = key, mods = mods }), pane)
+        else
+          window:perform_action(pane_action, pane)
+        end
+      end),
+    })
+  end
+end
 -- prefix + 0~9: 해당 번호 탭으로 이동 (tmux처럼 0부터)
 for i = 0, 9 do
   table.insert(config.keys, { key = tostring(i), mods = "LEADER", action = act.ActivateTab(i) })
