@@ -1,6 +1,6 @@
 # mynvim
 
-Neovim(+ tmux) 개인 설정입니다. macOS, Linux, WSL, Windows에서 스크립트 한 번으로 설치합니다.
+Neovim 개인 설정입니다(패널·탭과 백그라운드 유지는 WezTerm 멀티플렉서). macOS, Linux, WSL, Windows에서 스크립트 한 번으로 설치합니다.
 
 ## 목차
 
@@ -16,7 +16,7 @@ Neovim(+ tmux) 개인 설정입니다. macOS, Linux, WSL, Windows에서 스크�
 
 ## 소개
 
-이 레포는 Neovim 설정(`init.lua`, `lua/`), tmux 설정(`tmux.conf`), WezTerm 설정(`wezterm.lua`)을 담고 있습니다.
+이 레포는 Neovim 설정(`init.lua`, `lua/`)과 WezTerm 설정(`wezterm.lua`)을 담고 있습니다.
 설치 스크립트는 필요한 도구를 설치하고, 이 레포를 설정 경로에 연결하고, 플러그인까지 동기화합니다.
 
 **이 구성은 WezTerm 터미널 환경을 기준으로 합니다.** WezTerm 기준으로 검증했으며, 다른 터미널은 동작할 수 있지만 보장하지 않습니다.
@@ -49,6 +49,8 @@ Neovim은 0.11 이상이 필요합니다. 더 낮거나 없으면 스크립트�
     - macOS, Linux: `~/.wezterm.lua`를 이 레포의 [`wezterm.lua`](wezterm.lua)로 링크합니다.
     - Windows: 파일 링크 대신 사용자 환경변수 `WEZTERM_CONFIG_FILE`을 설정합니다.
     - WezTerm을 나중에 설치했다면 설치 스크립트를 다시 실행하세요.
+- **패널·탭과 백그라운드 유지**는 tmux 대신 WezTerm 멀티플렉서가 맡습니다. 모든 OS에서 prefix `C-a`와 같은 키를 쓰고,
+  창을 닫아도 작업이 로컬 mux 서버에서 계속 돕니다. 사용법은 [WezTerm 멀티플렉서](docs/wezterm.md)를 보세요.
 - **Windows 기본 셸**은 PowerShell 7(`pwsh.exe`)입니다. 설치 스크립트가 필수 항목으로 함께 설치합니다(`Microsoft.PowerShell`).
 - **WSL 사용자**는 WezTerm을 Windows 쪽에 설치하고 WSL 도메인으로 접속합니다.
   [`wezterm.lua`](wezterm.lua)의 주석 처리된 `default_domain` 예시(`config.default_domain = "WSL:Ubuntu"`)를 풀고 배포판 이름을 맞추세요.
@@ -137,8 +139,8 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Yes
 
 | bash (`install.sh`) | PowerShell (`install.ps1`) | 설명 |
 | --- | --- | --- |
-| `--with <목록>` | `-With <목록>` | 선택 항목을 쉼표로 지정합니다. 예: `--with tmux,rust` |
-| `--all` | `-All` | 선택 항목을 모두 설치합니다. Windows는 tmux를 제외합니다 |
+| `--with <목록>` | `-With <목록>` | 선택 항목을 쉼표로 지정합니다. 예: `--with go,rust` |
+| `--all` | `-All` | 선택 항목을 모두 설치합니다 |
 | `--yes` | `-Yes` | 질문 없이 진행합니다. 선택 항목이 없으면 필수만 설치합니다 |
 | `--dry-run` | `-DryRun` | 실행할 명령만 출력하고 아무것도 바꾸지 않습니다 |
 | `--help` | (`Get-Help .\install.ps1`) | 도움말을 출력합니다 |
@@ -147,7 +149,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Yes
 
 ```shell
 # macOS, Linux, WSL
-./install.sh --with tmux,rust --yes
+./install.sh --with go,rust --yes
 ./install.sh --all --yes
 ```
 
@@ -165,11 +167,13 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 
 | 항목 | 설치 내용 |
 | --- | --- |
-| `tmux` | tmux, 플러그인 관리자 tpm(`~/.tmux/plugins/tpm`), `~/.tmux.conf` 링크. **Windows 네이티브는 지원하지 않습니다** (대신 WezTerm이 tmux와 같은 키로 패널·탭을 제공합니다. [docs/tmux.md](docs/tmux.md#windows-네이티브-wezterm-멀티플렉서) 참고) |
 | `go` | Go 툴체인 |
 | `rust` | macOS, Linux, WSL: rustup (공식 설치 스크립트). Windows: `Rustlang.Rustup` |
 | `java` | JDK 21 |
 | `lua` | Lua |
+
+`tmux`는 더 이상 선택 항목이 아닙니다. `--with tmux`(`-With tmux`)는 오류 없이 경고만 내고 건너뜁니다.
+패널·탭과 백그라운드 유지는 [WezTerm 멀티플렉서](docs/wezterm.md)를 쓰세요.
 
 ## 설치되는 것
 
@@ -201,7 +205,6 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 
 | 항목 | macOS (brew) | Debian/Ubuntu, WSL (apt) | Fedora (dnf) | Arch (pacman) | Windows (winget) |
 | --- | --- | --- | --- | --- | --- |
-| `tmux` | `tmux` | `tmux` | `tmux` | `tmux` | 지원 안 함 |
 | `go` | `go` | `golang-go` | `golang` | `go` | `GoLang.Go` |
 | `rust` | rustup | rustup | rustup | rustup | `Rustlang.Rustup` |
 | `java` | `temurin@21` (cask) | `openjdk-21-jdk` | `java-21-openjdk-devel` | `jdk21-openjdk` | `EclipseAdoptium.Temurin.21.JDK` |
@@ -212,7 +215,6 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 | 대상 | 위치 |
 | --- | --- |
 | Neovim | macOS, Linux, WSL: `~/.config/nvim` (`XDG_CONFIG_HOME`이 있으면 그 아래). Windows: `%LOCALAPPDATA%\nvim` (디렉터리 정션) |
-| tmux | `~/.tmux.conf` (`tmux` 선택 시) |
 | WezTerm | macOS, Linux: `~/.wezterm.lua`. Windows: 환경변수 `WEZTERM_CONFIG_FILE` (WezTerm 감지 시) |
 
 이미 있는 대상은 지우지 않고 `<대상>.bak.<YYYYMMDD-HHMMSS>`로 이름을 바꿔 백업합니다.
@@ -271,7 +273,7 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 
 **UI·테마**: [catppuccin](https://github.com/catppuccin/nvim), [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim), [bufferline.nvim](https://github.com/akinsho/bufferline.nvim), [scope.nvim](https://github.com/tiagovla/scope.nvim), [nvim-navic](https://github.com/SmiteshP/nvim-navic), [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim), [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons), [vim-startify](https://github.com/mhinz/vim-startify), [which-key.nvim](https://github.com/folke/which-key.nvim), [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
 
-**검색·이동**: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim), [hop.nvim](https://github.com/smoka7/hop.nvim), [nvim-spectre](https://github.com/nvim-pack/nvim-spectre), [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf), [tmux.nvim](https://github.com/aserowy/tmux.nvim)
+**검색·이동**: [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim), [hop.nvim](https://github.com/smoka7/hop.nvim), [nvim-spectre](https://github.com/nvim-pack/nvim-spectre), [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf)
 
 **편집**: [Comment.nvim](https://github.com/numToStr/Comment.nvim), [nvim-surround](https://github.com/kylechui/nvim-surround), [vim-visual-multi](https://github.com/mg979/vim-visual-multi), [tabular](https://github.com/godlygeek/tabular), [text-case.nvim](https://github.com/johmsalas/text-case.nvim), [vim-better-whitespace](https://github.com/ntpeters/vim-better-whitespace), [undotree](https://github.com/mbbill/undotree), [todo-comments.nvim](https://github.com/folke/todo-comments.nvim), [neogen](https://github.com/danymat/neogen)
 
@@ -285,16 +287,10 @@ leader 키는 `,`, localleader 키는 `;`입니다. 모든 키맵은 `,fk`(Teles
 
 **기타**: [claudecode.nvim](https://github.com/coder/claudecode.nvim), [snacks.nvim](https://github.com/folke/snacks.nvim), [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 
-### tmux
+### WezTerm
 
-tmux는 선택 항목입니다. 사용법과 tpm 플러그인 설치는 [docs/tmux.md](docs/tmux.md)를 보세요.
-
-- [tpm](https://github.com/tmux-plugins/tpm)
-- [sensible](https://github.com/tmux-plugins/tmux-sensible)
-- [one dark](https://github.com/odedlaz/tmux-onedark-theme)
-- [cpu](https://github.com/tmux-plugins/tmux-cpu)
-- [battery](https://github.com/tmux-plugins/tmux-battery)
-- [prefix highlight](https://github.com/tmux-plugins/tmux-prefix-highlight)
+WezTerm은 플러그인 없이 [`wezterm.lua`](wezterm.lua) 하나로 설정합니다. nvim 창과 WezTerm 패널 사이 이동은
+[`lua/configs/wezterm_nav.lua`](lua/configs/wezterm_nav.lua)가 맡습니다. 사용법은 [WezTerm 멀티플렉서](docs/wezterm.md)를 보세요.
 
 ## 문제 해결
 
@@ -369,6 +365,16 @@ nvim-spectre의 치환은 GNU `sed`를 씁니다. Windows 네이티브에는 없
 upstream의 기본 브랜치인 `main`은 설정 API가 완전히 바뀌었고, Neovim 0.12 이상과 `tree-sitter` CLI 0.26.1 이상(패키지 관리자로 설치)을 요구합니다. 그대로 두면 Neovim 0.11 환경에서 설치가 깨집니다.
 `master`는 더 이상 기능이 추가되지 않는 동결 브랜치입니다. 지금 설정이 실제로 깨질 때(예: 새 Neovim 버전에서 오류) `main` API로 옮길 예정입니다.
 
+### 예전 tmux 설정 정리
+
+예전에 `--with tmux`로 설치한 PC에는 `~/.tmux.conf` 링크와 `~/.tmux/plugins`(tpm과 플러그인)가 남아 있습니다.
+설치 스크립트는 이 파일들을 지우지 않습니다. tmux를 더 쓰지 않는다면 직접 지우세요.
+
+```shell
+rm ~/.tmux.conf
+rm -rf ~/.tmux/plugins
+```
+
 ## 백업 복구 방법
 
 설치 스크립트가 기존 설정을 백업한 경우, 원래대로 되돌릴 수 있습니다.
@@ -382,7 +388,7 @@ rm ~/.config/nvim
 mv ~/.config/nvim.bak.20260101-120000 ~/.config/nvim
 ```
 
-`~/.tmux.conf`, `~/.wezterm.lua`도 같은 방법입니다.
+`~/.wezterm.lua`도 같은 방법입니다.
 
 ### Windows
 

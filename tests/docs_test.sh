@@ -4,7 +4,7 @@
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 README="$ROOT/README.md"
-TMUX_DOC="$ROOT/docs/tmux.md"
+WEZTERM_DOC="$ROOT/docs/wezterm.md"
 
 # 실패 시 서브셸(테스트 하나)을 즉시 종료한다
 fail() {
@@ -88,18 +88,19 @@ test_readme_treesitter_pin_documented() {
 }
 
 # shellcheck disable=SC2016  # 마크다운 백틱은 문서 문구 그대로 찾는다
-test_tmux_doc_windows_wezterm_keys() {
+test_wezterm_doc() {
     local phrase
-    # Windows 네이티브용 WezTerm 대체 키 안내와 실제 설정이 함께 있어야 한다
-    for phrase in 'Windows 네이티브: WezTerm 멀티플렉서' 'prefix` + `"` / `%`' 'C-a`를 두 번'; do
-        assert_file_contains "$TMUX_DOC" "$phrase"
+    # WezTerm 멀티플렉서 사용법(키, 백그라운드 유지, 연동, 설정 재적용)과 실제 설정이 함께 있어야 한다
+    for phrase in 'prefix` + `"` / `%`' '`prefix` + `d`' '`C-h/j/k/l`' '`prefix` + `C-l`' \
+        'default_gui_startup_args' 'OneDark (base16)' '다시 시작'; do
+        assert_file_contains "$WEZTERM_DOC" "$phrase"
     done
-    assert_file_contains "$README" 'docs/tmux.md#windows-네이티브-wezterm-멀티플렉서'
+    assert_file_contains "$README" '(docs/wezterm.md)'
     grep -qF 'config.leader = { key = "a", mods = "CTRL"' "$ROOT/wezterm.lua" || fail "wezterm.lua에 C-a leader가 없음"
     # prefix + 숫자(ActivateTab, 0부터)와 탭 바에 보이는 번호가 같아야 한다
     grep -qF 'config.tab_and_split_indices_are_zero_based = true' "$ROOT/wezterm.lua" ||
         fail "wezterm.lua 탭 바 번호가 0부터가 아님"
-    assert_file_contains "$TMUX_DOC" '탭 바에 보이는 번호'
+    assert_file_contains "$WEZTERM_DOC" '탭 바에 보이는 번호'
 }
 
 # shellcheck disable=SC2016  # Lua 코드 문구를 그대로 찾는다
@@ -169,10 +170,16 @@ test_keymaps_doc_marks_overridden_defaults() {
     done
 }
 
-test_tmux_doc_terminal_setting() {
-    # tmux 기본 터미널(terminfo가 있으면 tmux-256color, 없으면 screen-256color) 안내
-    assert_file_contains "$TMUX_DOC" 'tmux-256color'
-    assert_file_contains "$TMUX_DOC" 'screen-256color'
+test_no_tmux_leftovers() {
+    local phrase
+    # tmux는 레포에서 빠졌다. 남은 것은 예전 PC를 위한 수동 정리 안내뿐이다
+    for phrase in 'tmux.nvim' '(tmux.conf)' 'docs/tmux.md' 'Neovim(+ tmux)' '--with tmux,'; do
+        if grep -qF -- "$phrase" "$README" "$ROOT/docs/keymaps.md"; then
+            fail "문서에 tmux 흔적 '$phrase'가 남아 있음"
+        fi
+    done
+    assert_file_contains "$README" '~/.tmux.conf'
+    assert_file_contains "$README" '~/.tmux/plugins'
 }
 
 test_readme_debugger_docs() {
@@ -207,13 +214,13 @@ check_links() {
 
 test_relative_links_exist() {
     check_links "$README"
-    check_links "$TMUX_DOC"
+    check_links "$WEZTERM_DOC"
     check_links "$ROOT/docs/keymaps.md"
 }
 
 test_legacy_files_removed() {
     local f
-    for f in nvim.sh vim.md tmuxinator.md; do
+    for f in nvim.sh vim.md tmuxinator.md tmux.conf docs/tmux.md; do
         [ ! -e "$ROOT/$f" ] || fail "$f 가 아직 있음"
     done
 }
