@@ -62,6 +62,10 @@ Describe 'install.ps1' {
             Should -Invoke Read-Host -Times 0 -Exactly
         }
 
+        It 'Get-KnownComponent no longer lists tmux' {
+            ((Get-KnownComponent) -join ',') | Should -Be 'go,rust,java,lua'
+        }
+
         It 'All excludes tmux' {
             $result = @(Resolve-Components -All)
             ($result -join ',') | Should -Be 'go,rust,java,lua'
@@ -73,6 +77,7 @@ Describe 'install.ps1' {
             ($result -join ',') | Should -Be 'rust'
             @($warnings).Count | Should -BeGreaterThan 0
             ($warnings -join ' ') | Should -Match 'tmux'
+            ($warnings -join ' ') | Should -Match 'WezTerm'
         }
 
         It 'accepts comma string and array, de-duplicates, keeps canonical order' {

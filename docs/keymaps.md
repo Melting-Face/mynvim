@@ -50,7 +50,7 @@
 | `f` | n, v | 한 글자로 점프 | hop |
 | `F` | n, v | 두 글자로 점프 | hop |
 | `j`, `k` | n | 줄바꿈된 화면 줄 단위로 이동 (`5j`처럼 횟수를 주면 실제 줄 단위) | 기본 설정 |
-| `C-h/j/k/l` | n | nvim 창, tmux 패널 사이 이동 | tmux.nvim |
+| `C-h/j/k/l` | n | nvim 창, WezTerm 패널 사이 이동 | wezterm_nav |
 
 ## 편집
 
@@ -176,7 +176,7 @@ treesitter 파서가 있는 모든 파일에서 동작합니다.
 
 | 키 | 모드 | 동작 | 플러그인 |
 | --- | --- | --- | --- |
-| `A-h/j/k/l` | n | 창 크기 조절 | tmux.nvim |
+| `A-h/j/k/l` | n | nvim 창, WezTerm 패널 크기 조절 | wezterm_nav |
 | `C-;` | 입력 | SQL omni 자동 완성 | 기본 설정 |
 
-tmux와 WezTerm의 prefix 키는 [tmux 사용법](tmux.md)을 보세요.
+WezTerm의 prefix 키는 [WezTerm 멀티플렉서](wezterm.md)를 보세요.

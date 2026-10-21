@@ -5,9 +5,11 @@
 
 # shellcheck disable=SC2034  # Task 3, 4에서 사용
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ALL_COMPONENTS="tmux go rust java lua"
+ALL_COMPONENTS="go rust java lua"
 
 WITH=""
+# --with를 받았는지 (tmux를 빼서 WITH가 비어도 다시 묻지 않기 위해)
+WITH_GIVEN=0
 ASSUME_YES=0
 DRY_RUN=0
 PLATFORM=""
@@ -20,7 +22,7 @@ usage() {
 사용법: install.sh [옵션]
 
 옵션:
-  --with <목록>  선택 항목을 쉼표로 지정 (tmux,go,rust,java,lua)
+  --with <목록>  선택 항목을 쉼표로 지정 (go,rust,java,lua)
   --all          모든 선택 항목 설치
   --yes          대화형 질문 없이 진행 (선택 항목 미지정 시 필수만 설치)
   --dry-run      실행할 명령만 출력하고 아무것도 변경하지 않음
@@ -70,8 +72,14 @@ parse_args() {
                     err "--with에는 값이 필요합니다"
                     exit 2
                 fi
+                WITH_GIVEN=1
                 list="${2//,/ }"
                 for item in $list; do
+                    # tmux는 예전 선택 항목이라 오류로 끝내지 않고 경고 후 건너뛴다
+                    if [ "$item" = "tmux" ]; then
+                        err "경고: tmux는 더 이상 설치하지 않아 건너뜁니다 (WezTerm 멀티플렉서를 씁니다. docs/wezterm.md 참고)"
+                        continue
+                    fi
                     if ! is_component "$item"; then
                         err "알 수 없는 항목: $item (사용 가능: $ALL_COMPONENTS)"
                         exit 2
@@ -153,7 +161,7 @@ is_interactive() {
 # 선택 항목이 없고 대화형(TTY)일 때만 항목별로 y/N을 묻는다
 choose_components() {
     local c answer
-    if [ -n "$WITH" ] || [ "$ASSUME_YES" -eq 1 ] || ! is_interactive; then
+    if [ -n "$WITH" ] || [ "$WITH_GIVEN" -eq 1 ] || [ "$ASSUME_YES" -eq 1 ] || ! is_interactive; then
         return 0
     fi
     for c in $ALL_COMPONENTS; do
@@ -205,7 +213,6 @@ pkg_names() {
                 pacman) echo "git ripgrep nodejs npm python python-pip base-devel curl unzip $(clipboard_pkg)" ;;
             esac
             ;;
-        tmux) echo "tmux" ;;
         go)
             case "$PKG" in
                 apt) echo "golang-go" ;;
@@ -381,12 +388,6 @@ install_optional() {
                 run brew install --cask temurin@21
             else
                 pkg_install "$(pkg_names java)"
-            fi
-            ;;
-        tmux)
-            pkg_install "$(pkg_names tmux)"
-            if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-                run git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
             fi
             ;;
         *)
@@ -578,12 +579,9 @@ link_path() {
     run ln -s "$src" "$dst"
 }
 
-# nvim 설정과 선택한 항목의 설정 파일을 연결한다
+# nvim 설정과 WezTerm 설정을 연결한다
 link_configs() {
     link_path "$REPO_DIR" "$(nvim_target)"
-    case " $WITH " in
-        *" tmux "*) link_path "$REPO_DIR/tmux.conf" "$HOME/.tmux.conf" ;;
-    esac
     if [ "$PLATFORM" = "wsl" ]; then
         echo "WSL: WezTerm 설정은 Windows 쪽(%USERPROFILE%\\.wezterm.lua)에서 관리하므로 건너뜀"
     elif has_cmd wezterm; then

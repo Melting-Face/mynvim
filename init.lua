@@ -18,3 +18,4 @@ require("lazy").setup("plugins", {
 })
 
 require("configs.keymaps")
+require("configs.wezterm_nav").setup()

@@ -23,11 +23,6 @@ return {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
-  -- tmux
-  {
-    "aserowy/tmux.nvim",
-    config = true,
-  },
   -- HOP
   {
     "smoka7/hop.nvim",
