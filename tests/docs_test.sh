@@ -102,6 +102,20 @@ test_tmux_doc_windows_wezterm_keys() {
     assert_file_contains "$TMUX_DOC" '탭 바에 보이는 번호'
 }
 
+# shellcheck disable=SC2016  # Lua 코드 문구를 그대로 찾는다
+test_wezterm_lua_mux_config() {
+    local f="$ROOT/wezterm.lua" phrase
+    # 항상 로컬 mux 서버(unix domain)에 붙고, prefix + d로 떼어 낸다
+    for phrase in 'config.unix_domains = { { name = "unix" } }' \
+        'config.default_gui_startup_args = { "connect", "unix" }' \
+        'act.DetachDomain("CurrentPaneDomain")'; do
+        grep -qF -- "$phrase" "$f" || fail "wezterm.lua에 '$phrase'가 없음"
+    done
+    # 모든 OS 공통: leader와 키가 OS 분기 안(들여쓰기)에 있으면 안 된다
+    grep -qE '^config\.leader = \{ key = "a", mods = "CTRL"' "$f" || fail "leader가 OS 분기 밖에 없음"
+    grep -qE '^config\.keys = \{' "$f" || fail "keys가 OS 분기 밖에 없음"
+}
+
 test_readme_editing_tips() {
     local phrase
     # undo 기록 보존, cp949 파일 감지, ruff 규칙 안내

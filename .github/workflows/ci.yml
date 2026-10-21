@@ -161,6 +161,23 @@ jobs:
           $results | Format-Table -AutoSize
           if ($results) { throw "ScriptAnalyzer 결과 $(@($results).Count)건" }
 
+      # 로컬과 같은 WezTerm 버전(설치 없는 zip)으로 wezterm.lua를 읽어 본다
+      # 설정 오류가 있어도 기본 설정으로 대체되어 종료 코드가 0이므로 출력 내용으로 판단한다
+      - name: wezterm.lua 로드 확인 (WezTerm 20240203)
+        if: matrix.shell == 'pwsh'
+        run: |
+          $version = '20240203-110809-5046fc22'
+          $zip = Join-Path $env:RUNNER_TEMP 'wezterm.zip'
+          $dir = Join-Path $env:RUNNER_TEMP 'wezterm'
+          Invoke-WebRequest "https://github.com/wezterm/wezterm/releases/download/$version/WezTerm-windows-$version.zip" -OutFile $zip
+          Expand-Archive $zip -DestinationPath $dir
+          $exe = Get-ChildItem $dir -Recurse -Filter wezterm.exe | Select-Object -First 1
+          $out = & $exe.FullName --config-file wezterm.lua show-keys --lua | Out-String
+          if ($out -notmatch 'DetachDomain' -or $out -notmatch "mods = 'LEADER'") {
+              Write-Output $out
+              throw 'wezterm.lua를 읽지 못함 (DetachDomain 또는 LEADER 키 없음)'
+          }
+
       # 이하 실제 설치와 검증은 두 레그 모두 실행한다
       - name: winget 확인
         run: winget --version
