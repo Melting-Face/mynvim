@@ -18,6 +18,36 @@ if vim.fn.executable(config.cmd[1]) ~= 1 then
   return
 end
 
+-- jdtls 1.62부터 Java 25가 있어야 실행된다 (낮으면 시작 직후 종료되므로 시작하지 않고 안내한다)
+-- jdtls 래퍼처럼 JAVA_HOME/bin/java가 있으면 그것을, 없으면 PATH의 java를 검사하고 결과는 세션 동안 기억한다
+if vim.g.jdtls_java_major == nil then
+  local java = "java"
+  if vim.env.JAVA_HOME then
+    local candidate = vim.env.JAVA_HOME .. "/bin/java" .. (paths.is_windows() and ".exe" or "")
+    if vim.uv.fs_stat(candidate) then
+      java = candidate
+    end
+  end
+  local ok, result = pcall(function()
+    return vim.system({ java, "-version" }, { text = true }):wait()
+  end)
+  local output = ok and ((result.stderr or "") .. (result.stdout or "")) or ""
+  vim.g.jdtls_java = java
+  vim.g.jdtls_java_major = tonumber(output:match('version "(%d+)')) or 0
+end
+if vim.g.jdtls_java_major < 25 then
+  local found = vim.g.jdtls_java_major > 0 and ("Java " .. vim.g.jdtls_java_major) or "버전을 확인할 수 없음"
+  vim.notify_once(
+    "jdtls는 Java 25 이상에서만 실행되어 Java LSP를 시작하지 않습니다 ("
+      .. vim.g.jdtls_java
+      .. ": "
+      .. found
+      .. "). JDK 25를 설치하고, JAVA_HOME을 쓴다면 JDK 25 경로로 바꾸세요",
+    vim.log.levels.WARN
+  )
+  return
+end
+
 local jdtls = require("jdtls")
 
 -- mason 경로는 모두 configs.paths를 통해 만든다

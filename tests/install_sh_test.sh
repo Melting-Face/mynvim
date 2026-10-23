@@ -274,7 +274,17 @@ test_java_brew_uses_cask() {
     local out
     out="$(MYNVIM_PLATFORM=macos MYNVIM_PKG=brew "$INSTALL_SH" --with java --dry-run </dev/null)" \
         || fail "종료 코드가 0이 아님"
-    assert_contains "$out" "brew install --cask temurin@21"
+    assert_contains "$out" "brew install --cask temurin@25"
+}
+
+# jdtls 1.62부터 Java 25가 있어야 실행되므로 모든 패키지 관리자에서 JDK 25를 설치한다
+test_java_pkg_names_jdk25() {
+    # shellcheck source=/dev/null
+    source "$INSTALL_SH"
+    assert_equals "openjdk-25-jdk" "$(PKG=apt pkg_names java)"
+    assert_equals "java-25-openjdk-devel" "$(PKG=dnf pkg_names java)"
+    assert_equals "jdk25-openjdk" "$(PKG=pacman pkg_names java)"
+    assert_equals "temurin@25" "$(PKG=brew pkg_names java)"
 }
 
 test_nvim_version_ok_compare() {

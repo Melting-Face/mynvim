@@ -211,7 +211,7 @@ function Get-OptionalPackageId {
     switch -CaseSensitive ($Component) {
         'go' { return 'GoLang.Go' }
         'rust' { return 'Rustlang.Rustup' }
-        'java' { return 'EclipseAdoptium.Temurin.21.JDK' }
+        'java' { return 'EclipseAdoptium.Temurin.25.JDK' } # jdtls 1.62부터 Java 25 필요
         'lua' { return 'DEVCOM.Lua' }
     }
     throw "winget ID가 정의되지 않은 항목: $Component"

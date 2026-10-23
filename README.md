@@ -169,7 +169,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 | --- | --- |
 | `go` | Go 툴체인 |
 | `rust` | macOS, Linux, WSL: rustup (공식 설치 스크립트). Windows: `Rustlang.Rustup` |
-| `java` | JDK 21 |
+| `java` | JDK 25 (jdtls 실행에 필요) |
 | `lua` | Lua |
 
 `tmux`는 더 이상 선택 항목이 아닙니다. `--with tmux`(`-With tmux`)는 오류 없이 경고만 내고 건너뜁니다.
@@ -207,7 +207,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -All -Yes
 | --- | --- | --- | --- | --- | --- |
 | `go` | `go` | `golang-go` | `golang` | `go` | `GoLang.Go` |
 | `rust` | rustup | rustup | rustup | rustup | `Rustlang.Rustup` |
-| `java` | `temurin@21` (cask) | `openjdk-21-jdk` | `java-21-openjdk-devel` | `jdk21-openjdk` | `EclipseAdoptium.Temurin.21.JDK` |
+| `java` | `temurin@25` (cask) | `openjdk-25-jdk` | `java-25-openjdk-devel` | `jdk25-openjdk` | `EclipseAdoptium.Temurin.25.JDK` |
 | `lua` | `lua` | `lua5.4` | `lua` | `lua` | `DEVCOM.Lua` |
 
 ### 설정 연결
@@ -330,10 +330,10 @@ export PATH="$HOME/.local/bin:$PATH"
 이 설정은 Neovim 0.11 이상이 필요합니다. `nvim --version`으로 확인하세요.
 설치 스크립트를 다시 실행하면 낮은 버전을 올립니다(macOS: brew, Linux: 공식 tarball, Windows: winget).
 
-### Debian 12에서 `openjdk-21-jdk`를 찾을 수 없음
+### Debian 12에서 `openjdk-25-jdk`를 찾을 수 없음
 
-Debian 12(bookworm) 저장소에는 `openjdk-21-jdk`가 없습니다. `java` 항목 설치가 실패하면 JDK 21을 직접 설치하세요.
-예를 들어 [Eclipse Temurin](https://adoptium.net/temurin/releases/?version=21)을 받아 설치합니다.
+Debian 12(bookworm) 저장소에는 `openjdk-25-jdk`가 없습니다. `java` 항목 설치가 실패하면 JDK 25를 직접 설치하세요.
+예를 들어 [Eclipse Temurin](https://adoptium.net/temurin/releases/?version=25)을 받아 설치합니다.
 
 ### Go 도구(`gopls` 등) 설치가 실패함 (Debian/Ubuntu)
 
@@ -354,6 +354,18 @@ Windows는 새 PowerShell 창을 여세요.
 ### 디버거가 시작되지 않음
 
 `:Mason`에서 디버그 어댑터(`debugpy`, `codelldb` 등)가 설치되었는지 확인하세요. nvim을 설치 도중에 닫아 설치가 끊기면 mason이 반쪽 설치를 설치된 것으로 보고 다시 받지 않습니다. 이때는 `:MasonInstall --force debugpy`처럼 `--force`로 다시 설치합니다. Python은 프로젝트의 `.venv`(또는 `venv`)가 있으면 그 Python으로, 없으면 시스템 Python으로 프로그램을 실행합니다.
+
+### Java LSP(jdtls)가 시작되지 않음
+
+Java 파일을 열 때 "jdtls는 Java 25 이상에서만 실행되어 Java LSP를 시작하지 않습니다" 안내가 나오면, jdtls를 실행할 Java가 25 미만입니다.
+jdtls는 1.62부터 Java 25가 있어야 실행됩니다(그 전에는 Java 21). 실행에 쓰는 Java만 25면 되고, 프로젝트 코드는 이전 버전 Java여도 그대로 분석합니다.
+
+1. JDK 25를 설치합니다. 설치 스크립트를 `--with java`(Windows는 `-With java`)로 다시 실행하거나 [선택 항목 표](#선택)의 패키지를 직접 설치하세요.
+2. jdtls는 `JAVA_HOME`이 있으면 `JAVA_HOME/bin/java`를, 없으면 PATH의 `java`를 씁니다. `JAVA_HOME`을 쓴다면 JDK 25 경로로 바꾸세요.
+    - macOS: `export JAVA_HOME="$(/usr/libexec/java_home -v 25)"`를 셸 설정에 넣습니다.
+    - Linux: 배포판의 JDK 25 경로(예: Debian/Ubuntu `/usr/lib/jvm/java-25-openjdk-amd64`)로 설정합니다.
+    - Windows: `Get-ChildItem 'C:\Program Files\Eclipse Adoptium'`로 JDK 25 폴더 이름을 확인한 뒤 `[Environment]::SetEnvironmentVariable('JAVA_HOME', '<JDK 25 폴더>', 'User')`로 바꾸고 새 PowerShell 창을 엽니다.
+3. Neovim을 다시 시작합니다. Java 버전은 Neovim을 켠 뒤 처음 Java 파일을 열 때 한 번만 확인합니다.
 
 ### Windows에서 nvim-spectre 치환이 제한됨
 
