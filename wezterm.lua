@@ -2,8 +2,43 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 local config = wezterm.config_builder()
 
--- OneDark 색상 스킴
-config.color_scheme = "OneDark (base16)"
+-- nvim 테마(lua/plugins/ui.lua의 Claude 톤 catppuccin)와 맞춘 색상 스킴
+config.color_schemes = {
+  ["Claude Dark"] = {
+    foreground = "#DEDBD0",
+    background = "#262624",
+    cursor_bg = "#C98A6E",
+    cursor_fg = "#262624",
+    cursor_border = "#C98A6E",
+    selection_fg = "#DEDBD0",
+    selection_bg = "#45433F",
+    ansi = { "#34332F", "#D27A66", "#9EAD86", "#CDB98C", "#8E9FB8", "#C98A6E", "#8FAAA0", "#C2C0B6" },
+    brights = { "#57554F", "#CFA18A", "#B0BD9A", "#DBC9A0", "#A2B1C6", "#D2A577", "#A3BBB2", "#DEDBD0" },
+    -- 패널 경계선을 강조색으로 그려 분할 위치가 보이게 한다
+    split = "#C98A6E",
+    -- 지금 탭만 강조색 배경으로 표시해 어느 탭에 있는지 바로 보이게 한다
+    tab_bar = {
+      background = "#1F1E1D",
+      active_tab = { bg_color = "#C98A6E", fg_color = "#1F1E1D", intensity = "Bold" },
+      inactive_tab = { bg_color = "#34332F", fg_color = "#9A968B" },
+      inactive_tab_hover = { bg_color = "#45433F", fg_color = "#DEDBD0" },
+      new_tab = { bg_color = "#1F1E1D", fg_color = "#9A968B" },
+      new_tab_hover = { bg_color = "#45433F", fg_color = "#DEDBD0" },
+      inactive_tab_edge = "#45433F",
+    },
+  },
+}
+config.color_scheme = "Claude Dark"
+-- 탭 바 바탕(fancy tab bar 제목줄)을 스킴 배경과 맞춘다
+config.window_frame = {
+  active_titlebar_bg = "#1F1E1D",
+  inactive_titlebar_bg = "#1F1E1D",
+}
+-- 비활성 패널을 어둡게 해 패널이 여러 개일 때 활성 패널이 드러나게 한다 (기본값 saturation 0.9, brightness 0.8)
+config.inactive_pane_hsb = {
+  saturation = 0.6,
+  brightness = 0.5,
+}
 
 -- Windows에서는 PowerShell 7을 기본 셸로 사용
 if wezterm.target_triple:find("windows") then

@@ -3,7 +3,56 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
+    priority = 1000,
     config = function()
+      -- mocha 팔레트를 Claude 다크 UI 톤(따뜻한 회갈색 배경, 크림 글자, 주황 강조)으로 덮어쓴다
+      -- 오래 봐도 눈이 덜 피곤하도록 채도를 낮췄고, 글자색은 배경 대비 4.5:1(WCAG AA) 이상을 유지한다
+      -- 원래 색은 :colorscheme catppuccin-frappe 등 다른 flavour로 바로 돌아갈 수 있다
+      require("catppuccin").setup({
+        flavour = "mocha",
+        -- 창을 나눴을 때 비활성 창 배경을 어둡게 해 지금 커서가 있는 창이 드러나게 한다
+        dim_inactive = {
+          enabled = true,
+          shade = "dark",
+          percentage = 0.15,
+        },
+        -- 기본 창 경계선(crust)은 배경과 거의 같아 보이지 않으므로 대비 3:1 이상인 색으로 그린다
+        custom_highlights = function(colors)
+          return {
+            WinSeparator = { fg = colors.overlay1 },
+          }
+        end,
+        color_overrides = {
+          mocha = {
+            rosewater = "#E0D3C6",
+            flamingo = "#D6B8A6",
+            pink = "#C9A3B3",
+            mauve = "#C98A6E", -- 키워드: 채도를 낮춘 Claude 주황
+            red = "#D27A66", -- Crail(#C15F3C)은 배경 대비가 낮아 밝게 조정
+            maroon = "#CFA18A",
+            peach = "#D2A577",
+            yellow = "#CDB98C",
+            green = "#9EAD86",
+            teal = "#8FAAA0",
+            sky = "#9AAFBC",
+            sapphire = "#8BA2B5",
+            blue = "#8E9FB8",
+            lavender = "#A9A2C4",
+            text = "#DEDBD0",
+            subtext1 = "#C2C0B6",
+            subtext0 = "#B1ADA1",
+            overlay2 = "#9A968B",
+            overlay1 = "#85817A",
+            overlay0 = "#6F6C66",
+            surface2 = "#57554F",
+            surface1 = "#45433F",
+            surface0 = "#34332F",
+            base = "#262624",
+            mantle = "#1F1E1D",
+            crust = "#181817",
+          },
+        },
+      })
       vim.cmd.colorscheme("catppuccin")
     end,
   },

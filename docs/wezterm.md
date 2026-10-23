@@ -86,6 +86,7 @@ mux 기능은 WezTerm 문서에서 "still a young feature"라고 밝힌 기능�
 ## tmux와 다른 점
 
 - 세션 목록(`prefix` + `s`), tmuxinator 같은 세션 관리는 없습니다.
-- tmux 상태줄 위젯(onedark 테마, CPU, 배터리, 날짜)은 옮기지 않았습니다. 오른쪽 상태줄에는 `PREFIX`(와 크기 조절 중 키 테이블 이름)만 표시하고, 색상은 `OneDark (base16)` 스킴입니다.
+- tmux 상태줄 위젯(onedark 테마, CPU, 배터리, 날짜)은 옮기지 않았습니다. 오른쪽 상태줄에는 `PREFIX`(와 크기 조절 중 키 테이블 이름)만 표시합니다.
+- 색상은 nvim 테마와 맞춘 `Claude Dark` 스킴입니다. 패널이 여러 개면 비활성 패널은 어둡게, 패널 경계선과 지금 탭은 주황으로 표시합니다. 비활성 패널 밝기는 `wezterm.lua`의 `inactive_pane_hsb`에서 조정합니다.
 - SSH 원격 서버에서의 세션 유지는 다루지 않습니다. 이 구성은 로컬 용도입니다.
 - 예전 tmux 설정 파일 정리는 [README의 문제 해결](../README.md#예전-tmux-설정-정리)을 보세요.
