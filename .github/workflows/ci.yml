@@ -74,10 +74,30 @@ jobs:
 
       # headless에서는 자동 설치를 하지 않으므로 끝날 때까지 기다리는 MasonInstall로 설치한다
       - name: 디버그 어댑터 설치
-        run: nvim --headless "+MasonInstall debugpy" +qa
+        run: nvim --headless "+MasonInstall debugpy codelldb" +qa
 
       - name: Python 디버거 E2E
         run: nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
+
+      - name: C 디버거 E2E
+        run: nvim --headless tests/fixtures/dap/hello.c "+luafile tests/dap_e2e.lua"
+
+      # jdtls 1.62부터 Java 25가 있어야 실행된다 (setup-java가 JAVA_HOME도 맞춤)
+      - name: JDK 25 준비
+        if: runner.os == 'Linux'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      # jdtls는 프로젝트를 불러오는 데 시간이 걸리므로 대기 상한을 늘린다
+      - name: Java 디버거 E2E
+        if: runner.os == 'Linux'
+        env:
+          DAP_E2E_TIMEOUT: "180000"
+        run: |
+          nvim --headless "+MasonInstall jdtls java-debug-adapter java-test" +qa
+          nvim --headless tests/fixtures/dap/java/Hello.java "+luafile tests/dap_e2e.lua"
 
       - name: 설치 (go,lua 선택)
         if: runner.os == 'Linux'
@@ -118,10 +138,13 @@ jobs:
 
       # headless에서는 자동 설치를 하지 않으므로 끝날 때까지 기다리는 MasonInstall로 설치한다
       - name: 디버그 어댑터 설치
-        run: nvim --headless "+MasonInstall debugpy" +qa
+        run: nvim --headless "+MasonInstall debugpy codelldb" +qa
 
       - name: Python 디버거 E2E
         run: nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
+
+      - name: C 디버거 E2E
+        run: nvim --headless tests/fixtures/dap/hello.c "+luafile tests/dap_e2e.lua"
 
   windows:
     runs-on: windows-latest
@@ -221,9 +244,15 @@ jobs:
 
       # headless에서는 자동 설치를 하지 않으므로 끝날 때까지 기다리는 MasonInstall로 설치한다
       - name: 디버그 어댑터 설치
-        run: nvim --headless "+MasonInstall debugpy" +qa
+        run: nvim --headless "+MasonInstall debugpy codelldb" +qa
 
       - name: Python 디버거 E2E
         run: |
           nvim --headless tests/fixtures/dap/hello.py "+luafile tests/dap_e2e.lua"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      # zig cc로 컴파일한다 (PDB 생성, codelldb가 msdia140.dll로 읽음)
+      - name: C 디버거 E2E
+        run: |
+          nvim --headless tests/fixtures/dap/hello.c "+luafile tests/dap_e2e.lua"
           if ($LASTEXITCODE -ne 0) { exit 1 }

@@ -41,10 +41,60 @@ local function fail(msg)
   vim.cmd("cquit 1")
 end
 
--- 언어별 launch 설정 (Task 2, 3에서 c, java를 추가한다)
+-- 언어별 launch 설정
 local launch_configs = {
   python = function()
     return { type = "python", request = "launch", name = "dap e2e", program = file, console = "internalConsole" }
+  end,
+  -- 픽스처를 디버그 정보와 함께 컴파일한 뒤 codelldb로 실행한다 (cc, gcc, clang, zig cc 중 처음 찾은 것)
+  c = function()
+    local out = vim.fn.tempname() .. (vim.fn.has("win32") == 1 and ".exe" or "")
+    local cmd
+    for _, cc in ipairs({ "cc", "gcc", "clang" }) do
+      if vim.fn.executable(cc) == 1 then
+        cmd = { cc }
+        break
+      end
+    end
+    cmd = cmd or (vim.fn.executable("zig") == 1 and { "zig", "cc" })
+    assert(cmd, "C 컴파일러(cc, gcc, clang, zig)를 찾을 수 없음")
+    vim.list_extend(cmd, { "-g", "-O0", "-o", out, file })
+    -- zig는 처음 쓸 때 libc를 빌드해 캐시하므로 1~2분 걸릴 수 있다 (상한 5분)
+    local result = vim.system(cmd):wait(300000)
+    assert(result.code == 0, "컴파일 실패: " .. (result.stderr or ""))
+    -- headless에서는 통합 터미널(터미널 버퍼)을 열지 않도록 출력은 디버그 콘솔로 보낸다
+    return {
+      type = "codelldb",
+      request = "launch",
+      name = "dap e2e",
+      program = out,
+      cwd = vim.fs.dirname(file),
+      terminal = "console",
+    }
+  end,
+  -- jdtls가 프로젝트를 불러와 Hello를 main 클래스로 찾을 때까지 기다린 뒤 실행한다
+  -- (projectName, classpath, java 실행 파일은 nvim-jdtls가 채운다)
+  -- 요청은 jdtls에만 보낸다 (null-ls처럼 붙어 있는 다른 클라이언트가 바로 응답하면 jdtls를 기다리지 않게 됨)
+  -- request_sync는 안에서 vim.wait를 쓰므로 vim.wait 조건 함수 안에서 부르지 않는다
+  -- (안쪽 vim.wait가 바로 끝나면 바깥 vim.wait가 시간 제한과 간격을 무시하고 계속 돎, Neovim 0.12.2에서 확인)
+  java = function()
+    local deadline = vim.uv.hrtime() + timeout * 1e6
+    local found = false
+    while not found and vim.uv.hrtime() < deadline do
+      local client = vim.lsp.get_clients({ bufnr = buf, name = "jdtls" })[1]
+      if client then
+        local response =
+          client:request_sync("workspace/executeCommand", { command = "vscode.java.resolveMainClass" }, 5000, buf)
+        for _, main in ipairs(response and response.result or {}) do
+          found = found or main.mainClass == "Hello"
+        end
+      end
+      if not found then
+        vim.wait(2000)
+      end
+    end
+    assert(found, timeout .. "ms 안에 jdtls가 Hello main 클래스를 찾지 못함")
+    return { type = "java", request = "launch", name = "dap e2e", mainClass = "Hello" }
   end,
 }
 

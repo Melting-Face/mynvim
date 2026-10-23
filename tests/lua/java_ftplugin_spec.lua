@@ -125,4 +125,52 @@ assert(
 )
 vim.env.JAVA_HOME = nil
 vim.fn.delete(java_home, "rf")
+
+-- 위 버전 검사가 start_or_attach를 바꿔 두었으므로 config를 기록하는 함수로 되돌린다
+package.loaded["jdtls"].start_or_attach = function(config)
+  last_config = config
+end
+-- 디버그·테스트 번들: 설치되지 않았으면 빈 목록(빈 문자열이 jdtls에 넘어가지 않게)과 WARN 안내 1회
+-- java-test의 runner, jacoco jar는 OSGi 번들이 아니므로 제외한다 (nvim-jdtls README)
+local original_glob = vim.fn.glob
+local globbed = {}
+vim.fn.glob = function(pattern)
+  for key, files in pairs(globbed) do
+    if pattern:find(key, 1, true) then
+      return files
+    end
+  end
+  return {}
+end
+notes = {}
+last_config = nil
+dofile("ftplugin/java.lua")
+assert(
+  vim.deep_equal(last_config.init_options.bundles, {}),
+  "번들이 없을 때: " .. vim.inspect(last_config.init_options.bundles)
+)
+local debug_notes = vim.tbl_filter(function(n)
+  return n.msg:find("java-debug-adapter", 1, true) ~= nil
+end, notes)
+assert(
+  #debug_notes == 1 and debug_notes[1].level == vim.log.levels.WARN,
+  "java-debug-adapter 미설치 안내가 없음"
+)
+
+local debug_jar = "/m/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-0.53.2.jar"
+local test_jar = "/m/java-test/extension/server/com.microsoft.java.test.plugin-0.43.1.jar"
+globbed = {
+  ["java-debug-adapter"] = { debug_jar },
+  ["java-test"] = {
+    test_jar,
+    "/m/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar",
+    "/m/java-test/extension/server/jacocoagent.jar",
+  },
+}
+dofile("ftplugin/java.lua")
+assert(
+  vim.deep_equal(last_config.init_options.bundles, { debug_jar, test_jar }),
+  "번들: " .. vim.inspect(last_config.init_options.bundles)
+)
+vim.fn.glob = original_glob
 os.exit(0)

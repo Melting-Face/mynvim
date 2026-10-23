@@ -53,10 +53,22 @@ local jdtls = require("jdtls")
 -- mason 경로는 모두 configs.paths를 통해 만든다
 local debug_server = paths.mason_package("java-debug-adapter") .. "/extension/server"
 local test_server = paths.mason_package("java-test") .. "/extension/server"
-local bundles = {
-  vim.fn.glob(debug_server .. "/com.microsoft.java.debug.plugin-*.jar", 1),
-}
-vim.list_extend(bundles, vim.split(vim.fn.glob(test_server .. "/*.jar", 1), "\n"))
+-- 번들이 설치되지 않았으면 빈 목록으로 둔다 (glob을 목록으로 받아 빈 문자열이 jdtls에 넘어가지 않게 함)
+local bundles = vim.fn.glob(debug_server .. "/com.microsoft.java.debug.plugin-*.jar", true, true)
+if #bundles == 0 then
+  vim.notify_once(
+    "java-debug-adapter가 없어 Java 디버깅을 쓸 수 없습니다"
+      .. " (설치 중이면 잠시 후 다시 열고, 계속되면 :MasonInstall java-debug-adapter java-test)",
+    vim.log.levels.WARN
+  )
+end
+-- java-test의 runner, jacoco jar는 OSGi 번들이 아니므로 제외한다 (nvim-jdtls README)
+local excluded = { "com.microsoft.java.test.runner-jar-with-dependencies.jar", "jacocoagent.jar" }
+for _, jar in ipairs(vim.fn.glob(test_server .. "/*.jar", true, true)) do
+  if not vim.tbl_contains(excluded, vim.fn.fnamemodify(jar, ":t")) then
+    table.insert(bundles, jar)
+  end
+end
 
 config["init_options"] = {
   bundles = bundles,
