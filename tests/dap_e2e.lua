@@ -23,12 +23,19 @@ local buf = vim.api.nvim_get_current_buf()
 local ft = vim.bo[buf].filetype
 local file = vim.api.nvim_buf_get_name(buf)
 
--- dap이 vim.notify로 알리는 오류를 실패 이유에 함께 남긴다
+-- 진행 단계를 경과 시간과 함께 stderr에 남긴다 (CI에서 멈추면 마지막 줄로 멈춘 단계를 알 수 있게)
+local started_at = vim.uv.hrtime()
+local function progress(msg)
+  io.stderr:write(string.format("[dap e2e %s +%.1fs] %s\n", ft, (vim.uv.hrtime() - started_at) / 1e9, msg))
+end
+
+-- dap이 vim.notify로 알리는 오류를 실패 이유에 함께 남기고, 진행 기록에도 바로 찍는다
 local notes = {}
 local original_notify = vim.notify
 vim.notify = function(msg, level, opts)
   if level and level >= vim.log.levels.WARN then
     table.insert(notes, tostring(msg))
+    progress("알림: " .. tostring(msg))
   end
   return original_notify(msg, level, opts)
 end
@@ -60,7 +67,9 @@ local launch_configs = {
     assert(cmd, "C 컴파일러(cc, gcc, clang, zig)를 찾을 수 없음")
     vim.list_extend(cmd, { "-g", "-O0", "-o", out, file })
     -- zig는 처음 쓸 때 libc를 빌드해 캐시하므로 1~2분 걸릴 수 있다 (상한 5분)
+    progress("컴파일: " .. table.concat(cmd, " "))
     local result = vim.system(cmd):wait(300000)
+    progress("컴파일 끝 (code " .. result.code .. ")")
     assert(result.code == 0, "컴파일 실패: " .. (result.stderr or ""))
     -- headless에서는 통합 터미널(터미널 버퍼)을 열지 않도록 출력은 디버그 콘솔로 보낸다
     return {
@@ -79,9 +88,13 @@ local launch_configs = {
   -- (안쪽 vim.wait가 바로 끝나면 바깥 vim.wait가 시간 제한과 간격을 무시하고 계속 돎, Neovim 0.12.2에서 확인)
   java = function()
     local deadline = vim.uv.hrtime() + timeout * 1e6
-    local found = false
+    local found, jdtls_seen = false, false
     while not found and vim.uv.hrtime() < deadline do
       local client = vim.lsp.get_clients({ bufnr = buf, name = "jdtls" })[1]
+      if client and not jdtls_seen then
+        jdtls_seen = true
+        progress("jdtls 연결됨, main 클래스 찾는 중")
+      end
       if client then
         local response =
           client:request_sync("workspace/executeCommand", { command = "vscode.java.resolveMainClass" }, 5000, buf)
@@ -109,13 +122,20 @@ local ok, err = pcall(function()
   end
   assert(marker, "BREAK 마커 줄이 없음")
 
+  progress("시작: " .. file)
   local dap = require("dap")
   local config = launch_configs[ft]()
+  progress("launch 설정 준비 (type " .. config.type .. ")")
   -- 어댑터는 filetype 플러그인(dap-python 등)이 로드되며 등록된다
   vim.wait(5000, function()
     return dap.adapters[config.type] ~= nil
   end, 100)
   assert(dap.adapters[config.type], "어댑터가 등록되지 않음: " .. config.type)
+  for _, event in ipairs({ "event_initialized", "event_stopped", "event_terminated", "event_exited" }) do
+    dap.listeners.after[event]["dap_e2e"] = function()
+      progress("DAP " .. event)
+    end
+  end
 
   require("dap.breakpoints").set({}, buf, marker)
   local stopped_line
@@ -124,17 +144,21 @@ local ok, err = pcall(function()
       stopped_line = session.current_frame.line
     end
   end
+  progress("디버그 세션 시작")
   dap.run(config)
   local done = vim.wait(timeout, function()
     return stopped_line ~= nil
   end, 100)
+  progress("중단점 대기 끝 (멈춘 줄 " .. tostring(stopped_line) .. ")")
   assert(done, timeout .. "ms 안에 중단점에서 멈추지 않음")
   assert(stopped_line == marker, "멈춘 줄 " .. tostring(stopped_line) .. ", 기대 " .. marker)
 
+  progress("세션 종료 요청")
   dap.terminate()
   vim.wait(10000, function()
     return dap.session() == nil
   end, 100)
+  progress("세션 종료 " .. (dap.session() == nil and "확인" or "10초 안에 안 됨"))
 end)
 if not ok then
   fail(tostring(err))
