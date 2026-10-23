@@ -92,11 +92,14 @@ test_wezterm_doc() {
     local phrase
     # WezTerm 멀티플렉서 사용법(키, 백그라운드 유지, 연동, 설정 재적용)과 실제 설정이 함께 있어야 한다
     for phrase in 'prefix` + `"` / `%`' '`prefix` + `d`' '`C-h/j/k/l`' '`prefix` + `C-l`' \
-        'default_gui_startup_args' 'OneDark (base16)' '다시 시작'; do
+        'default_gui_startup_args' 'Claude Dark' '다시 시작'; do
         assert_file_contains "$WEZTERM_DOC" "$phrase"
     done
     assert_file_contains "$README" '(docs/wezterm.md)'
     grep -qF 'config.leader = { key = "a", mods = "CTRL"' "$ROOT/wezterm.lua" || fail "wezterm.lua에 C-a leader가 없음"
+    # 문서에 적은 색상 스킴과 비활성 패널 어둡게 하기가 실제 설정에 있어야 한다
+    grep -qF 'config.color_scheme = "Claude Dark"' "$ROOT/wezterm.lua" || fail "wezterm.lua 색상 스킴이 Claude Dark가 아님"
+    grep -qF 'config.inactive_pane_hsb' "$ROOT/wezterm.lua" || fail "wezterm.lua에 inactive_pane_hsb가 없음"
     # prefix + 숫자(ActivateTab, 0부터)와 탭 바에 보이는 번호가 같아야 한다
     grep -qF 'config.tab_and_split_indices_are_zero_based = true' "$ROOT/wezterm.lua" ||
         fail "wezterm.lua 탭 바 번호가 0부터가 아님"
