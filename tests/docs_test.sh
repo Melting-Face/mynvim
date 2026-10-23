@@ -42,6 +42,19 @@ test_readme_required_phrases() {
     done
 }
 
+# shellcheck disable=SC2016  # 마크다운 백틱은 문서 문구 그대로 찾는다
+test_readme_java25() {
+    local phrase
+    # jdtls 1.62부터 Java 25가 있어야 실행된다: 설치 표, 문제 해결(JAVA_HOME 확인)이 있어야 하고 JDK 21 안내가 남으면 안 된다
+    for phrase in '| `java` | JDK 25' '`temurin@25` (cask)' '`openjdk-25-jdk`' '`java-25-openjdk-devel`' \
+        '`jdk25-openjdk`' '`EclipseAdoptium.Temurin.25.JDK`' '### Java LSP(jdtls)가 시작되지 않음' 'JAVA_HOME'; do
+        assert_file_contains "$README" "$phrase"
+    done
+    if grep -qE 'temurin@21|openjdk-21|java-21-openjdk|jdk21-openjdk|Temurin\.21|JDK 21' "$README"; then
+        fail "README에 JDK 21 안내가 남아 있음"
+    fi
+}
+
 test_readme_windows_followability() {
     local phrase
     # winget 준비, 새 PowerShell 창 안내, PowerShell 7 설치, PowerShell dry-run 예시

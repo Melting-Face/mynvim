@@ -12,6 +12,19 @@ vim.notify_once = function(msg, level)
   return true
 end
 
+-- java -version 결과를 흉내 낸다 (기본은 jdtls가 요구하는 Java 25)
+local java_version_output = 'openjdk version "25.0.4" 2026-07-21'
+local system_calls = {}
+vim.system = function(cmd)
+  table.insert(system_calls, cmd)
+  return {
+    wait = function()
+      return { code = 0, stdout = "", stderr = java_version_output }
+    end,
+  }
+end
+vim.env.JAVA_HOME = nil
+
 vim.fn.executable = function()
   return 0
 end
@@ -62,4 +75,54 @@ for _, case in ipairs({
   assert(cmd:sub(-#case.suffix) == case.suffix, "windows=" .. tostring(case.windows) .. " cmd=" .. cmd)
 end
 paths.is_windows = original_is_windows
+
+-- jdtls 1.62부터 Java 25가 있어야 실행된다: 25 미만이면 시작하지 않고 원인과 해결법을 WARN으로 안내
+for _, case in ipairs({
+  { output = 'openjdk version "21.0.12.1" 2026-07-21 LTS', start = false },
+  { output = 'java version "1.8.0_401"', start = false },
+  { output = 'openjdk version "25" 2025-09-16', start = true },
+  { output = 'openjdk version "27.0.1" 2027-01-19', start = true },
+}) do
+  java_version_output = case.output
+  vim.g.jdtls_java_major = nil
+  started, notes = 0, {}
+  package.loaded["jdtls"].start_or_attach = function()
+    started = started + 1
+  end
+  dofile("ftplugin/java.lua")
+  assert((started == 1) == case.start, case.output .. ": started=" .. started)
+  local java_notes = vim.tbl_filter(function(n)
+    return n.msg:find("Java 25", 1, true) ~= nil
+  end, notes)
+  if case.start then
+    assert(#java_notes == 0, case.output .. ": 25 이상인데 안내가 나옴")
+  else
+    assert(#java_notes == 1 and java_notes[1].level == vim.log.levels.WARN, case.output .. ": Java 25 안내가 없음")
+    assert(java_notes[1].msg:find("JAVA_HOME", 1, true), "안내에 JAVA_HOME 확인 방법이 있어야 함")
+  end
+end
+
+-- 버전은 세션에서 한 번만 확인한다 (Java 파일을 열 때마다 java를 실행하지 않음)
+java_version_output = 'openjdk version "25.0.4" 2026-07-21'
+vim.g.jdtls_java_major = nil
+system_calls = {}
+dofile("ftplugin/java.lua")
+dofile("ftplugin/java.lua")
+assert(#system_calls == 1, "java -version 호출 횟수: " .. #system_calls)
+
+-- jdtls 래퍼처럼 JAVA_HOME/bin/java가 있으면 그것을 검사한다
+local java_home = vim.fn.tempname()
+local java_exe = java_home .. "/bin/java" .. (paths.is_windows() and ".exe" or "")
+vim.fn.mkdir(java_home .. "/bin", "p")
+vim.fn.writefile({}, java_exe)
+vim.env.JAVA_HOME = java_home
+vim.g.jdtls_java_major = nil
+system_calls = {}
+dofile("ftplugin/java.lua")
+assert(
+  system_calls[1] and system_calls[1][1] == java_exe,
+  "JAVA_HOME의 java를 써야 함: " .. vim.inspect(system_calls[1])
+)
+vim.env.JAVA_HOME = nil
+vim.fn.delete(java_home, "rf")
 os.exit(0)

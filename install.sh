@@ -222,11 +222,12 @@ pkg_names() {
             ;;
         rust) echo "" ;;
         java)
+            # jdtls 1.62부터 Java 25가 있어야 실행된다
             case "$PKG" in
-                brew) echo "temurin@21" ;;
-                apt) echo "openjdk-21-jdk" ;;
-                dnf) echo "java-21-openjdk-devel" ;;
-                pacman) echo "jdk21-openjdk" ;;
+                brew) echo "temurin@25" ;;
+                apt) echo "openjdk-25-jdk" ;;
+                dnf) echo "java-25-openjdk-devel" ;;
+                pacman) echo "jdk25-openjdk" ;;
             esac
             ;;
         lua)
@@ -385,7 +386,7 @@ install_optional() {
             ;;
         java)
             if [ "$PKG" = "brew" ]; then
-                run brew install --cask temurin@21
+                run brew install --cask temurin@25
             else
                 pkg_install "$(pkg_names java)"
             fi

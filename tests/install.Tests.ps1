@@ -147,6 +147,12 @@ Describe 'install.ps1' {
         }
     }
 
+    Context 'Get-OptionalPackageId' {
+        It 'java installs JDK 25 (jdtls 1.62+ needs Java 25 to run)' {
+            Get-OptionalPackageId -Component 'java' | Should -Be 'EclipseAdoptium.Temurin.25.JDK'
+        }
+    }
+
     Context 'Test-PathInside' {
         It 'detects a path under the parent (case-insensitive, either separator)' {
             Test-PathInside -Path 'C:\Users\me\AppData\Local\nvim\mynvim' -Parent 'C:\Users\me\AppData\Local\nvim' | Should -BeTrue
