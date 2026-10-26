@@ -107,6 +107,47 @@ jobs:
         if: runner.os == 'Linux'
         run: ./install.sh --yes --with go,lua
 
+      # 창이 사라진 WezTerm에 다시 붙는 도메인(gui-<PID>)이 macOS 소켓 위치(~/.local/share/wezterm)에서 잡히는지 본다
+      # 살아 있는 WezTerm 프로세스(mux 서버) PID로 소켓 이름의 파일을 만들고, 끝난 PID(99999)는 빠지는지 확인한다
+      - name: wezterm.lua 다시 붙기 도메인 확인 (macOS, WezTerm 20240203)
+        if: runner.os == 'macOS'
+        run: |
+          version=20240203-110809-5046fc22
+          curl -fsSL -o "$RUNNER_TEMP/wezterm.zip" "https://github.com/wezterm/wezterm/releases/download/$version/WezTerm-macos-$version.zip"
+          unzip -q "$RUNNER_TEMP/wezterm.zip" -d "$RUNNER_TEMP/wezterm"
+          bin="$(dirname "$(find "$RUNNER_TEMP/wezterm" -type f -name wezterm-mux-server | head -n 1)")"
+          "$bin/wezterm-mux-server" --daemonize
+          sleep 2
+          pid="$(pgrep -x wezterm-mux-server | head -n 1)"
+          dir="$HOME/.local/share/wezterm"
+          mkdir -p "$dir"
+          touch "$dir/gui-sock-$pid" "$dir/gui-sock-99999"
+          out="$("$bin/wezterm" --config-file tests/wezterm_probe.lua show-keys --lua 2>&1)"
+          grep "DOMAIN" <<<"$out"
+          grep -q "DOMAIN gui-$pid\$" <<<"$out" || { echo "gui-$pid 도메인 없음"; exit 1; }
+          if grep -q "DOMAIN gui-99999" <<<"$out"; then echo "끝난 PID 도메인이 남음"; exit 1; fi
+
+  # 창이 사라진 WezTerm에 다시 붙는 기능을 Linux에서 실제 창 두 개(Xvfb)로 확인 (로컬과 같은 WezTerm 버전)
+  wezterm-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container: ubuntu:22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: WezTerm 20240203·Xvfb 설치
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates curl xvfb procps libgl1-mesa-dri libegl1
+          version=20240203-110809-5046fc22
+          curl -fsSL -o /tmp/wezterm.deb \
+            "https://github.com/wezterm/wezterm/releases/download/$version/wezterm-$version.Ubuntu22.04.deb"
+          DEBIAN_FRONTEND=noninteractive apt-get install -y /tmp/wezterm.deb
+
+      - name: 다시 붙기 E2E
+        run: bash tests/wezterm_reattach_test.sh
+
   # Fedora(dnf), Arch(pacman)를 깨끗한 컨테이너에서 실제 설치로 검증
   distros:
     runs-on: ubuntu-latest
@@ -198,6 +239,22 @@ jobs:
               Write-Output $out
               throw 'wezterm.lua를 읽지 못함 (DetachDomain 또는 LEADER 키 없음)'
           }
+          # 창이 사라진 WezTerm에 다시 붙는 도메인(gui-<PID>)이 Windows 경로(\ 섞인 홈)에서 잡히는지 본다
+          # 살아 있는 WezTerm 프로세스(mux 서버) PID로 소켓 이름의 파일을 만들고, 끝난 PID(99999)는 빠지는지 확인한다
+          $mux = Start-Process (Join-Path $exe.DirectoryName 'wezterm-mux-server.exe') -PassThru -WindowStyle Hidden
+          Start-Sleep -Seconds 2
+          $sockets = Join-Path $HOME '.local\share\wezterm'
+          New-Item -ItemType Directory -Force $sockets | Out-Null
+          New-Item -ItemType File -Force (Join-Path $sockets "gui-sock-$($mux.Id)"), (Join-Path $sockets 'gui-sock-99999') | Out-Null
+          # 도메인 로그는 stderr로 나온다. 2>&1은 네이티브 stderr를 오류 레코드로 바꾸므로 파일로 받는다
+          $log = Join-Path $env:RUNNER_TEMP 'wezterm-probe.log'
+          Start-Process $exe.FullName -ArgumentList '--config-file', 'tests/wezterm_probe.lua', 'show-keys', '--lua' `
+              -RedirectStandardError $log -RedirectStandardOutput (Join-Path $env:RUNNER_TEMP 'wezterm-probe.out') -NoNewWindow -Wait
+          $probe = Get-Content $log -Raw
+          Stop-Process -Id $mux.Id
+          $probe -split "`n" | Select-String 'DOMAIN'
+          if ($probe -notmatch "DOMAIN gui-$($mux.Id)\b") { throw "gui-$($mux.Id) 도메인 없음" }
+          if ($probe -match 'DOMAIN gui-99999') { throw '끝난 PID 도메인이 남음' }
 
       # 이하 실제 설치와 검증은 두 레그 모두 실행한다
       - name: winget 확인

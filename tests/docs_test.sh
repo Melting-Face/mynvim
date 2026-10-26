@@ -105,7 +105,7 @@ test_wezterm_doc() {
     local phrase
     # WezTerm 멀티플렉서 사용법(키, 백그라운드 유지, 연동, 설정 재적용)과 실제 설정이 함께 있어야 한다
     for phrase in 'prefix` + `"` / `%`' '`prefix` + `d`' '`C-h/j/k/l`' '`prefix` + `C-l`' \
-        'default_gui_startup_args' 'Claude Dark' '다시 시작'; do
+        'default_gui_startup_args' 'Claude Dark' '다시 시작' '`prefix` + `s`' 'gui-sock-' 'front_end'; do
         assert_file_contains "$WEZTERM_DOC" "$phrase"
     done
     assert_file_contains "$README" '(docs/wezterm.md)'
@@ -122,13 +122,19 @@ test_wezterm_doc() {
 # shellcheck disable=SC2016  # Lua 코드 문구를 그대로 찾는다
 test_wezterm_lua_mux_config() {
     local f="$ROOT/wezterm.lua" phrase
-    # 항상 로컬 mux 서버(unix domain)에 붙고, prefix + d로 떼어 낸다
+    # 로컬 mux 서버(unix domain)에 붙고(Windows 제외), prefix + d로 떼어 낸다. 창이 사라진 WezTerm은 prefix + s로 다시 붙는다
     for phrase in 'config.unix_domains = { { name = "unix" } }' \
         'config.default_gui_startup_args = { "connect", "unix" }' \
         'act.DetachDomain("CurrentPaneDomain")' \
-        'IS_NVIM' 'key = "l", mods = "LEADER|CTRL"'; do
+        'IS_NVIM' 'key = "l", mods = "LEADER|CTRL"' \
+        '/gui-sock-*' 'act.ShowLauncherArgs({ flags = "FUZZY|DOMAINS" })'; do
         grep -qF -- "$phrase" "$f" || fail "wezterm.lua에 '$phrase'가 없음"
     done
+    # GPU 대신 CPU로 그리기는 Windows 분기 안(들여쓰기)에만 있어야 한다
+    grep -qE '^  config\.front_end = "Software"' "$f" || fail "front_end가 Windows 분기 안에 없음"
+    if grep -qE '^config\.front_end' "$f"; then
+        fail "front_end가 모든 OS에 적용됨"
+    fi
     # 모든 OS 공통: leader와 키가 OS 분기 안(들여쓰기)에 있으면 안 된다
     grep -qE '^config\.leader = \{ key = "a", mods = "CTRL"' "$f" || fail "leader가 OS 분기 밖에 없음"
     grep -qE '^config\.keys = \{' "$f" || fail "keys가 OS 분기 밖에 없음"

@@ -10,7 +10,10 @@ tmux를 쓰던 두 가지 용도를 그대로 제공합니다.
 
 ## 시작과 백그라운드 유지
 
-WezTerm을 켜면 항상 로컬 mux 서버(unix domain `unix`)에 붙습니다. 서버가 없으면 WezTerm이 `wezterm-mux-server`를 띄웁니다.
+macOS, Linux에서는 WezTerm을 켜면 항상 로컬 mux 서버(unix domain `unix`)에 붙습니다. 서버가 없으면 WezTerm이 `wezterm-mux-server`를 띄웁니다.
+Windows는 로컬 모드(창 프로세스가 셸을 직접 가짐)로 둡니다. 2026-10-26 WezTerm `20240203-110809-5046fc22`의 `wezterm-mux-server`가
+스택 오버플로(`0xc00000fd`)로 두 번 죽으며 모든 패널이 함께 끊겼기 때문입니다. Windows에서는 아래 백그라운드 유지 대신
+[창이 사라졌을 때 다시 붙기](#창이-사라졌을-때-다시-붙기)가 작업을 지킵니다.
 셸과 그 안의 작업은 창이 아니라 서버에서 돌기 때문에, 다음 경우에도 계속 실행됩니다.
 
 - `prefix` + `d`로 떼어 냈을 때
@@ -21,6 +24,28 @@ X 버튼으로 닫아도 유지되는 것은 2026-10-21 Windows, WezTerm `202402
 창을 닫아도 서버에서 셸이 끝나지는 않으므로, 작업을 정말 끝내려면 셸에서 `exit`하거나 `prefix` + `x`(패널), `prefix` + `&`(탭)로 닫으세요.
 
 재부팅하면 서버도 끝나므로 세션은 복원되지 않습니다(tmux도 마찬가지입니다).
+
+## 창이 사라졌을 때 다시 붙기
+
+창은 사라졌는데 WezTerm 프로세스는 남아 있으면 `prefix` + `s`로 다시 붙습니다(tmux `attach`). 모든 OS에서 같습니다.
+예를 들어 Windows에서 그래픽 드라이버가 재설정되면(이벤트 로그 `nvlddmkm` 153 → 4101) WezTerm 로그에
+`opengl context was lost`가 남고 창만 없어집니다. 그 안의 셸과 작업은 계속 돕니다.
+
+1. 새 WezTerm 창을 엽니다.
+2. `prefix` + `s`로 도메인 목록을 열고 `gui-<PID>`를 고릅니다. `<PID>`는 창이 사라진 WezTerm 프로세스 번호입니다.
+3. 그 프로세스의 탭과 패널이 지금 창에 붙습니다. 셸은 원래 프로세스가 계속 가지므로, 붙은 창이 다시 사라져도 같은 방법으로 붙습니다.
+
+WezTerm 창 프로세스는 각자 mux 소켓 `gui-sock-<PID>`를 엽니다. 위치는 Linux가 `$XDG_RUNTIME_DIR/wezterm`, 그 밖은 `~/.local/share/wezterm`입니다.
+`wezterm.lua`가 시작할 때 살아 있는 다른 WezTerm 프로세스의 소켓을 찾아 도메인 `gui-<PID>`로 등록합니다.
+자기 자신과, 프로세스가 끝나 파일만 남은 소켓은 빠집니다. 그래서 목록은 새 창을 연 시점의 상태입니다.
+
+창을 X 버튼으로 닫으면 로컬 모드에서는 그 프로세스와 셸도 함께 끝나므로 다시 붙을 수 없습니다. 일부러 떼어 두려면 mux 서버를 쓰는 OS에서 `prefix` + `d`를 쓰세요.
+
+Windows에서는 창이 사라지지 않도록 화면을 GPU 대신 CPU로 그립니다(`wezterm.lua`의 `config.front_end = "Software"`).
+글자 그리기가 느리게 느껴지면 그 블록을 주석 처리해 기본(OpenGL)으로 돌리세요.
+
+Linux에서 실제 창 두 개로 다시 붙는 과정은 [`tests/wezterm_reattach_test.sh`](../tests/wezterm_reattach_test.sh)가 CI에서 확인합니다.
+macOS와 Windows는 CI에서 도메인 등록까지만 확인합니다. 쓰고 있는 WezTerm에 영향이 없도록 이 시험은 컨테이너나 CI에서 실행하세요.
 
 ## 기본 키
 
@@ -42,6 +67,7 @@ prefix가 눌려 있으면 오른쪽 상태줄에 `PREFIX`가 표시됩니다.
 | `prefix` + `&` | 탭 닫기 (확인 후) |
 | `prefix` + `[` | 복사 모드 (vi 키) |
 | `prefix` + `d` | mux 서버에서 떼어 내기 (작업은 계속 실행) |
+| `prefix` + `s` | 도메인 목록에서 골라 붙기. 창이 사라진 WezTerm(`gui-<PID>`)에 다시 붙을 때 |
 | `prefix` + `C-a` | 셸이나 nvim에 `C-a` 전달 |
 | `prefix` + `C-l` | 셸에 `C-l` 전달 (화면 지우기) |
 
@@ -85,7 +111,7 @@ mux 기능은 WezTerm 문서에서 "still a young feature"라고 밝힌 기능�
 
 ## tmux와 다른 점
 
-- 세션 목록(`prefix` + `s`), tmuxinator 같은 세션 관리는 없습니다.
+- `prefix` + `s`는 tmux처럼 세션 목록이 아니라 도메인 목록입니다(mux 서버와 창이 사라진 WezTerm). tmuxinator 같은 세션 관리는 없습니다.
 - tmux 상태줄 위젯(onedark 테마, CPU, 배터리, 날짜)은 옮기지 않았습니다. 오른쪽 상태줄에는 `PREFIX`(와 크기 조절 중 키 테이블 이름)만 표시합니다.
 - 색상은 nvim 테마와 맞춘 `Claude Dark` 스킴입니다. 패널이 여러 개면 비활성 패널은 어둡게, 패널 경계선과 지금 탭은 주황으로 표시합니다. 비활성 패널 밝기는 `wezterm.lua`의 `inactive_pane_hsb`에서 조정합니다.
 - SSH 원격 서버에서의 세션 유지는 다루지 않습니다. 이 구성은 로컬 용도입니다.

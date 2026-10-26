@@ -50,7 +50,8 @@ Neovim은 0.11 이상이 필요합니다. 더 낮거나 없으면 스크립트�
     - Windows: 파일 링크 대신 사용자 환경변수 `WEZTERM_CONFIG_FILE`을 설정합니다.
     - WezTerm을 나중에 설치했다면 설치 스크립트를 다시 실행하세요.
 - **패널·탭과 백그라운드 유지**는 tmux 대신 WezTerm 멀티플렉서가 맡습니다. 모든 OS에서 prefix `C-a`와 같은 키를 쓰고,
-  창을 닫아도 작업이 로컬 mux 서버에서 계속 돕니다. 사용법은 [WezTerm 멀티플렉서](docs/wezterm.md)를 보세요.
+  macOS, Linux에서는 창을 닫아도 작업이 로컬 mux 서버에서 계속 돕니다. 창만 사라진 WezTerm에는 `prefix` + `s`로 다시 붙습니다.
+  사용법은 [WezTerm 멀티플렉서](docs/wezterm.md)를 보세요.
 - **Windows 기본 셸**은 PowerShell 7(`pwsh.exe`)입니다. 설치 스크립트가 필수 항목으로 함께 설치합니다(`Microsoft.PowerShell`).
 - **WSL 사용자**는 WezTerm을 Windows 쪽에 설치하고 WSL 도메인으로 접속합니다.
   [`wezterm.lua`](wezterm.lua)의 주석 처리된 `default_domain` 예시(`config.default_domain = "WSL:Ubuntu"`)를 풀고 배포판 이름을 맞추세요.
