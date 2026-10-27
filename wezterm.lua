@@ -51,7 +51,35 @@ end
 -- 서버가 없으면 WezTerm이 띄운다. 서버도 같은 wezterm.lua를 읽는다
 config.unix_domains = { { name = "unix" } }
 -- WezTerm을 켜면 항상 mux 서버에 붙는다. 문제가 생기면 이 줄만 주석 처리하면 예전 로컬 모드로 돌아간다
-config.default_gui_startup_args = { "connect", "unix" }
+-- Windows는 로컬 모드로 둔다: 2026-10-26 20240203 판 wezterm-mux-server가 스택 오버플로(0xc00000fd)로
+-- 두 번 죽으며 모든 패널이 함께 끊겼다
+if not wezterm.target_triple:find("windows") then
+  config.default_gui_startup_args = { "connect", "unix" }
+end
+
+-- Windows에서는 화면을 GPU 대신 CPU로 그린다. 문제가 생기면 이 블록만 주석 처리하면 기본(OpenGL)으로 돌아간다
+-- 2026-10-27 추가: NVIDIA 드라이버 재설정(nvlddmkm 153 → 4101)마다 OpenGL 컨텍스트를 잃고 창이 사라졌다(프로세스는 남음)
+if wezterm.target_triple:find("windows") then
+  config.front_end = "Software"
+end
+
+-- 창이 사라진 WezTerm에 다시 붙는다 (tmux attach). WezTerm 창 프로세스는 각자 mux 소켓 gui-sock-<PID>를 연다
+-- 살아 있는 다른 창 프로세스의 소켓을 도메인 gui-<PID>로 등록하고, prefix + s 목록에서 골라 붙는다
+-- 소켓 위치는 $XDG_RUNTIME_DIR/wezterm(Linux) 또는 ~/.local/share/wezterm(그 밖)이다
+local socket_dirs = { wezterm.home_dir .. "/.local/share/wezterm" }
+if os.getenv("XDG_RUNTIME_DIR") then
+  table.insert(socket_dirs, os.getenv("XDG_RUNTIME_DIR") .. "/wezterm")
+end
+for _, dir in ipairs(socket_dirs) do
+  for _, path in ipairs(wezterm.glob(dir .. "/gui-sock-*")) do
+    local pid = tonumber(path:match("gui%-sock%-(%d+)$"))
+    -- 자기 자신과, 프로세스가 끝나 파일만 남은 소켓은 뺀다
+    local info = pid and pid ~= wezterm.procinfo.pid() and wezterm.procinfo.get_info_for_pid(pid)
+    if info and info.name:find("wezterm") then
+      table.insert(config.unix_domains, { name = "gui-" .. pid, socket_path = path, no_serve_automatically = true })
+    end
+  end
+end
 
 -- tmux와 같은 키로 WezTerm 패널·탭을 쓴다 (모든 OS 공통)
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -112,6 +140,8 @@ config.keys = {
   { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
   -- mux 서버에서 떼어 낸다 (셸과 작업은 계속 실행, WezTerm을 다시 열면 이어짐)
   { key = "d", mods = "LEADER", action = act.DetachDomain("CurrentPaneDomain") },
+  -- 도메인 목록: mux 서버와 창이 사라진 WezTerm(gui-<PID>)을 골라 붙는다 (tmux choose-session)
+  { key = "s", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "FUZZY|DOMAINS" }) },
   -- C-l은 패널 이동에 쓰므로, 셸 화면 지우기는 prefix + C-l로 보낸다
   { key = "l", mods = "LEADER|CTRL", action = act.SendKey({ key = "l", mods = "CTRL" }) },
 }
